@@ -1,3 +1,4 @@
+import './globals.css';
 import { Provider } from 'react-redux';
 import type { AppProps } from 'next/app';
 import { HttpService } from '@/services/http/HttpService';
