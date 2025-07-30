@@ -1,0 +1,30 @@
+{
+  "name": "my-nextjs-app",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev -p 4000",
+    "build": "next build",
+    "start": "next start -p 4000",
+    "lint": "eslint ."
+  },
+  "dependencies": {
+    "@react-native-async-storage/async-storage": "^2.2.0",
+    "@reduxjs/toolkit": "^2.8.2",
+    "axios": "^1.11.0",
+    "dayjs": "^1.11.13",
+    "next": "latest",
+    "react": "latest",
+    "react-dom": "latest",
+    "react-redux": "^9.2.0",
+    "redux-persist": "^6.0.0"
+  },
+  "devDependencies": {
+    "@types/node": "24.1.0",
+    "@types/react": "latest",
+    "@types/react-dom": "latest",
+    "eslint": "latest",
+    "eslint-config-next": "latest",
+    "typescript": "latest"
+  }
+}

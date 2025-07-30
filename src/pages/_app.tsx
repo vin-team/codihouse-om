@@ -1,0 +1,28 @@
+import { Provider } from 'react-redux';
+import type { AppProps } from 'next/app';
+import { HttpService } from '@/services/http/HttpService';
+import { useEffect } from 'react';
+import { PersistGate } from 'redux-persist/integration/react';
+import { persistor, store } from '@/app/store';
+import RouterListener from '@/components/RouterListener';
+import MainLayout from '@/components/Layout';
+
+export default function App({ Component, pageProps }: AppProps) {
+	useEffect(() => {
+		HttpService.initialize();
+	}, []);
+	return (
+			<Provider store={store}>
+				<PersistGate loading={null} persistor={persistor}>
+					{() => (
+						<>
+							<RouterListener />
+							<MainLayout>
+								<Component {...pageProps} />
+							</MainLayout>
+						</>
+					)}
+				</PersistGate>
+			</Provider>
+	);
+}
