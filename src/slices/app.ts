@@ -1,13 +1,15 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { RequestState } from '../app/state';
+
 const initialState: AppState = {
 	isRouteChanging: false,
 	description: "Description",
 	title: "Page Title",
 	seoImageLink: "https://example.com/image.png",
 	firebaseApp: null,
-	webdata:false,
-	fetchState:{status:"idle"}
+	webData: false,
+	fetchState: { status: "idle" },
+	isLogined: false
 }
 const appSlice = createSlice({
 	name: 'app',
@@ -19,7 +21,7 @@ const appSlice = createSlice({
 		endRouting(state) {
 			state.isRouteChanging = false;
 		},
-		setDiscription(state, action) {
+		setDescription(state, action) {
 			state.description = action.payload
 		},
 		setTitle(state, action) {
@@ -30,10 +32,14 @@ const appSlice = createSlice({
 		},
 		initFirebase(state, action) {
 			state.firebaseApp = action.payload
+		},
+		setLogined(state, action: PayloadAction<boolean>) {
+			state.isLogined = action.payload
 		}
 	}
 });
-export const { startRouting, endRouting, setDiscription, setSeoImageLink, setTitle, initFirebase } = appSlice.actions;
+
+export const { startRouting, endRouting, setDescription, setSeoImageLink, setTitle, initFirebase, setLogined } = appSlice.actions;
 export default appSlice.reducer;
 export interface AppState {
 	isRouteChanging: boolean,
@@ -41,6 +47,7 @@ export interface AppState {
 	seoImageLink: string,
 	title: string,
 	firebaseApp?: any,
-	webdata:any,
-	fetchState:RequestState
+	webData: any,
+	fetchState: RequestState,
+	isLogined: boolean
 }

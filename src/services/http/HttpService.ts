@@ -1,4 +1,5 @@
 import axios, { AxiosResponse } from 'axios'
+import { storage } from '../../utils/storage.util'
 //import { AuthService } from '../Auth.service'
 // import { URLSearchParams } from 'url';
 class HttpService {
@@ -14,29 +15,29 @@ class HttpService {
     static refreshMethod: Promise<AxiosResponse<any, any>>
     static commonParams() {
         return {
-            create_user: localStorage.getItem(process.env.NEXT_PUBLIC_storageUserIdKey!),
-            update_user: localStorage.getItem(process.env.NEXT_PUBLIC_storageUserIdKey!),
+            create_user: storage.getItem(process.env.NEXT_PUBLIC_storageUserIdKey!),
+            update_user: storage.getItem(process.env.NEXT_PUBLIC_storageUserIdKey!),
             code_store: 'ROOT'
         }
     }
     static getLocalDeviceId() {
-        return localStorage.getItem(process.env.NEXT_PUBLIC_storageDeviceIdKey!)
+        return storage.getItem(process.env.NEXT_PUBLIC_storageDeviceIdKey!)
     }
     static getLocalToken() {
-        return localStorage.getItem(process.env.NEXT_PUBLIC_storageAccessTokenKey!)
+        return storage.getItem(process.env.NEXT_PUBLIC_storageAccessTokenKey!)
     }
     static getLocalRefreshToken() {
-        return localStorage.getItem(process.env.NEXT_PUBLIC_storageRefreshTokenKey!)
+        return storage.getItem(process.env.NEXT_PUBLIC_storageRefreshTokenKey!)
     }
     static getUsername() {
-        return localStorage.getItem(process.env.NEXT_PUBLIC_storageUsernameKey!)
+        return storage.getItem(process.env.NEXT_PUBLIC_storageUsernameKey!)
     }
     static setToken(token: string) {
         HttpService.instance.defaults.headers['Authorization'] = `Bearer ${token}`
-        localStorage.setItem(process.env.NEXT_PUBLIC_storageAccessTokenKey!, token)
+        storage.setItem(process.env.NEXT_PUBLIC_storageAccessTokenKey!, token)
     }
     static setLocalRefToken(token: string) {
-        localStorage.setItem(process.env.NEXT_PUBLIC_storageRefreshTokenKey!, token)
+        storage.setItem(process.env.NEXT_PUBLIC_storageRefreshTokenKey!, token)
     }
     static initialize() {
         this.checkAndAddHeaderAuthToken()
@@ -60,7 +61,7 @@ class HttpService {
                 return response
             },
             async (error) => {
-                localStorage.setItem(process.env.NEXT_PUBLIC_storageisRefreshingTokenKey!, HttpService.isRefreshing.toString())
+                storage.setItem(process.env.NEXT_PUBLIC_storageisRefreshingTokenKey!, HttpService.isRefreshing.toString())
                 if (error.response?.status === 401 && !HttpService.isRefreshing) {
                     try {
                         const rs = await refreshToken()

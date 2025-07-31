@@ -18,7 +18,6 @@ export default function MainLayout({ children }: IMainLayoutProps) {
 	return (
 		<>
 			<Head>
-
 				<meta charSet='UTF-8' />
 				<meta name='viewport' content='width=device-width, initial-scale=1' />
 				<meta property="og:type" content="website" />
@@ -26,11 +25,9 @@ export default function MainLayout({ children }: IMainLayoutProps) {
 				<title>Codihouse OM</title>
 			</Head>
 			<div className={'page-layout'}>
-				<Header />
 				<main className='page-layout-main'>
 					{children}
 				</main>
-				<Footer />
 			</div>
 		</>
 	);
