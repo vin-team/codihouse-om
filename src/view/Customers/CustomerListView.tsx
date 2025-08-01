@@ -13,3 +13,5 @@ export function CustomerListView({ customers }: Props) {
     </div>
   )
 }
+
+export type { Customer }
