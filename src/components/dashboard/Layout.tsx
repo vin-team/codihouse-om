@@ -32,7 +32,7 @@ const Layout: React.FC<LayoutProps> = (props) => {
               <nav className="flex items-center space-x-6">
                 {/* Dashboard */}
                 <button
-                  onClick={() => router.push('/')}
+                  onClick={() => router.push('/dashboard')}
                   className={`flex items-center space-x-2 px-3 py-2 rounded-lg text-sm font-medium transition-colors ${isActive('/')
                     ? 'bg-primary-50 text-primary-600'
                     : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'
