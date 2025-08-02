@@ -1,24 +1,25 @@
 'use client'
 
+import React from 'react';
 import { Input } from '@/components/ui/input'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Card, CardContent } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Eye } from 'lucide-react'
-import { CustomerCard, Customer } from "@/components/Customers/CustomerCard"
+import { CustomerCardView } from "@/components/Customers/CustomerCard"
 import Layout from '@/components/dashboard/Layout'
 
 const customers = [
   {
-    name: 'Bùi Thị Hạnh',
-    code: 'CUSN12185',
-    phone: '0904500014',
-    email: 'trantientoan@email.com',
-    group: 'Bán lẻ',
+    name: 'Nguyễn Văn Tươi',
+    code: 'CUSN121990',
+    phone: '0904762101',
+    email: 'nguyenvantuoi99@email.com',
+    group: 'Bán sỉ',
     totalSpend: 979000,
     orders: 2,
     points: 97,
-    lastPurchase: '2024-01-15',
+    lastPurchase: '2025-06-15',
   },
   {
     name: 'Nguyễn Thị Lan',
@@ -46,10 +47,11 @@ const customers = [
 
 export default function CustomerListPage() {
   return (
-    <Layout children={<>
-      <div className="p-6 space-y-6">
+    <Layout children={
+      < div className="p-6 space-y-6">
         <div>
           <h1 className="text-2xl font-bold">Danh sách khách hàng</h1>
+          <p className="text-sm text-muted-foreground">Quản lý thông tin khách hàng</p>
         </div>
 
         {/* Bộ lọc */}
@@ -83,7 +85,7 @@ export default function CustomerListPage() {
         {/* Danh sách khách hàng */}
         <div className="space-y-4">
           {customers.map((c) => (
-            <><CustomerCard key={c.code} customer={c} /><Card key={c.code} className="p-4">
+            <Card key={c.code} className="p-4">
               <CardContent className="p-0 flex flex-col md:flex-row md:items-center justify-between">
                 <div className="space-y-1">
                   <div className="font-semibold text-base">
@@ -107,10 +109,11 @@ export default function CustomerListPage() {
                   </Button>
                 </div>
               </CardContent>
-            </Card></>
+            </Card>
           ))}
         </div>
       </div>
-    </>} />
+    }
+/>
   )
 }
