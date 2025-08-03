@@ -37,7 +37,7 @@ export default function CustomerDetailPage() {
               Mô tả: <span className="font-medium">Khách hàng VIP, thường xuyên mua hàng</span>
             </div>
             <div>
-              Tags: 
+              Tags:
               <Badge variant="secondary" className="ml-2">VIP</Badge>
               <Badge variant="secondary" className="ml-2">Khách quen</Badge>
             </div>

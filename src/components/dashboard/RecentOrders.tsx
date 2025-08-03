@@ -24,7 +24,7 @@ const RecentOrders: React.FC<RecentOrdersProps> = ({ orders, onViewAll }) => {
       <div className="p-6 border-b border-gray-200">
         <h2 className="text-xl font-bold text-gray-900">Đơn hàng gần đây</h2>
       </div>
-      
+
       <div className="p-6 space-y-4">
         {orders.map((order, index) => (
           <OrderItem
@@ -42,12 +42,10 @@ const RecentOrders: React.FC<RecentOrdersProps> = ({ orders, onViewAll }) => {
         ))}
       </div>
 
-      {/* View All Orders Button */}
       <div className="p-6 border-t border-gray-200 text-center">
-        <button 
+        <button
           onClick={onViewAll}
-          className="px-6 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition-colors"
-        >
+          className="px-6 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition-colors">
           Xem tất cả đơn hàng
         </button>
       </div>
