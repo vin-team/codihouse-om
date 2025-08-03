@@ -6,7 +6,6 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Card, CardContent } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Eye } from 'lucide-react'
-import { CustomerCardView } from "@/components/Customers/CustomerCard"
 import Layout from '@/components/dashboard/Layout'
 
 const customers = [
