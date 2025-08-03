@@ -84,7 +84,7 @@ const dashboard: React.FC<dashboardProps> = ({ }) => {
 
   return (
     <Layout>
-      <div className="p-8">
+      <div className="p-8 flex flex-col gap-6">
         <DashboardHeader />
         <SummaryCards />
         <SearchBar onSearch={handleSearch} />

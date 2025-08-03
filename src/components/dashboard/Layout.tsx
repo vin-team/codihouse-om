@@ -13,9 +13,9 @@ const Layout: React.FC<LayoutProps> = (props) => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      {/* Header */}
-      <header className="bg-white border-b border-gray-200">
+    <div className="min-h-screen bg-gray-50 overflow-x-hidden">
+      {/* Header - Fixed at top */}
+      <header className="fixed top-0 left-0 right-0 z-50 bg-white border-b border-gray-200 shadow-sm">
         <div className="max-w-screen px-10">
           <div className="flex justify-between items-center h-16">
             {/* Left side - Brand and Navigation */}
@@ -119,8 +119,8 @@ const Layout: React.FC<LayoutProps> = (props) => {
         </div>
       </header>
 
-      {/* Main Content */}
-      <main className="flex-1">
+      {/* Main Content - with top padding to account for fixed header */}
+      <main className="pt-16 min-h-screen overflow-y-auto">
         {props.children}
       </main>
     </div>

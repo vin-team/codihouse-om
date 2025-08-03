@@ -10,7 +10,7 @@ const DashboardHeader: React.FC<DashboardHeaderProps> = ({
   subtitle = "Tổng quan đơn hàng từ Shopify và Sapo"
 }) => {
   return (
-    <div className="mb-8">
+    <div>
       <h1 className="text-3xl font-bold text-gray-900 mb-2">{title}</h1>
       <p className="text-gray-600">{subtitle}</p>
     </div>
