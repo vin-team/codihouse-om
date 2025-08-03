@@ -1,18 +1,17 @@
+'use client';
+
+import { setIsOpenSearchDialog } from '@/slices/app';
 import React from 'react';
+import { useDispatch } from 'react-redux';
 
 interface SearchBarProps {
   placeholder?: string;
-  onSearch?: (value: string) => void;
 }
 
 const SearchBar: React.FC<SearchBarProps> = ({
   placeholder = "Nhấn để tìm kiếm đơn hàng... (⌘K)",
-  onSearch
 }) => {
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    onSearch?.(e.target.value);
-  };
-
+  const dispatch = useDispatch();
   return (
     <div className="bg-white rounded-lg p-6 border border-gray-200">
       <div className="relative bg-white rounded-lg">
@@ -25,8 +24,8 @@ const SearchBar: React.FC<SearchBarProps> = ({
         <input
           type="text"
           placeholder={placeholder}
-          onChange={handleChange}
-          className="block w-full pl-12 pr-20 py-3 border border-gray-300 rounded-lg text-sm placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+          onClick={() => dispatch(setIsOpenSearchDialog(true))}
+          className="block w-full pl-12 pr-20 h-10 border border-gray-300 rounded-lg text-sm placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
         />
         <div className="absolute inset-y-0 right-0 pr-3 flex items-center">
           <kbd className="inline-flex items-center px-2 py-1 border border-gray-300 rounded text-xs font-mono text-gray-500 bg-gray-50">

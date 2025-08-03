@@ -1,3 +1,5 @@
+'use client';
+
 import React from 'react';
 import OrderItem from './OrderItem';
 
@@ -21,7 +23,7 @@ interface RecentOrdersProps {
 const RecentOrders: React.FC<RecentOrdersProps> = ({ orders, onViewAll }) => {
   return (
     <div className="bg-white rounded-lg border border-gray-200">
-      <div className="p-6 border-b border-gray-200">
+      <div className="p-6 pb-0">
         <h2 className="text-xl font-bold text-gray-900">Đơn hàng gần đây</h2>
       </div>
 
@@ -42,7 +44,7 @@ const RecentOrders: React.FC<RecentOrdersProps> = ({ orders, onViewAll }) => {
         ))}
       </div>
 
-      <div className="p-6 border-t border-gray-200 text-center">
+      <div className="pb-6 text-center">
         <button
           onClick={onViewAll}
           className="px-6 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition-colors">

@@ -2,30 +2,6 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Hide scrollbar for body */
-html, body {
-  overflow-x: hidden;
-}
-
-/* Custom scrollbar for main content */
-.overflow-y-auto::-webkit-scrollbar {
-  width: 8px;
-}
-
-.overflow-y-auto::-webkit-scrollbar-track {
-  background: #f1f5f9;
-  border-radius: 4px;
-}
-
-.overflow-y-auto::-webkit-scrollbar-thumb {
-  background: #cbd5e1;
-  border-radius: 4px;
-}
-
-.overflow-y-auto::-webkit-scrollbar-thumb:hover {
-  background: #94a3b8;
-}
-
 @layer base {
   :root {
     --background: 0 0% 100%;
@@ -54,6 +30,7 @@ html, body {
     --chart-5: 27 87% 67%;
     --radius: 0.5rem
   }
+
   .dark {
     --background: 0 0% 3.9%;
     --foreground: 0 0% 98%;
@@ -86,7 +63,57 @@ html, body {
   * {
     @apply border-border;
   }
+
   body {
     @apply bg-background text-foreground;
+  }
+
+  body[style*="overflow: hidden"] {
+    padding-right: 0 !important;
+  }
+
+  html {
+    scrollbar-gutter: stable;
+  }
+
+  ::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: #cccccc;
+    border-radius: 4px;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background: #cccccc;
+  }
+
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+
+  html .with-scroll-bars-hidden {
+    overflow: auto !important;
+    padding-right: 0 !important;
+  }
+
+  html body[data-scroll-locked],
+  html body.with-scroll-bars-hidden,
+  html body[style*="overflow: hidden"] {
+    overflow: auto !important;
+    padding-right: 0 !important;
+    margin-right: 0 !important;
+    position: static !important;
   }
 }

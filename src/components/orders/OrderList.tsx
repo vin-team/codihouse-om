@@ -1,26 +1,13 @@
 'use client';
 
-import Layout from '@/components/dashboard/Layout';
-import DashboardHeader from '@/components/dashboard/DashboardHeader';
-import SummaryCards from '@/components/dashboard/SummaryCards';
-import SearchBar from '@/components/dashboard/SearchBar';
-import RecentOrders from '@/components/dashboard/RecentOrders';
 import React from 'react';
-import { useDispatch } from 'react-redux';
-import { useKeyboardShortcut } from '@/hooks/useKeyboardShortcut';
-import { setIsOpenSearchDialog } from '@/slices/app';
+import OrderItem from './OrderItem';
+import Pagination from './Pagination';
 
-const dashboard: React.FC = () => {
-  const dispatch = useDispatch();
+interface OrderListProps { }
 
-  useKeyboardShortcut({
-    key: 'k',
-    callback: () => dispatch(setIsOpenSearchDialog(true)),
-    modifier: 'cmd'
-  });
-
-  // Mock data for recent orders
-  const recentOrders = [
+const OrderList: React.FC<OrderListProps> = ({ }) => {
+  const orders = [
     {
       orderId: "#ORD-001",
       source: "SHOPIFY" as const,
@@ -81,20 +68,34 @@ const dashboard: React.FC = () => {
     }
   ];
 
-  const handleViewAll = () => {
-    console.log('View all orders clicked');
-  };
-
   return (
-    <Layout>
-      <div className="p-8 flex flex-col gap-6">
-        <DashboardHeader />
-        <SummaryCards />
-        <SearchBar />
-        <RecentOrders orders={recentOrders} onViewAll={handleViewAll} />
+    <div className="bg-white rounded-lg border border-gray-200">
+      <div className="p-6 pb-0">
+        <h2 className="text-xl font-bold text-gray-900">1356 đơn hàng</h2>
       </div>
-    </Layout>
+
+      <div className="p-6 space-y-4">
+        {orders.map((order, index) => (
+          <OrderItem
+            key={index}
+            orderId={order.orderId}
+            source={order.source}
+            customerName={order.customerName}
+            products={order.products}
+            phone={order.phone}
+            orderDate={order.orderDate}
+            totalAmount={order.totalAmount}
+            status={order.status}
+            statusDate={order.statusDate}
+          />
+        ))}
+      </div>
+
+      <div className="pb-6 flex justify-center">
+        <Pagination />
+      </div>
+    </div>
   );
 };
 
-export default dashboard;
+export default OrderList;

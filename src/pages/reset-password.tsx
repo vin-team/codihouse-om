@@ -39,27 +39,23 @@ const ResetPassword: React.FC<ResetPasswordProps> = ({ }) => {
   const router = useRouter();
   const dispatch = useAppDispatch();
   
-  // Redux state
   const isLoading = useAppSelector(selectIsLoading);
   const error = useAppSelector(selectError);
   const currentStep = useAppSelector(selectResetPasswordStep);
   const email = useAppSelector(selectResetPasswordEmail);
   const otp = useAppSelector(selectResetPasswordOTP);
 
-  // Clear error when component mounts
   useEffect(() => {
     dispatch(clearError());
     dispatch(resetResetPassword());
   }, [dispatch]);
 
-  // Step 1: Email validation
   const emailValidationSchema = Yup.object({
     email: Yup.string()
       .email('Email không hợp lệ, vui lòng nhập địa chỉ email chính xác.')
       .required('Email không được để trống'),
   });
 
-  // Step 2: OTP validation
   const otpValidationSchema = Yup.object({
     otp: Yup.array().of(
       Yup.string()
@@ -68,7 +64,6 @@ const ResetPassword: React.FC<ResetPasswordProps> = ({ }) => {
     }),
   });
 
-  // Step 3: Password validation
   const passwordValidationSchema = Yup.object({
     password: Yup.string()
       .min(6, 'Mật khẩu phải có ít nhất 6 ký tự')

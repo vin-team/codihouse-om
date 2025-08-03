@@ -9,18 +9,15 @@ const Layout: React.FC<LayoutProps> = (props) => {
   const router = useRouter();
 
   const isActive = (path: string) => {
-    return router.pathname === path;
+    return router.pathname.startsWith(path);
   };
 
   return (
     <div className="min-h-screen bg-gray-50 overflow-x-hidden">
-      {/* Header - Fixed at top */}
       <header className="fixed top-0 left-0 right-0 z-50 bg-white border-b border-gray-200 shadow-sm">
         <div className="max-w-screen px-10">
           <div className="flex justify-between items-center h-16">
-            {/* Left side - Brand and Navigation */}
             <div className="flex items-center space-x-8">
-              {/* Brand/Logo */}
               <div className="flex items-center space-x-3">
                 <div className="w-8 h-8 bg-primary-600 rounded-lg flex items-center justify-center">
                   <span className="text-white font-bold text-sm">OM</span>
@@ -28,9 +25,7 @@ const Layout: React.FC<LayoutProps> = (props) => {
                 <span className="text-xl font-bold text-gray-900">OrderManager</span>
               </div>
 
-              {/* Navigation Links */}
               <nav className="flex items-center space-x-6">
-                {/* Dashboard */}
                 <button
                   onClick={() => router.push('/dashboard')}
                   className={`flex items-center space-x-2 px-3 py-2 rounded-lg text-sm font-medium transition-colors ${isActive('/dashboard')
@@ -45,7 +40,6 @@ const Layout: React.FC<LayoutProps> = (props) => {
                   <span className={`text-sm ${isActive('/dashboard') ? 'text-primary-600' : 'text-gray-600'}`}>Dashboard</span>
                 </button>
 
-                {/* Orders */}
                 <button
                   onClick={() => router.push('/orders')}
                   className={`flex items-center space-x-2 px-3 py-2 rounded-lg text-sm font-medium transition-colors ${isActive('/orders')
@@ -62,7 +56,6 @@ const Layout: React.FC<LayoutProps> = (props) => {
                   <span className={`text-sm ${isActive('/orders') ? 'text-primary-600' : 'text-gray-600'}`}>Đơn hàng</span>
                 </button>
 
-                {/* Customers */}
                 <button
                   onClick={() => router.push('/customers')}
                   className={`flex items-center space-x-2 px-3 py-2 rounded-lg text-sm font-medium transition-colors ${isActive('/customers')
@@ -80,9 +73,7 @@ const Layout: React.FC<LayoutProps> = (props) => {
               </nav>
             </div>
 
-            {/* Right side - Search and User */}
             <div className="flex items-center space-x-4">
-              {/* Search Bar */}
               <div className="relative">
                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                   <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -102,7 +93,6 @@ const Layout: React.FC<LayoutProps> = (props) => {
                 </div>
               </div>
 
-              {/* User/Admin Section */}
               <div className="flex items-center space-x-3">
                 <div className="w-8 h-8 bg-primary-100 rounded-full flex items-center justify-center">
                   <svg width="17" height="16" viewBox="0 0 17 16" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -119,7 +109,6 @@ const Layout: React.FC<LayoutProps> = (props) => {
         </div>
       </header>
 
-      {/* Main Content - with top padding to account for fixed header */}
       <main className="pt-16 min-h-screen overflow-y-auto">
         {props.children}
       </main>

@@ -1,6 +1,7 @@
 'use client';
 
 import React from 'react';
+import { useRouter } from 'next/router';
 
 interface OrderItemProps {
   orderId: string;
@@ -25,6 +26,13 @@ const OrderItem: React.FC<OrderItemProps> = ({
   status,
   statusDate
 }) => {
+  const router = useRouter();
+
+  const handleClick = () => {
+    const cleanOrderId = orderId.replace('#', '');
+    router.push(`/orders/${cleanOrderId}`);
+  };
+
   const getStatusColor = () => {
     return status === 'completed' ? 'bg-green-500' : 'bg-blue-500';
   };
@@ -46,7 +54,10 @@ const OrderItem: React.FC<OrderItemProps> = ({
   };
 
   return (
-    <div className="flex items-center justify-between p-4 border border-gray-200 rounded-lg">
+    <div
+      className="flex items-center justify-between p-4 border border-gray-200 rounded-lg cursor-pointer hover:bg-gray-50 transition-colors"
+      onClick={handleClick}
+    >
       <div className='flex flex-row items-center gap-4 flex-1'>
         <div className={`w-3 h-3 ${getStatusColor()} rounded-full`}></div>
         <div className='flex-1 flex flex-col gap-1'>
