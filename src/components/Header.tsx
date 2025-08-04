@@ -1,18 +1,14 @@
 import { useAppSelector } from '@/hooks/redux';
-import { setRole } from '@/slices/app';
 import { useRouter } from 'next/router';
 import React from 'react';
-import { useDispatch } from 'react-redux';
 import ClientOnly from './ClientOnly';
-import { selectIsAuthenticated } from '@/slices/authSlice';
+import { roleService } from '@/services/role.service';
+import { MenuUser } from './ui/menu_user';
 
 const Header: React.FC = () => {
   const router = useRouter();
-
-  const dispatch = useDispatch();
-  const role = useAppSelector(state => state.app.role);
-  const isAdmin = role === 'admin';
-  const isAuthenticated = useAppSelector(selectIsAuthenticated);
+  const isAdmin = roleService.isAdmin();
+  const isLogined = useAppSelector(state => state.app.isLogined);
 
   const isActive = (path: string) => {
     return router.pathname.startsWith(path);
@@ -66,7 +62,7 @@ const Header: React.FC = () => {
     </nav>
   );
 
-  if (!isAuthenticated) {
+  if (!isLogined) {
     return (
       <header className="fixed top-0 left-0 right-0 z-50">
         <div className="flex items-center h-16 justify-center">
@@ -87,7 +83,7 @@ const Header: React.FC = () => {
         <div className="flex justify-between items-center h-16">
           <div className="flex items-center space-x-8">
             <button
-              onClick={() => { dispatch(setRole(isAdmin ? 'user' : 'admin')) }}
+              onClick={() => { router.push('/dashboard') }}
               className="flex items-center space-x-3">
               <div className="w-8 h-8 bg-primary-600 rounded-lg flex items-center justify-center">
                 <span className="text-white font-bold text-sm">OM</span>
@@ -120,17 +116,7 @@ const Header: React.FC = () => {
               </div>
             </div>
 
-            <div className="flex items-center space-x-3">
-              <div className="w-8 h-8 bg-primary-100 rounded-full flex items-center justify-center">
-                <svg width="17" height="16" viewBox="0 0 17 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <path d="M11.1066 14V12.6667C11.1066 11.9594 10.8257 11.2811 10.3256 10.781C9.8255 10.281 9.14723 10 8.43998 10H4.43998C3.73274 10 3.05446 10.281 2.55436 10.781C2.05427 11.2811 1.77332 11.9594 1.77332 12.6667V14" stroke="black" strokeWidth="1.33333" strokeLinecap="round" strokeLinejoin="round" />
-                  <path d="M6.43998 7.33333C7.91274 7.33333 9.10665 6.13943 9.10665 4.66667C9.10665 3.19391 7.91274 2 6.43998 2C4.96722 2 3.77332 3.19391 3.77332 4.66667C3.77332 6.13943 4.96722 7.33333 6.43998 7.33333Z" stroke="black" strokeWidth="1.33333" strokeLinecap="round" strokeLinejoin="round" />
-                  <path d="M15.1066 13.9998V12.6664C15.1061 12.0756 14.9095 11.5016 14.5475 11.0346C14.1855 10.5677 13.6787 10.2341 13.1066 10.0864" stroke="black" strokeWidth="1.33333" strokeLinecap="round" strokeLinejoin="round" />
-                  <path d="M11.1066 2.08643C11.6802 2.23329 12.1886 2.56689 12.5517 3.03463C12.9147 3.50237 13.1118 4.07765 13.1118 4.66976C13.1118 5.26187 12.9147 5.83715 12.5517 6.30489C12.1886 6.77262 11.6802 7.10623 11.1066 7.25309" stroke="black" strokeWidth="1.33333" strokeLinecap="round" strokeLinejoin="round" />
-                </svg>
-              </div>
-              <span className="text-sm font-medium text-black">{isAdmin ? 'Quản trị viên' : 'Nhân viên'}</span>
-            </div>
+            <MenuUser />
           </div>
         </div>
       </div>

@@ -8,14 +8,13 @@ import React from 'react';
 import { useDispatch } from 'react-redux';
 import { useKeyboardShortcut } from '@/hooks/useKeyboardShortcut';
 import { setIsOpenSearchDialog } from '@/slices/app';
-import { useAppSelector } from '@/hooks/redux';
 import ExampleItem from '@/components/dashboard/ExampleItem';
 import Layout from '@/components/Layout';
+import { roleService } from '@/services/role.service';
 
 const dashboard: React.FC = () => {
   const dispatch = useDispatch();
-  const role = useAppSelector(state => state.app.role);
-  const isAdmin = role === 'admin';
+  const isAdmin = roleService.getRoleLocal().name === 'Admin App';
 
   useKeyboardShortcut({
     key: 'k',
@@ -154,8 +153,7 @@ const dashboard: React.FC = () => {
                 content={item.content} />
             ))}
           </div>
-        </div>
-        }
+        </div>}
       </div>
     </Layout>
   );

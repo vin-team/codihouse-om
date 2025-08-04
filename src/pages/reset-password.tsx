@@ -3,29 +3,21 @@ import { useRouter } from 'next/router';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
 import { useAppDispatch, useAppSelector } from '@/hooks/redux';
-import { 
-  requestResetPasswordAsync, 
-  verifyOTPAsync, 
-  changePasswordAsync,
-  clearError,
-  selectIsLoading,
-  selectError,
-  selectResetPasswordStep,
-  selectResetPasswordEmail,
-  selectResetPasswordOTP,
+import {
   setResetPasswordEmail,
-  setResetPasswordOTP,
-  resetResetPassword
+  setResetPasswordToken,
+  setResetPasswordStep,
+  setResetPasswordError,
+  resetResetPassword,
+  resetPassword,
+  requestResetPassword
 } from '@/slices/authSlice';
+import { useToastContext } from '@/contexts/ToastContext';
 
 interface ResetPasswordProps { }
 
 interface EmailFormValues {
   email: string;
-}
-
-interface OTPFormValues {
-  otp: string[];
 }
 
 interface PasswordFormValues {
@@ -38,30 +30,32 @@ const ResetPassword: React.FC<ResetPasswordProps> = ({ }) => {
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const router = useRouter();
   const dispatch = useAppDispatch();
-  
-  const isLoading = useAppSelector(selectIsLoading);
-  const error = useAppSelector(selectError);
-  const currentStep = useAppSelector(selectResetPasswordStep);
-  const email = useAppSelector(selectResetPasswordEmail);
-  const otp = useAppSelector(selectResetPasswordOTP);
+  const { success, error: showError } = useToastContext();
+
+  const resetPasswordState = useAppSelector(state => state.auth.resetPassword);
+  const { step, email, token, isLoading, error } = resetPasswordState;
 
   useEffect(() => {
-    dispatch(clearError());
-    dispatch(resetResetPassword());
-  }, [dispatch]);
+    const { token: urlToken } = router.query;
+    if (urlToken && typeof urlToken === 'string') {
+      dispatch(setResetPasswordToken(urlToken));
+      dispatch(setResetPasswordStep(3));
+    } else {
+      dispatch(resetResetPassword());
+    }
+  }, [router.query, dispatch]);
+
+  useEffect(() => {
+    if (error) {
+      showError('Lỗi', error);
+      dispatch(setResetPasswordError(''));
+    }
+  }, [error, showError, dispatch]);
 
   const emailValidationSchema = Yup.object({
     email: Yup.string()
       .email('Email không hợp lệ, vui lòng nhập địa chỉ email chính xác.')
       .required('Email không được để trống'),
-  });
-
-  const otpValidationSchema = Yup.object({
-    otp: Yup.array().of(
-      Yup.string()
-    ).test('otp-complete', 'Vui lòng nhập đủ 6 ký tự OTP', function (value) {
-      return value && value.length === 6 && value.every(digit => digit && digit.length > 0);
-    }),
   });
 
   const passwordValidationSchema = Yup.object({
@@ -75,26 +69,12 @@ const ResetPassword: React.FC<ResetPasswordProps> = ({ }) => {
 
   const handleEmailSubmit = async (values: EmailFormValues, { setSubmitting }: any) => {
     try {
-      await dispatch(requestResetPasswordAsync({ email: values.email })).unwrap();
+      await dispatch(requestResetPassword({ email: values.email })).unwrap();
       dispatch(setResetPasswordEmail(values.email));
+      success('Thành công!', 'Email đặt lại mật khẩu đã được gửi. Vui lòng kiểm tra hộp thư của bạn.');
     } catch (error: any) {
       console.log('Request reset password failed:', error);
-    } finally {
-      setSubmitting(false);
-    }
-  };
-
-  const handleOTPSubmit = async (values: OTPFormValues, { setSubmitting, setFieldError }: any) => {
-    try {
-      const otpString = values.otp.join('');
-      dispatch(setResetPasswordOTP(otpString));
-      await dispatch(verifyOTPAsync({ 
-        email: email, 
-        otp: otpString 
-      })).unwrap();
-    } catch (error: any) {
-      console.log('OTP verification failed:', error);
-      setFieldError('otp', 'Mã OTP sai, vui lòng thử lại!');
+      showError('Lỗi', 'Không thể gửi email đặt lại mật khẩu. Vui lòng thử lại.');
     } finally {
       setSubmitting(false);
     }
@@ -102,13 +82,16 @@ const ResetPassword: React.FC<ResetPasswordProps> = ({ }) => {
 
   const handlePasswordSubmit = async (values: PasswordFormValues, { setSubmitting }: any) => {
     try {
-      await dispatch(changePasswordAsync({
-        email: email,
-        otp: otp,
-        newPassword: values.password
+      await dispatch(resetPassword({
+        token: token,
+        password: values.password
       })).unwrap();
+
+      success('Thành công!', 'Mật khẩu đã được đặt lại thành công.');
+      dispatch(setResetPasswordStep(4));
     } catch (error: any) {
       console.log('Change password failed:', error);
+      showError('Lỗi', 'Không thể đặt lại mật khẩu. Vui lòng thử lại.');
     } finally {
       setSubmitting(false);
     }
@@ -161,99 +144,7 @@ const ResetPassword: React.FC<ResetPasswordProps> = ({ }) => {
             disabled={isSubmitting}
             className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-primary-600 hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            {isSubmitting ? 'Đang xử lý...' : 'Tiếp theo'}
-          </button>
-        </Form>
-      )}
-    </Formik>
-  );
-
-  const renderStep2 = () => (
-    <Formik
-      initialValues={{ otp: ['', '', '', '', '', ''] }}
-      validationSchema={otpValidationSchema}
-      onSubmit={handleOTPSubmit}
-    >
-      {({ values, errors, touched, isSubmitting, setFieldValue }) => (
-        <Form className="space-y-6">
-          <div className="text-center mb-6">
-            <h2 className="text-2xl font-semibold text-gray-900 mb-2">
-              Đặt lại mật khẩu
-            </h2>
-            <p className="text-gray-600 text-sm">
-              Vui lòng nhập mã xác minh mà chúng tôi vừa gửi đến {email}
-            </p>
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              Nhập OTP
-            </label>
-            <div className="flex justify-between">
-              {values.otp.map((digit, index) => (
-                <input
-                  key={index}
-                  type="text"
-                  maxLength={1}
-                  value={digit}
-                  onChange={(e) => {
-                    const newOtp = [...values.otp];
-                    newOtp[index] = e.target.value;
-                    setFieldValue('otp', newOtp);
-
-                    // Auto focus next input
-                    if (e.target.value && index < 5) {
-                      setTimeout(() => {
-                        const inputs = document.querySelectorAll('input[type="text"]');
-                        if (inputs[index + 1]) {
-                          (inputs[index + 1] as HTMLInputElement).focus();
-                        }
-                      }, 0);
-                    }
-                  }}
-                  onKeyDown={(e) => {
-                    // Handle backspace
-                    if (e.key === 'Backspace' && !digit && index > 0) {
-                      setTimeout(() => {
-                        const inputs = document.querySelectorAll('input[type="text"]');
-                        if (inputs[index - 1]) {
-                          (inputs[index - 1] as HTMLInputElement).focus();
-                        }
-                      }, 0);
-                    }
-                  }}
-                  onPaste={(e) => {
-                    e.preventDefault();
-                    const pastedData = e.clipboardData.getData('text');
-                    const numbers = pastedData.replace(/\D/g, '').slice(0, 6);
-
-                    if (numbers.length === 6) {
-                      const newOtp = numbers.split('');
-                      setFieldValue('otp', newOtp);
-                      // Focus last input
-                      const target = e.target as HTMLInputElement;
-                      const lastInput = target.parentElement?.lastElementChild?.querySelector('input') as HTMLInputElement;
-                      if (lastInput) lastInput.focus();
-                    }
-                  }}
-                  className={`w-12 h-12 text-center text-lg font-semibold border rounded-md focus:outline-none focus:ring-2 focus:ring-white focus:border-primary-300 ${errors.otp && touched.otp ? 'border-red-500' : 'border-gray-300'
-                    }`}
-                />
-              ))}
-            </div>
-            <ErrorMessage
-              name="otp"
-              component="p"
-              className="mt-2 text-sm text-red-500"
-            />
-          </div>
-
-          <button
-            type="submit"
-            disabled={isSubmitting}
-            className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-primary-600 hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 disabled:opacity-50 disabled:cursor-not-allowed"
-          >
-            {isSubmitting ? 'Đang xác minh...' : 'Tiếp theo'}
+            {isSubmitting ? 'Đang xử lý...' : 'Gửi email đặt lại mật khẩu'}
           </button>
         </Form>
       )}
@@ -279,7 +170,7 @@ const ResetPassword: React.FC<ResetPasswordProps> = ({ }) => {
 
           <div>
             <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-2">
-              Mật khẩu
+              Mật khẩu mới
             </label>
             <div className="relative">
               <Field
@@ -335,7 +226,7 @@ const ResetPassword: React.FC<ResetPasswordProps> = ({ }) => {
                 className="absolute inset-y-0 right-0 pr-3 flex items-center"
                 onClick={() => setShowConfirmPassword(!showConfirmPassword)}
               >
-                {showPassword ? (
+                {showConfirmPassword ? (
                   <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <path d="M10.7329 5.07599C13.0623 4.7984 15.4185 5.29081 17.4418 6.47804C19.465 7.66527 21.0441 9.48207 21.9379 11.651C22.0213 11.8755 22.0213 12.1225 21.9379 12.347C21.5704 13.238 21.0847 14.0755 20.4939 14.837M14.0839 14.158C13.5181 14.7045 12.7603 15.0069 11.9737 15C11.1871 14.9932 10.4347 14.6777 9.87844 14.1215C9.32221 13.5652 9.0067 12.8128 8.99987 12.0262C8.99303 11.2396 9.29542 10.4818 9.84189 9.91602M17.479 17.499C16.1525 18.2848 14.6725 18.776 13.1394 18.9394C11.6063 19.1028 10.056 18.9345 8.59365 18.4459C7.13133 17.9573 5.79121 17.1599 4.66423 16.1078C3.53725 15.0556 2.64977 13.7734 2.06202 12.348C1.97868 12.1235 1.97868 11.8765 2.06202 11.652C2.94865 9.50189 4.50869 7.69728 6.50802 6.50903M2 2L22 22" stroke="#0F172B" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
                   </svg>
@@ -359,7 +250,7 @@ const ResetPassword: React.FC<ResetPasswordProps> = ({ }) => {
             disabled={isSubmitting}
             className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-primary-600 hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            {isSubmitting ? 'Đang cập nhật...' : 'Cập nhật'}
+            {isSubmitting ? 'Đang cập nhật...' : 'Cập nhật mật khẩu'}
           </button>
         </Form>
       )}
@@ -405,28 +296,12 @@ const ResetPassword: React.FC<ResetPasswordProps> = ({ }) => {
   );
 
   return (
-    <div className="min-h-screen">
-      {/* Header */}
-      <div className="flex flex-row justify-center items-center">
-        <div className="flex items-center h-16">
-          <div className="flex items-center space-x-2">
-            <div className="w-8 h-8 bg-primary-600 rounded-lg flex items-center justify-center">
-              <span className="text-white font-bold text-sm">OM</span>
-            </div>
-            <span className="text-xl font-bold">OrderManager</span>
-          </div>
-        </div>
-      </div>
-
-      {/* Reset Password Form */}
-      <div className="flex items-center justify-center py-12 px-6">
-        <div className="max-w-md w-full">
-          <div className="bg-white rounded-lg border border-gray-200 p-8">
-            {currentStep === 1 && renderStep1()}
-            {currentStep === 2 && renderStep2()}
-            {currentStep === 3 && renderStep3()}
-            {currentStep === 4 && renderStep4()}
-          </div>
+    <div className='min-h-[calc(100vh-32px)] flex flex-col justify-center items-center'>
+      <div className="max-w-md w-full">
+        <div className="bg-white rounded-lg border border-gray-200 p-8">
+          {step === 1 && renderStep1()}
+          {step === 3 && renderStep3()}
+          {step === 4 && renderStep4()}
         </div>
       </div>
     </div>

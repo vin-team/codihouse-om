@@ -1,4 +1,3 @@
-// Utility để xử lý localStorage an toàn trong Next.js
 export const storage = {
   getItem: (key: string): string | null => {
     if (typeof window !== 'undefined') {

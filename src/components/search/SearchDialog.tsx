@@ -13,6 +13,7 @@ import { Badge } from "@/components/ui/badge";
 import { useRouter } from "next/router";
 import { useAppSelector } from "@/hooks/redux";
 import { formatCurrency } from "@/utils/data.util";
+import { roleService } from "@/services/role.service";
 
 interface SearchDialogProps {
   isOpen: boolean;
@@ -22,8 +23,7 @@ interface SearchDialogProps {
 export function SearchDialog({ isOpen, onClose }: SearchDialogProps) {
   const router = useRouter();
   const [search, setSearch] = useState("");
-  const role = useAppSelector(state => state.app.role);
-  const isAdmin = role === 'admin';
+  const isAdmin = roleService.isAdmin();
 
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearch(e.target.value);

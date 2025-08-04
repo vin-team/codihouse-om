@@ -4,14 +4,13 @@ import { RequestState } from '../app/state';
 const initialState: AppState = {
 	isRouteChanging: false,
 	description: "Description",
-	title: "Page Title",
+	title: "Order Managemer",
 	seoImageLink: "https://example.com/image.png",
 	firebaseApp: null,
 	webData: false,
 	fetchState: { status: "idle" },
 	isLogined: false,
 	isOpenSearchDialog: false,
-	role: 'user'
 }
 const appSlice = createSlice({
 	name: 'app',
@@ -41,9 +40,6 @@ const appSlice = createSlice({
 		setIsOpenSearchDialog(state, action: PayloadAction<boolean>) {
 			state.isOpenSearchDialog = action.payload
 		},
-		setRole(state, action: PayloadAction<'admin' | 'user'>) {
-			state.role = action.payload
-		},
 	}
 });
 
@@ -55,7 +51,6 @@ export const {
 	setTitle, initFirebase,
 	setLogined,
 	setIsOpenSearchDialog,
-	setRole
 } = appSlice.actions;
 
 export default appSlice.reducer;
@@ -69,5 +64,4 @@ export interface AppState {
 	fetchState: RequestState,
 	isLogined: boolean,
 	isOpenSearchDialog: boolean,
-	role: 'admin' | 'user'
 }

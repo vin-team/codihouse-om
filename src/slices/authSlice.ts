@@ -1,55 +1,55 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { authService } from '../services/auth.service';
-import type { LoginRequest, ResetPasswordRequest, VerifyOTPRequest, ChangePasswordRequest } from '../services/auth.service';
+import type { LoginRequest, ResetPasswordRequest, ChangePasswordRequest } from '../services/auth.service';
 import { commonCreateAsyncThunk } from '../app/thunk';
-import { setLogined } from './app';
+import { RequestState } from '@/app/state';
+
+// Reset password state
+export interface ResetPasswordState {
+  step: number;
+  email: string;
+  token: string;
+  isLoading: boolean;
+  error: string;
+}
 
 // Async thunks
-export const loginAsync = commonCreateAsyncThunk<LoginRequest>({
+export const login = commonCreateAsyncThunk<LoginRequest>({
   type: 'auth/login',
   action: authService.login
 });
 
-export const logoutAsync = commonCreateAsyncThunk<void>({
+export const logout = commonCreateAsyncThunk<void>({
   type: 'auth/logout',
   action: authService.logout
 });
 
-export const requestResetPasswordAsync = commonCreateAsyncThunk<ResetPasswordRequest>({
+export const requestResetPassword = commonCreateAsyncThunk<ResetPasswordRequest>({
   type: 'auth/requestResetPassword',
   action: authService.requestResetPassword
 });
 
-export const verifyOTPAsync = commonCreateAsyncThunk<VerifyOTPRequest>({
-  type: 'auth/verifyOTP',
-  action: authService.verifyOTP
+export const resetPassword = commonCreateAsyncThunk<ChangePasswordRequest>({
+  type: 'auth/resetPassword',
+  action: authService.resetPassword
 });
 
-export const changePasswordAsync = commonCreateAsyncThunk<ChangePasswordRequest>({
-  type: 'auth/changePassword',
-  action: authService.changePassword
-});
-
-// State interface
 interface AuthState {
-  user: any | null;
-  isAuthenticated: boolean;
-  isLoading: boolean;
-  error: string | null;
-  resetPasswordStep: number; // 1: email, 2: OTP, 3: new password, 4: success
-  resetPasswordEmail: string;
-  resetPasswordOTP: string;
+  actionState: RequestState;
+  error: string | "";
+  resetPassword: ResetPasswordState;
 }
 
-// Initial state
 const initialState: AuthState = {
-  user: null,
-  isAuthenticated: false, // Always start as false to avoid hydration mismatch
-  isLoading: false,
-  error: null,
-  resetPasswordStep: 1,
-  resetPasswordEmail: '',
-  resetPasswordOTP: '',
+  actionState: { status: 'idle', type: '' },
+  error: "",
+  resetPassword: {
+    step: 1,
+    email: '',
+    token: '',
+    isLoading: false,
+    error: '',
+  },
 };
 
 // Auth slice
@@ -57,142 +57,96 @@ const authSlice = createSlice({
   name: 'auth',
   initialState,
   reducers: {
-    clearError: (state) => {
-      state.error = null;
+    clearActionState: (state) => {
+      state.actionState = { status: 'idle', type: '' }
     },
-    initializeAuth: (state) => {
-      // Only check authentication on client side
-      if (typeof window !== 'undefined') {
-        state.isAuthenticated = authService.isAuthenticated();
-      }
+    changeError: (state, action: PayloadAction<string>) => {
+      state.error = action.payload
     },
     setResetPasswordStep: (state, action: PayloadAction<number>) => {
-      state.resetPasswordStep = action.payload;
+      state.resetPassword.step = action.payload;
     },
     setResetPasswordEmail: (state, action: PayloadAction<string>) => {
-      state.resetPasswordEmail = action.payload;
+      state.resetPassword.email = action.payload;
     },
-    setResetPasswordOTP: (state, action: PayloadAction<string>) => {
-      state.resetPasswordOTP = action.payload;
+    setResetPasswordToken: (state, action: PayloadAction<string>) => {
+      state.resetPassword.token = action.payload;
+    },
+    setResetPasswordLoading: (state, action: PayloadAction<boolean>) => {
+      state.resetPassword.isLoading = action.payload;
+    },
+    setResetPasswordError: (state, action: PayloadAction<string>) => {
+      state.resetPassword.error = action.payload;
     },
     resetResetPassword: (state) => {
-      state.resetPasswordStep = 1;
-      state.resetPasswordEmail = '';
-      state.resetPasswordOTP = '';
-      state.error = null;
+      state.resetPassword = initialState.resetPassword;
     },
   },
   extraReducers: (builder) => {
-    // Login
     builder
-      .addCase(loginAsync.pending, (state) => {
-        state.isLoading = true;
-        state.error = null;
+      .addCase(login.pending, (state) => {
+        state.actionState = { status: 'loading', type: 'login' }
       })
-      .addCase(loginAsync.fulfilled, (state, action) => {
-        state.isLoading = false;
-        if (action.payload.code === 200 && action.payload.data) {
-          state.isAuthenticated = true;
-          state.user = action.payload.data.user;
-          state.error = null;
-        } else {
-          state.error = action.payload.message || 'Đăng nhập thất bại';
+      .addCase(login.fulfilled, (state, action) => {
+        authService.setTokens(action.payload.data.data)
+        state.actionState = { status: 'completed', type: 'login' }
+      })
+      .addCase(login.rejected, (state, action) => {
+        const payload = action.payload as any;
+        let message = ''
+        if (payload.errors.length > 0) {
+          const extensions = payload.errors[0].extensions;
+          if (extensions.code === 'INVALID_CREDENTIALS') {
+            message = 'Email hoặc mật khẩu không chính xác';
+          }
         }
-      })
-      .addCase(loginAsync.rejected, (state, action) => {
-        state.isLoading = false;
-        state.error = action.payload as string;
-      });
 
-    // Logout
-    builder
-      .addCase(logoutAsync.pending, (state) => {
-        state.isLoading = true;
+        state.error = message;
+        state.actionState = { status: 'failed', error: message, type: 'login' }
       })
-      .addCase(logoutAsync.fulfilled, (state) => {
-        state.isLoading = false;
-        state.isAuthenticated = false;
-        state.user = null;
-        state.error = null;
-      })
-      .addCase(logoutAsync.rejected, (state, action) => {
-        state.isLoading = false;
-        state.error = action.payload as string;
-      });
 
-    // Request Reset Password
-    builder
-      .addCase(requestResetPasswordAsync.pending, (state) => {
-        state.isLoading = true;
-        state.error = null;
+      .addCase(logout.pending, (state) => {
+        state.actionState = { status: 'loading', type: 'logout' }
       })
-      .addCase(requestResetPasswordAsync.fulfilled, (state, action) => {
-        state.isLoading = false;
-        state.resetPasswordStep = 2;
-        state.error = null;
+      .addCase(logout.fulfilled, (state) => {
+        authService.clearTokens();
+        state.actionState = { status: 'completed', type: 'logout' }
       })
-      .addCase(requestResetPasswordAsync.rejected, (state, action) => {
-        state.isLoading = false;
-        state.error = action.payload as string;
-      });
+      .addCase(logout.rejected, (state, action) => {
+        state.actionState = { status: 'failed', error: action.payload as string, type: 'logout' }
+      })
 
-    // Verify OTP
-    builder
-      .addCase(verifyOTPAsync.pending, (state) => {
-        state.isLoading = true;
-        state.error = null;
+      .addCase(requestResetPassword.pending, (state) => {
+        state.actionState = { status: 'loading', type: 'requestResetPassword' }
       })
-      .addCase(verifyOTPAsync.fulfilled, (state, action) => {
-        state.isLoading = false;
-        if (action.payload.code === 200 && action.payload.data) {
-          state.resetPasswordStep = 3;
-          state.error = null;
-        } else {
-          state.error = action.payload.message || 'Mã OTP không hợp lệ';
-        }
+      .addCase(requestResetPassword.fulfilled, (state) => {
+        state.actionState = { status: 'completed', type: 'requestResetPassword' }
       })
-      .addCase(verifyOTPAsync.rejected, (state, action) => {
-        state.isLoading = false;
-        state.error = action.payload as string;
-      });
+      .addCase(requestResetPassword.rejected, (state, action) => {
+        state.actionState = { status: 'failed', error: action.payload as string, type: 'requestResetPassword' }
+      })
 
-    // Change Password
-    builder
-      .addCase(changePasswordAsync.pending, (state) => {
-        state.isLoading = true;
-        state.error = null;
+      .addCase(resetPassword.pending, (state) => {
+        state.actionState = { status: 'loading', type: 'resetPassword' }
       })
-      .addCase(changePasswordAsync.fulfilled, (state, action) => {
-        state.isLoading = false;
-        state.resetPasswordStep = 4;
-        state.error = null;
+      .addCase(resetPassword.fulfilled, (state) => {
+        state.actionState = { status: 'completed', type: 'resetPassword' }
       })
-      .addCase(changePasswordAsync.rejected, (state, action) => {
-        state.isLoading = false;
-        state.error = action.payload as string;
-      });
+      .addCase(resetPassword.rejected, (state, action) => {
+        state.actionState = { status: 'failed', error: action.payload as string, type: 'resetPassword' }
+      })
   },
 });
 
-// Export actions
 export const {
-  clearError,
-  initializeAuth,
+  clearActionState,
+  changeError,
   setResetPasswordStep,
   setResetPasswordEmail,
-  setResetPasswordOTP,
-  resetResetPassword
+  setResetPasswordToken,
+  setResetPasswordLoading,
+  setResetPasswordError,
+  resetResetPassword,
 } = authSlice.actions;
 
-// Export selectors
-export const selectAuth = (state: { auth: AuthState }) => state.auth;
-export const selectUser = (state: { auth: AuthState }) => state.auth.user;
-export const selectIsAuthenticated = (state: { auth: AuthState }) => state.auth.isAuthenticated;
-export const selectIsLoading = (state: { auth: AuthState }) => state.auth.isLoading;
-export const selectError = (state: { auth: AuthState }) => state.auth.error;
-export const selectResetPasswordStep = (state: { auth: AuthState }) => state.auth.resetPasswordStep;
-export const selectResetPasswordEmail = (state: { auth: AuthState }) => state.auth.resetPasswordEmail;
-export const selectResetPasswordOTP = (state: { auth: AuthState }) => state.auth.resetPasswordOTP;
-
-// Export reducer
 export default authSlice.reducer; 

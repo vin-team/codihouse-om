@@ -1,4 +1,5 @@
 import { useAppSelector } from '@/hooks/redux';
+import { roleService } from '@/services/role.service';
 import React from 'react';
 
 interface DashboardHeaderProps {
@@ -10,8 +11,7 @@ const DashboardHeader: React.FC<DashboardHeaderProps> = ({
   title = "Dashboard Quản trị",
   subtitle = "Tổng quan đơn hàng từ Shopify và Sapo"
 }) => {
-  const role = useAppSelector(state => state.app.role);
-  const isAdmin = role === 'admin';
+    const isAdmin = roleService.isAdmin();
 
   if (isAdmin) {
     return (

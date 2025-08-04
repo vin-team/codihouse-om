@@ -11,16 +11,7 @@ export interface LoginRequest {
 export interface LoginResponse {
   access_token: string;
   refresh_token: string;
-  user: {
-    id: string;
-    email: string;
-    first_name?: string;
-    last_name?: string;
-    role: {
-      id: string;
-      name: string;
-    };
-  };
+  time_expired: number;
 }
 
 export interface ResetPasswordRequest {
@@ -33,99 +24,35 @@ export interface VerifyOTPRequest {
 }
 
 export interface ChangePasswordRequest {
-  email: string;
-  otp: string;
-  newPassword: string;
+  token: string;
+  password: string;
 }
 
 class AuthService {
   async login(credentials: LoginRequest) {
-    try {
-      const response = await HttpService.doPostRequest(
-        '/auth/login',
-        credentials,
-        false
-      );
-      const result = parseExecuteResult(response);
-      console.log(result);
-      if (result.code === 200 && result.data) {
-        HttpService.setToken(result.data.data.access_token);
-        HttpService.setLocalRefToken(result.data.data.refresh_token);
-      }
+    const response = await HttpService.doPostRequest(
+      '/auth/login',
+      credentials,
+      false
+    );
 
-      return result;
-    } catch (error: any) {
-      return {
-        code: error.response?.status || 500,
-        message: error.response?.data?.message || 'Đăng nhập thất bại'
-      };
-    }
+    return parseExecuteResult(response);
   }
 
   async logout() {
-    try {
-      const response = await HttpService.doPostRequest('/auth/logout', {});
-      const result = parseExecuteResult(response);
-
-      if (result.code === 200) {
-        this.clearTokens();
-      }
-
-      return result;
-    } catch (error: any) {
-      return {
-        code: error.response?.status || 500,
-        message: error.response?.data?.message || 'Đăng xuất thất bại'
-      };
-    }
+    const response = await HttpService.doPostRequest('/auth/logout',
+      { refresh_token: HttpService.getLocalRefreshToken() });
+    return parseExecuteResult(response);
   }
 
   async requestResetPassword(data: ResetPasswordRequest) {
-    try {
-      const response = await HttpService.doPostRequest(
-        '/auth/forgot-password',
-        data,
-        false
-      );
-      return parseExecuteResult(response);
-    } catch (error: any) {
-      return {
-        code: error.response?.status || 500,
-        message: error.response?.data?.message || 'Gửi email đặt lại mật khẩu thất bại'
-      };
-    }
+    const response = await HttpService.doPostRequest('/auth/password/request', data, false);
+    return parseExecuteResult(response);
   }
 
-  async verifyOTP(data: VerifyOTPRequest) {
-    try {
-      const response = await HttpService.doPostRequest(
-        '/auth/verify-otp',
-        data,
-        false
-      );
-      return parseExecuteResult(response);
-    } catch (error: any) {
-      return {
-        code: error.response?.status || 500,
-        message: error.response?.data?.message || 'Mã OTP không hợp lệ'
-      };
-    }
-  }
-
-  async changePassword(data: ChangePasswordRequest) {
-    try {
-      const response = await HttpService.doPostRequest(
-        '/auth/reset-password',
-        data,
-        false
-      );
-      return parseExecuteResult(response);
-    } catch (error: any) {
-      return {
-        code: error.response?.status || 500,
-        message: error.response?.data?.message || 'Đặt lại mật khẩu thất bại'
-      };
-    }
+  async resetPassword(data: ChangePasswordRequest) {
+    const response = await HttpService.doPostRequest('/auth/password/reset', data, false);
+    return parseExecuteResult(response);
   }
 
   async refreshToken() {
@@ -160,13 +87,13 @@ class AuthService {
     }
   }
 
-  // Helper methods
+  setTokens(data: LoginResponse) {
+    HttpService.setToken(data.access_token);
+    HttpService.setLocalRefToken(data.refresh_token);
+  }
+
   clearTokens() {
-    storage.removeItem(process.env.NEXT_PUBLIC_storageAccessTokenKey!);
-    storage.removeItem(process.env.NEXT_PUBLIC_storageRefreshTokenKey!);
-    storage.removeItem(process.env.NEXT_PUBLIC_storageUserIdKey!);
-    storage.removeItem(process.env.NEXT_PUBLIC_storageUsernameKey!);
-    storage.removeItem(process.env.NEXT_PUBLIC_storageDeviceIdKey!);
+    storage.clear();
   }
 
   isAuthenticated(): boolean {
@@ -174,10 +101,10 @@ class AuthService {
   }
 
   getCurrentUser() {
-    const token = HttpService.getLocalToken();
-    if (token) {
+    const user = storage.getItem(process.env.NEXT_PUBLIC_storageUserKey!);
+    if (user) {
       try {
-        const payload = JSON.parse(atob(token.split('.')[1]));
+        const payload = JSON.parse(user);
         return payload;
       } catch (error) {
         return null;

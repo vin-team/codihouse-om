@@ -16,4 +16,5 @@ export interface RequestState {
     error?: string
     code?: string
     data?: any
+    type?: string
 }

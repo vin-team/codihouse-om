@@ -3,8 +3,12 @@ import { useRouter } from 'next/router';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
 import { useAppDispatch, useAppSelector } from '@/hooks/redux';
-import { loginAsync, clearError, selectIsLoading, selectError } from '@/slices/authSlice';
-import { useRedirectAfterLogin } from '@/hooks/useRedirectAfterLogin';
+import { changeError, clearActionState, login } from '@/slices/authSlice';
+import { getUser } from '@/slices/userSlice';
+import { getRole } from '@/slices/roleSlice';
+import { userService } from '@/services/user.service';
+import { setLogined } from '@/slices/app';
+import { useToastContext } from '@/contexts/ToastContext';
 
 interface LoginProps { }
 
@@ -15,11 +19,15 @@ interface LoginFormValues {
 }
 
 const Login: React.FC<LoginProps> = ({ }) => {
-  const [showPassword, setShowPassword] = useState(false);
   const router = useRouter();
+  const [showPassword, setShowPassword] = useState(false);
+  const { success, error } = useToastContext();
+
   const dispatch = useAppDispatch();
-  const isLoading = useAppSelector(selectIsLoading);
-  const error = useAppSelector(selectError);
+  const authError = useAppSelector(state => state.auth.error);
+  const authActionState = useAppSelector(state => state.auth.actionState);
+  const userActionState = useAppSelector(state => state.user.actionState);
+  const roleActionState = useAppSelector(state => state.role.actionState);
 
   const validationSchema = Yup.object({
     email: Yup.string()
@@ -36,24 +44,66 @@ const Login: React.FC<LoginProps> = ({ }) => {
     rememberMe: false,
   };
 
-  // Clear error when component mounts
+  const handleSubmit = async (values: LoginFormValues) => {
+    await dispatch(login(values));
+  };
+
   useEffect(() => {
-    dispatch(clearError());
+    dispatch(clearActionState());
+    dispatch(changeError(""));
   }, [dispatch]);
 
-  // Handle redirect after login
-  useRedirectAfterLogin();
-
-  const handleSubmit = async (values: LoginFormValues, { setSubmitting, setFieldError }: any) => {
-    try {
-      await dispatch(loginAsync(values)).unwrap();
-      // Redirect will be handled by useRedirectAfterLogin hook
-    } catch (error: any) {
-      setFieldError('password', error || 'Tên người dùng hoặc mật khẩu không hợp lệ. Vui lòng thử lại.');
-    } finally {
-      setSubmitting(false);
+  useEffect(() => {
+    if (authActionState.type === 'login') {
+      switch (authActionState.status) {
+        case 'loading':
+          break;
+        case 'completed':
+          success('Đăng nhập thành công!')
+          dispatch(getUser())
+          break;
+        case 'failed':
+          error('Đăng nhập thất bại!', authActionState.error)
+          break;
+      }
     }
-  };
+
+    if (authActionState.type === 'logout') {
+      switch (authActionState.status) {
+        case 'completed':
+          router.push('/login');
+          break;
+      }
+    }
+  }, [authActionState])
+
+  useEffect(() => {
+    switch (userActionState.status) {
+      case 'loading':
+        break;
+      case 'completed':
+        if (userService.getUserLocal().role) {
+          dispatch(getRole(userService.getUserLocal().role));
+        }
+        break;
+    }
+  }, [userActionState])
+
+  useEffect(() => {
+    switch (roleActionState.status) {
+      case 'loading':
+        break;
+      case 'completed':
+        if (authActionState.type === 'login') {
+          dispatch(setLogined(true))
+          router.push('/dashboard');
+        }
+        break;
+      case 'failed':
+        dispatch(changeError(roleActionState.error || ""));
+        break;
+    }
+  }, [roleActionState])
 
   return (
     <div className='min-h-[calc(100vh-32px)] flex flex-col justify-center items-center'>
@@ -165,10 +215,10 @@ const Login: React.FC<LoginProps> = ({ }) => {
                     <div>
                       <button
                         type="submit"
-                        disabled={isLoading}
+                        disabled={authActionState.status === 'loading'}
                         className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-primary-600 hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 disabled:opacity-50 disabled:cursor-not-allowed"
                       >
-                        {isLoading ? 'Đang đăng nhập...' : 'Đăng nhập'}
+                        {authActionState.status === 'loading' ? 'Đang đăng nhập...' : 'Đăng nhập'}
                       </button>
                     </div>
                   </Form>
