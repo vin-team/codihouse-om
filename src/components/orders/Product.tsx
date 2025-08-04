@@ -54,44 +54,6 @@ const Product: React.FC<ProductProps> = ({ orderDetail }) => {
         </div>
       </div>
     </div>
-    // <Card className="lg:col-span-2">
-    //   <CardHeader>
-    //     <CardTitle className="flex items-center gap-2">
-    //       <ShoppingBag className="h-5 w-5" />
-    //       Sản phẩm
-    //     </CardTitle>
-    //   </CardHeader>
-    //   <CardContent>
-    //     <div className="space-y-4">
-    //       {orderDetail.products.map((product, index) => (
-    //         <div key={index} className="flex justify-between items-center py-2 border-b border-gray-100 last:border-b-0">
-    //           <div className="flex-1">
-    //             <div className="font-medium">{product.name}</div>
-    //             <div className="text-sm text-gray-600">
-    //               Số lượng: {product.quantity} x {product.price}
-    //             </div>
-    //           </div>
-    //           <div className="font-medium">{product.total}</div>
-    //         </div>
-    //       ))}
-
-    //       <div className="border-t pt-4 space-y-2">
-    //         <div className="flex justify-between">
-    //           <span>Tạm tính:</span>
-    //           <span>{orderDetail.summary.subtotal}</span>
-    //         </div>
-    //         <div className="flex justify-between">
-    //           <span>Phí vận chuyển:</span>
-    //           <span>{orderDetail.summary.shippingFee}</span>
-    //         </div>
-    //         <div className="flex justify-between font-bold text-lg">
-    //           <span>Tổng cộng:</span>
-    //           <span>{orderDetail.summary.total}</span>
-    //         </div>
-    //       </div>
-    //     </div>
-    //   </CardContent>
-    // </Card>
   );
 };
 

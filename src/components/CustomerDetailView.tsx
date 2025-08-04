@@ -1,8 +1,8 @@
-import { CustomerPersonalInfo } from "./Customers/Details/CustomerPersonalInfo"
-import { CustomerSalesInfo } from "./Customers/Details/CustomerSalesInfo"
-import { CustomerPointsInfo } from "./Customers/Details/CustomerPointInfo"
-import { CustomerOrderHistory } from "./Customers/Details/Customerorderhistory"
-import { CustomerPurchaseInfo } from "./Customers/Details/CustomerPurchaseInfo"
+import { CustomerPersonalInfo } from "./customers/Details/CustomerPersonalInfo"
+import { CustomerSalesInfo } from "./customers/Details/CustomerSalesInfo"
+import { CustomerPointsInfo } from "./customers/Details/CustomerPointInfo"
+import { CustomerOrderHistory } from "./customers/Details/Customerorderhistory"
+import { CustomerPurchaseInfo } from "./customers/Details/CustomerPurchaseInfo"
 import { Button } from "./ui/button"
 
 export function CustomerDetailView() {

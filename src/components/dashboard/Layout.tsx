@@ -13,7 +13,7 @@ const Layout: React.FC<LayoutProps> = (props) => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 overflow-x-hidden">
+    <div className="min-h-screen bg-gray-50">
       <header className="fixed top-0 left-0 right-0 z-50 bg-white border-b border-gray-200 shadow-sm">
         <div className="max-w-screen px-10">
           <div className="flex justify-between items-center h-16">
@@ -109,7 +109,7 @@ const Layout: React.FC<LayoutProps> = (props) => {
         </div>
       </header>
 
-      <main className="pt-16 min-h-screen overflow-y-auto">
+      <main className="pt-16 min-h-screen">
         {props.children}
       </main>
     </div>

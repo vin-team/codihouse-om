@@ -1,88 +1,24 @@
 'use client'
 
 import React from 'react';
-import { Input } from '@/components/ui/input'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Card, CardContent } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Eye } from 'lucide-react'
 import Layout from '@/components/dashboard/Layout'
-
-const customers = [
-  {
-    name: 'Nguyễn Văn Tươi',
-    code: 'CUSN121990',
-    phone: '0904762101',
-    email: 'nguyenvantuoi99@email.com',
-    group: 'Bán sỉ',
-    totalSpend: 979000,
-    orders: 2,
-    points: 97,
-    lastPurchase: '2025-06-15',
-  },
-  {
-    name: 'Nguyễn Thị Lan',
-    code: 'CUSN12186',
-    phone: '0987654321',
-    email: 'nguyenthilian@email.com',
-    group: 'Bán sỉ',
-    totalSpend: 1250000,
-    orders: 5,
-    points: 245,
-    lastPurchase: '2024-01-18',
-  },
-  {
-    name: 'Lê Minh Cường',
-    code: 'CUSN12187',
-    phone: '0912345678',
-    email: 'leminhcuong@email.com',
-    group: 'Bán lẻ',
-    totalSpend: 31310000,
-    orders: 1,
-    points: 156,
-    lastPurchase: '2024-01-14',
-  },
-]
+import CustomersHeader from '@/components/customers/CustomersHeader';
+import FilterCustomers from '@/components/customers/FilterCustomers';
+import CustomerList from '@/components/customers/CustomerList';
 
 export default function CustomerListPage() {
   return (
-    <Layout children={
-      < div className="p-6 space-y-6">
-        <div>
-          <h1 className="text-2xl font-bold">Danh sách khách hàng</h1>
-          <p className="text-sm text-muted-foreground">Quản lý thông tin khách hàng</p>
-        </div>
-
-        {/* Bộ lọc */}
-        <div className="flex flex-col md:flex-row gap-4">
-          <Input placeholder="Tìm theo tên, SDT, mã khách hàng, email..." />
-          <Select>
-            <SelectTrigger className="w-[180px]">
-              <SelectValue placeholder="Tất cả nhóm" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">Tất cả nhóm</SelectItem>
-              <SelectItem value="retail">Bán lẻ</SelectItem>
-              <SelectItem value="wholesale">Bán sỉ</SelectItem>
-            </SelectContent>
-          </Select>
-          <Select>
-            <SelectTrigger className="w-[180px]">
-              <SelectValue placeholder="Tất cả hạng thẻ" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">Tất cả hạng thẻ</SelectItem>
-            </SelectContent>
-          </Select>
-        </div>
-
-        {/* Kết quả */}
-        <div className="text-sm text-muted-foreground">
-          Kết quả ({customers.length} khách hàng)
-        </div>
+    <Layout>
+      <div className="p-8 flex flex-col gap-6">
+        <CustomersHeader />
+        <FilterCustomers />
+        <CustomerList />
 
         {/* Danh sách khách hàng */}
-        <div className="space-y-4">
+        {/* <div className="space-y-4">
           {customers.map((c) => (
             <Card key={c.code} className="p-4">
               <CardContent className="p-0 flex flex-col md:flex-row md:items-center justify-between">
@@ -110,9 +46,8 @@ export default function CustomerListPage() {
               </CardContent>
             </Card>
           ))}
-        </div>
+        </div> */}
       </div>
-    }
-/>
+    </Layout>
   )
 }

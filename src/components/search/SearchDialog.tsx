@@ -198,7 +198,7 @@ export function SearchDialog({ isOpen, onClose }: SearchDialogProps) {
                   placeholder={"Tìm kiếm theo mã đơn hàng, tên khách hàng, số điện thoại..."}
                   onChange={handleSearch}
                   onKeyDown={handleKeyDown}
-                  className="block w-full pl-4 pr-20 h-10 border border-gray-300 rounded-lg text-sm font-medium placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+                  className="block w-full pl-4 pr-20 h-10 border border-gray-300 rounded-lg text-sm font-medium placeholder-gray-400 focus:outline-none focus:ring-1 focus:ring-gray-100 focus:border-gray-100"
                 />
               </div>
               <X className="w-6 h-6 cursor-pointer hover:text-gray-600" />
