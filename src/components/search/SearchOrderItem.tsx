@@ -3,6 +3,7 @@ import { useRouter } from 'next/router';
 import React from 'react';
 import { Button } from '../ui/button';
 import { Eye } from 'lucide-react';
+import { formatCurrency } from '@/utils/data.util';
 
 interface SearchOrderItemProps {
   order: OrderResult
@@ -65,8 +66,8 @@ const SearchOrderItem: React.FC<SearchOrderItemProps> = ({ order }) => {
               <p><strong>Khách hàng: {order.customerName}</strong></p>
             </div>
             <div className='flex flex-row justify-around w-2/3'>
-              <p className="text-sm text-gray-500"><strong>SĐT:</strong>{order.phone}</p>
-              <p className="text-sm text-gray-500"><strong>Ngày:</strong>{order.orderDate}</p>
+              <p className="text-sm text-gray-500"><strong>SĐT: </strong>{order.phone}</p>
+              <p className="text-sm text-gray-500"><strong>Ngày: </strong>{order.orderDate}</p>
             </div>
           </div>
           <div className='flex flex-row'>
@@ -83,8 +84,8 @@ const SearchOrderItem: React.FC<SearchOrderItemProps> = ({ order }) => {
           </div>
         </div>
       </div>
-      <div className="text-right flex flex-col items-end w-24">
-        <p className="text-lg font-semibold">{order.totalAmount}</p>
+      <div className="text-right flex flex-col items-end w-32">
+        <p className="text-lg font-semibold inline-block">{formatCurrency(order.totalAmount)} đ</p>
         <p className="text-xs text-gray-500">{order.productCount} sản phẩm</p>
       </div>
       <Button

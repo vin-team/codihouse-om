@@ -1,5 +1,6 @@
 'use client';
 
+import { formatCurrency } from '@/utils/data.util';
 import React from 'react';
 
 interface OrderItemProps {
@@ -91,7 +92,7 @@ const OrderItem: React.FC<OrderItemProps> = ({
         </div>
       </div>
       <div className="text-right flex flex-col items-end gap-1 w-24">
-        <p className="text-base font-semibold">{amount}</p>
+        <p className="text-base font-semibold">{formatCurrency(amount)} đ</p>
         <span className={`inline-block px-3 py-1 ${getStatusBadgeColor()} text-xs font-semibold rounded-full w-fit`}>
           {getStatusText()}
         </span>

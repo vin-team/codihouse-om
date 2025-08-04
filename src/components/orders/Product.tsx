@@ -1,6 +1,7 @@
 'use client';
 
 import { OrderDetail } from '@/pages/orders/[id]';
+import { formatCurrency } from '@/utils/data.util';
 import React from 'react';
 
 interface ProductProps {
@@ -31,9 +32,9 @@ const Product: React.FC<ProductProps> = ({ orderDetail }) => {
               </div>
             </div>
             <div className='flex flex-col items-end'>
-              <div className="font-medium">{product.total}</div>
+              <div className="font-medium">{formatCurrency(product.total.toString())} đ</div>
               <div className="text-sm text-gray-600">
-                Tổng: {product.total}
+                Tổng: {formatCurrency(product.total.toString())} đ
               </div>
             </div>
           </div>
@@ -42,15 +43,15 @@ const Product: React.FC<ProductProps> = ({ orderDetail }) => {
       <div className="border-t pt-4 space-y-2">
         <div className="flex justify-between">
           <span>Tạm tính:</span>
-          <span>{orderDetail.subtotal}</span>
+          <span>{formatCurrency(orderDetail.subtotal.toString())} đ</span>
         </div>
         <div className="flex justify-between">
           <span>Phí vận chuyển:</span>
-          <span>0</span>
+          <span>{formatCurrency("0")} đ</span>
         </div>
         <div className="flex justify-between font-bold text-lg">
           <span>Tổng cộng:</span>
-          <span>{orderDetail.finalAmount}</span>
+          <span>{formatCurrency(orderDetail.finalAmount.toString())} đ</span>
         </div>
       </div>
     </div>

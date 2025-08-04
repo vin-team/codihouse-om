@@ -12,6 +12,7 @@ import { useState } from "react";
 import { Badge } from "@/components/ui/badge";
 import { useRouter } from "next/router";
 import { useAppSelector } from "@/hooks/redux";
+import { formatCurrency } from "@/utils/data.util";
 
 interface SearchDialogProps {
   isOpen: boolean;
@@ -108,7 +109,7 @@ export function SearchDialog({ isOpen, onClose }: SearchDialogProps) {
                 </div>
               </div>
               <div className="flex flex-col items-end">
-                <span className="font-semibold text-gray-900">{order.totalAmount}</span>
+                <span className="font-semibold text-gray-900">{formatCurrency(order.totalAmount)} đ</span>
                 <span className="text-sm text-gray-500">{order.orderDate}</span>
               </div>
             </div>
