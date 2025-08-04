@@ -1,5 +1,8 @@
 import { ReactNode } from "react";
 import { useRouter } from "next/router";
+import { useAppSelector } from "@/hooks/redux";
+import { useDispatch } from "react-redux";
+import { setRole } from "@/slices/app";
 
 interface LayoutProps {
   children: ReactNode | ReactNode[];
@@ -7,6 +10,9 @@ interface LayoutProps {
 
 const Layout: React.FC<LayoutProps> = (props) => {
   const router = useRouter();
+  const dispatch = useDispatch();
+  const role = useAppSelector(state => state.app.role);
+  const isAdmin = role === 'admin';
 
   const isActive = (path: string) => {
     return router.pathname.startsWith(path);
@@ -18,12 +24,14 @@ const Layout: React.FC<LayoutProps> = (props) => {
         <div className="max-w-screen px-10">
           <div className="flex justify-between items-center h-16">
             <div className="flex items-center space-x-8">
-              <div className="flex items-center space-x-3">
+              <button
+                onClick={() => { dispatch(setRole(isAdmin ? 'user' : 'admin')) }}
+                className="flex items-center space-x-3">
                 <div className="w-8 h-8 bg-primary-600 rounded-lg flex items-center justify-center">
                   <span className="text-white font-bold text-sm">OM</span>
                 </div>
                 <span className="text-xl font-bold text-gray-900">OrderManager</span>
-              </div>
+              </button>
 
               <nav className="flex items-center space-x-6">
                 <button
@@ -40,7 +48,7 @@ const Layout: React.FC<LayoutProps> = (props) => {
                   <span className={`text-sm ${isActive('/dashboard') ? 'text-primary-600' : 'text-gray-600'}`}>Dashboard</span>
                 </button>
 
-                <button
+                {isAdmin && <button
                   onClick={() => router.push('/orders')}
                   className={`flex items-center space-x-2 px-3 py-2 rounded-lg text-sm font-medium transition-colors ${isActive('/orders')
                     ? 'bg-primary-100 text-primary-600'
@@ -52,9 +60,8 @@ const Layout: React.FC<LayoutProps> = (props) => {
                     <path d="M2.58002 4.6665L8.38002 7.99984L14.18 4.6665" stroke={`${isActive('/orders') ? "#2563eb" : "#4B5563"}`} strokeWidth="1.33333" strokeLinecap="round" strokeLinejoin="round" />
                     <path d="M8.38 14.6667V8" stroke={`${isActive('/orders') ? "#2563eb" : "#4B5563"}`} strokeWidth="1.33333" strokeLinecap="round" strokeLinejoin="round" />
                   </svg>
-
                   <span className={`text-sm ${isActive('/orders') ? 'text-primary-600' : 'text-gray-600'}`}>Đơn hàng</span>
-                </button>
+                </button>}
 
                 <button
                   onClick={() => router.push('/customers')}
@@ -102,7 +109,7 @@ const Layout: React.FC<LayoutProps> = (props) => {
                     <path d="M11.1066 2.08643C11.6802 2.23329 12.1886 2.56689 12.5517 3.03463C12.9147 3.50237 13.1118 4.07765 13.1118 4.66976C13.1118 5.26187 12.9147 5.83715 12.5517 6.30489C12.1886 6.77262 11.6802 7.10623 11.1066 7.25309" stroke="black" strokeWidth="1.33333" strokeLinecap="round" strokeLinejoin="round" />
                   </svg>
                 </div>
-                <span className="text-sm font-medium text-black">Quản trị viên</span>
+                <span className="text-sm font-medium text-black">{isAdmin ? 'Quản trị viên' : 'Nhân viên'}</span>
               </div>
             </div>
           </div>

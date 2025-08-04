@@ -11,6 +11,7 @@ import { Search, X, Package, User, Phone, Mail } from "lucide-react";
 import { useState } from "react";
 import { Badge } from "@/components/ui/badge";
 import { useRouter } from "next/router";
+import { useAppSelector } from "@/hooks/redux";
 
 interface SearchDialogProps {
   isOpen: boolean;
@@ -20,6 +21,8 @@ interface SearchDialogProps {
 export function SearchDialog({ isOpen, onClose }: SearchDialogProps) {
   const router = useRouter();
   const [search, setSearch] = useState("");
+  const role = useAppSelector(state => state.app.role);
+  const isAdmin = role === 'admin';
 
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearch(e.target.value);
@@ -124,7 +127,9 @@ export function SearchDialog({ isOpen, onClose }: SearchDialogProps) {
         phone: "0987654321",
         group: "Bán lẻ",
         spending: "979.000₫",
-        lastPurchase: "2025-01-15"
+        lastPurchase: "2025-01-15",
+        points: 97,
+        orders: 2,
       },
       {
         name: "Nguyễn Thị Lan",
@@ -133,7 +138,9 @@ export function SearchDialog({ isOpen, onClose }: SearchDialogProps) {
         phone: "0934567890",
         group: "Bán lẻ",
         spending: "1.250.000₫",
-        lastPurchase: "2024-01-15"
+        lastPurchase: "2024-01-15",
+        points: 245,
+        orders: 5,
       }
     ];
 
@@ -176,7 +183,13 @@ export function SearchDialog({ isOpen, onClose }: SearchDialogProps) {
                   </div>
                 </div>
               </div>
-              <span className="text-sm text-gray-500">Mua cuối: {customer.lastPurchase}</span>
+              {isAdmin ?
+                <span className="text-sm text-gray-500">Mua cuối: {customer.lastPurchase}</span> :
+                <div className='flex flex-col items-end'>
+                  <p className="text-base font-semibold">Điểm: {customer.points}</p>
+                  <p className="text-xs text-gray-500">Tổng chi tiêu: {customer.orders}</p>
+                </div>
+              }
             </div>
           ))}
         </div>

@@ -9,9 +9,13 @@ import React from 'react';
 import { useDispatch } from 'react-redux';
 import { useKeyboardShortcut } from '@/hooks/useKeyboardShortcut';
 import { setIsOpenSearchDialog } from '@/slices/app';
+import { useAppSelector } from '@/hooks/redux';
+import ExampleItem from '@/components/dashboard/ExampleItem';
 
 const dashboard: React.FC = () => {
   const dispatch = useDispatch();
+  const role = useAppSelector(state => state.app.role);
+  const isAdmin = role === 'admin';
 
   useKeyboardShortcut({
     key: 'k',
@@ -81,17 +85,35 @@ const dashboard: React.FC = () => {
     }
   ];
 
+  const example = [
+    { title: "Mã đơn hàng", content: "VD: ORD-001, SP-123" },
+    { title: "Số điện thoại", content: "VD: 0901234567" },
+    { title: "Tên khách hàng", content: "VD: Nguyễn Văn A" },
+    { title: "Tên sản phẩm", content: "VD: iPhone 15" },
+  ]
+
   const handleViewAll = () => {
     console.log('View all orders clicked');
   };
 
   return (
     <Layout>
-      <div className="p-8 flex flex-col gap-6">
+      <div className={`p-8 flex flex-col gap-6`}>
         <DashboardHeader />
-        <SummaryCards />
+        {isAdmin && <SummaryCards />}
         <SearchBar />
-        <RecentOrders orders={recentOrders} onViewAll={handleViewAll} />
+        {isAdmin && <RecentOrders orders={recentOrders} onViewAll={handleViewAll} />}
+        {!isAdmin && example.length > 0 && <div className='flex justify-center'>
+          <div className='w-[75%] grid grid-cols-4 gap-4'>
+            {example.map((item, index) => (
+              <ExampleItem
+                key={index}
+                title={item.title}
+                content={item.content} />
+            ))}
+          </div>
+        </div>
+        }
       </div>
     </Layout>
   );

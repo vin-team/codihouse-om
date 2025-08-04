@@ -10,7 +10,8 @@ const initialState: AppState = {
 	webData: false,
 	fetchState: { status: "idle" },
 	isLogined: false,
-	isOpenSearchDialog: false
+	isOpenSearchDialog: false,
+	role: 'user'
 }
 const appSlice = createSlice({
 	name: 'app',
@@ -39,11 +40,24 @@ const appSlice = createSlice({
 		},
 		setIsOpenSearchDialog(state, action: PayloadAction<boolean>) {
 			state.isOpenSearchDialog = action.payload
-		}
+		},
+		setRole(state, action: PayloadAction<'admin' | 'user'>) {
+			state.role = action.payload
+		},
 	}
 });
 
-export const { startRouting, endRouting, setDescription, setSeoImageLink, setTitle, initFirebase, setLogined, setIsOpenSearchDialog } = appSlice.actions;
+export const {
+	startRouting,
+	endRouting,
+	setDescription,
+	setSeoImageLink,
+	setTitle, initFirebase,
+	setLogined,
+	setIsOpenSearchDialog,
+	setRole
+} = appSlice.actions;
+
 export default appSlice.reducer;
 export interface AppState {
 	isRouteChanging: boolean,
@@ -54,5 +68,6 @@ export interface AppState {
 	webData: any,
 	fetchState: RequestState,
 	isLogined: boolean,
-	isOpenSearchDialog: boolean
+	isOpenSearchDialog: boolean,
+	role: 'admin' | 'user'
 }
