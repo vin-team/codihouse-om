@@ -1,13 +1,10 @@
 'use client'
 
 import React from 'react';
-import { Card, CardContent } from '@/components/ui/card'
-import { Button } from '@/components/ui/button'
-import { Eye } from 'lucide-react'
-import Layout from '@/components/dashboard/Layout'
-import CustomersHeader from '@/components/customers/CustomersHeader';
-import FilterCustomers from '@/components/customers/FilterCustomers';
-import CustomerList from '@/components/customers/CustomerList';
+import Layout from '@/components/Layout'
+import CustomerList from '@/components/Customers/CustomerList';
+import CustomersHeader from '@/components/Customers/CustomersHeader';
+import FilterCustomers from '@/components/Customers/FilterCustomers';
 
 export default function CustomerListPage() {
   return (

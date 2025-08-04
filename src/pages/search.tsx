@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
-import Layout from '@/components/dashboard/Layout';
+import Layout from '@/components/Layout';
 import { Search } from 'lucide-react';
 import SearchHeader from '@/components/search/SearchHeader';
 import SearchOrder from '@/components/search/SearchOrder';

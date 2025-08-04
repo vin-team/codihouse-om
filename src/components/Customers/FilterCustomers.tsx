@@ -19,7 +19,7 @@ const FilterCustomers: React.FC<FilterCustomersProps> = ({
       <div className='flex flex-col space-y-3 w-full'>
         <div className='flex flex-row space-x-2 items-center'>
           <svg width="20" height="21" viewBox="0 0 20 21" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M18.3332 3H1.6665L8.33317 10.8833V16.3333L11.6665 18V10.8833L18.3332 3Z" stroke="#09090B" stroke-width="1.66667" stroke-linecap="round" stroke-linejoin="round" />
+            <path d="M18.3332 3H1.6665L8.33317 10.8833V16.3333L11.6665 18V10.8833L18.3332 3Z" stroke="#09090B" stroke-width="1.66667" strokeLinecap="round" strokeLinejoin="round" />
           </svg>
           <h1 className='text-xl font-bold'>Tìm kiếm và lọc</h1>
         </div>

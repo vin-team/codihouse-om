@@ -2,13 +2,13 @@ import { configureStore, ThunkAction, Action } from '@reduxjs/toolkit';
 import { enableMapSet } from 'immer';
 import { persistStore } from "redux-persist";
 import { persistReducer } from "redux-persist";
-import AsyncStorage from '@react-native-async-storage/async-storage'
+import storage from 'redux-persist/lib/storage';
 import rootReducer from "../slices";
 import { authMiddleware } from "../middleware/authMiddleware";
 
 const persistConfig = {
 	key: "codihouse",
-	storage: AsyncStorage,
+	storage,
 	whitelist: ["app"],
 };
 

@@ -9,6 +9,8 @@ import RouterListener from '@/components/RouterListener';
 import MainLayout from '@/components/Layout';
 import { initializeAuth } from '@/slices/authSlice';
 import { useAppDispatch } from '@/hooks/redux';
+import Loading from '@/components/Loading';
+import ClientOnly from '@/components/ClientOnly';
 
 function AppInitializer({ children }: { children: React.ReactNode }) {
 	const dispatch = useAppDispatch();
@@ -24,14 +26,16 @@ function AppInitializer({ children }: { children: React.ReactNode }) {
 export default function App({ Component, pageProps }: AppProps) {
 	return (
 		<Provider store={store}>
-			<PersistGate loading={null} persistor={persistor}>
+			<PersistGate loading={<Loading />} persistor={persistor}>
 				{() => (
-					<AppInitializer>
-						<RouterListener />
-						<MainLayout>
-							<Component {...pageProps} />
-						</MainLayout>
-					</AppInitializer>
+					<ClientOnly fallback={<Loading />}>
+						<AppInitializer>
+							<RouterListener />
+							<MainLayout>
+								<Component {...pageProps} />
+							</MainLayout>
+						</AppInitializer>
+					</ClientOnly>
 				)}
 			</PersistGate>
 		</Provider>

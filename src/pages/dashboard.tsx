@@ -1,6 +1,5 @@
 'use client';
 
-import Layout from '@/components/dashboard/Layout';
 import DashboardHeader from '@/components/dashboard/DashboardHeader';
 import SummaryCards from '@/components/dashboard/SummaryCards';
 import SearchBar from '@/components/dashboard/SearchBar';
@@ -11,6 +10,7 @@ import { useKeyboardShortcut } from '@/hooks/useKeyboardShortcut';
 import { setIsOpenSearchDialog } from '@/slices/app';
 import { useAppSelector } from '@/hooks/redux';
 import ExampleItem from '@/components/dashboard/ExampleItem';
+import Layout from '@/components/Layout';
 
 const dashboard: React.FC = () => {
   const dispatch = useDispatch();

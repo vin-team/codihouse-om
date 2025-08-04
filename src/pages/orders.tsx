@@ -1,6 +1,6 @@
 'use client';
 
-import Layout from '@/components/dashboard/Layout';
+import Layout from '@/components/Layout';
 import FilterOrders from '@/components/orders/FilterOrders';
 import OrderList from '@/components/orders/OrderList';
 import OrdersHeader from '@/components/orders/OrdersHeader';

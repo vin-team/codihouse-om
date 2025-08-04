@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
-import Layout from '@/components/dashboard/Layout';
+import Layout from '@/components/Layout';
 import { ArrowLeft } from 'lucide-react';
 import OrderHeader from '@/components/orders/OrderHeader';
 import OrderInformation from '@/components/orders/OrderInformation';

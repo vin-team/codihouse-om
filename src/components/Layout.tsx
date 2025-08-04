@@ -31,8 +31,9 @@ export default function MainLayout({ children }: IMainLayoutProps) {
 				<meta name="keywords" content="Codihouse" />
 				<title>Codihouse OM</title>
 			</Head>
-			<div className={'page-layout'}>
-				<main className='page-layout-main'>
+			<div>
+				<Header />
+				<main className="pt-8 min-h-screen">
 					{children}
 				</main>
 			</div>

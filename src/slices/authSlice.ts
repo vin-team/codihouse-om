@@ -44,7 +44,7 @@ interface AuthState {
 // Initial state
 const initialState: AuthState = {
   user: null,
-  isAuthenticated: false, // Will be updated on client-side
+  isAuthenticated: false, // Always start as false to avoid hydration mismatch
   isLoading: false,
   error: null,
   resetPasswordStep: 1,
@@ -61,7 +61,10 @@ const authSlice = createSlice({
       state.error = null;
     },
     initializeAuth: (state) => {
-      state.isAuthenticated = authService.isAuthenticated();
+      // Only check authentication on client side
+      if (typeof window !== 'undefined') {
+        state.isAuthenticated = authService.isAuthenticated();
+      }
     },
     setResetPasswordStep: (state, action: PayloadAction<number>) => {
       state.resetPasswordStep = action.payload;

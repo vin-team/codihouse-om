@@ -1,4 +1,4 @@
-import Layout from "@/components/dashboard/Layout";
+import Layout from "@/components/Layout";
 import { useRouter } from "next/router";
 
 interface CustomerDetailProps { }

@@ -81,9 +81,9 @@ const OrderItem: React.FC<OrderItemProps> = ({
             {products.map((product, index) => (
               <div key={index} className="flex items-center space-x-1">
                 {index === 0 && <svg width="16" height="17" viewBox="0 0 16 17" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <path d="M4 1.8335L2 4.50016V13.8335C2 14.1871 2.14048 14.5263 2.39052 14.7763C2.64057 15.0264 2.97971 15.1668 3.33333 15.1668H12.6667C13.0203 15.1668 13.3594 15.0264 13.6095 14.7763C13.8595 14.5263 14 14.1871 14 13.8335V4.50016L12 1.8335H4Z" stroke="#6B7280" stroke-linecap="round" stroke-linejoin="round" />
-                  <path d="M2 4.5H14" stroke="#6B7280" stroke-linecap="round" stroke-linejoin="round" />
-                  <path d="M10.6666 7.1665C10.6666 7.87375 10.3857 8.55203 9.8856 9.05212C9.3855 9.55222 8.70722 9.83317 7.99998 9.83317C7.29274 9.83317 6.61446 9.55222 6.11436 9.05212C5.61426 8.55203 5.33331 7.87375 5.33331 7.1665" stroke="#6B7280" stroke-linecap="round" stroke-linejoin="round" />
+                  <path d="M4 1.8335L2 4.50016V13.8335C2 14.1871 2.14048 14.5263 2.39052 14.7763C2.64057 15.0264 2.97971 15.1668 3.33333 15.1668H12.6667C13.0203 15.1668 13.3594 15.0264 13.6095 14.7763C13.8595 14.5263 14 14.1871 14 13.8335V4.50016L12 1.8335H4Z" stroke="#6B7280" strokeLinecap="round" strokeLinejoin="round" />
+                  <path d="M2 4.5H14" stroke="#6B7280" strokeLinecap="round" strokeLinejoin="round" />
+                  <path d="M10.6666 7.1665C10.6666 7.87375 10.3857 8.55203 9.8856 9.05212C9.3855 9.55222 8.70722 9.83317 7.99998 9.83317C7.29274 9.83317 6.61446 9.55222 6.11436 9.05212C5.61426 8.55203 5.33331 7.87375 5.33331 7.1665" stroke="#6B7280" strokeLinecap="round" strokeLinejoin="round" />
                 </svg>}
                 <span className='text-xs text-gray-500'>{product} {index == 0 && index < products.length - 1 && ','}</span>
               </div>
