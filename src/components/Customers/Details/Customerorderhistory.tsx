@@ -1,3 +1,5 @@
+'use client'
+
 export function CustomerOrderHistory({ customerId }: { customerId: string }) {
   const orders = [
     {
@@ -9,22 +11,37 @@ export function CustomerOrderHistory({ customerId }: { customerId: string }) {
   ]
 
   return (
-    <div className="bg-white border rounded-lg p-6 space-y-4">
-      <div className="flex items-start justify-between">
-        <div className="text-base font-medium">Lịch sử mua hàng</div>
-        <button className="text-sm text-blue-600 hover:underline">Cập nhật</button>
+    <div className="w-[1368px] h-[190px] bg-white border border-[#E4E4E7] shadow-sm rounded-[8px] p-[24px] flex flex-col gap-[24px]">
+      {/* Header */}
+      <div className="flex items-center justify-between w-full h-[36px]">
+        <h3 className="text-[20px] font-semibold leading-[24px] tracking-[-0.6px] text-[#09090B]">
+          Lịch sử mua hàng
+        </h3>
+        <button className="text-[14px] font-medium leading-[20px] text-[#2563EB] px-[12px] h-[36px] rounded-[6px]">
+          Cập nhật
+        </button>
       </div>
 
-      <div className="text-sm text-muted-foreground space-y-3">
+      {/* Orders */}
+      <div className="w-[1334px] h-[82px] border border-[#E4E4E7] rounded-[8px] px-[17px] py-[14px] relative">
         {orders.map((order) => (
-          <div key={order.id} className="flex items-center justify-between">
-            <div>
-              <div className="text-black font-medium">{order.id}</div>
-              <div className="text-muted-foreground text-xs">{order.date}</div>
+          <div key={order.id} className="flex justify-between items-center h-full">
+            {/* Left side */}
+            <div className="flex flex-col gap-[1px]">
+              <span className="text-[16px] font-medium leading-[24px] text-[#09090B]">
+                {order.id}
+              </span>
+              <span className="text-[14px] font-normal leading-[20px] text-[#4B5563]">
+                {order.date}
+              </span>
             </div>
-            <div className="flex items-center gap-2">
-              <div className="text-black font-semibold">{order.amount}</div>
-              <span className="text-xs bg-gray-100 px-2 py-0.5 rounded-full text-black">
+
+            {/* Right side */}
+            <div className="flex flex-col items-end gap-[4px]">
+              <span className="text-[16px] font-medium leading-[24px] text-[#09090B] text-right">
+                {order.amount}
+              </span>
+              <span className="text-[12px] font-semibold leading-[16px] text-[#FAFAFA] bg-[#18181B] px-[11px] py-[3px] rounded-full">
                 {order.status}
               </span>
             </div>
@@ -35,4 +52,4 @@ export function CustomerOrderHistory({ customerId }: { customerId: string }) {
   )
 }
 
-export default CustomerOrderHistory;
+export default CustomerOrderHistory

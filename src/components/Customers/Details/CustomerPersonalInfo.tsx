@@ -1,51 +1,59 @@
-import { Badge } from "@/components/ui/badge"
+'use client'
+
+import { Badge } from '@/components/ui/badge'
 
 export function CustomerPersonalInfo({ customer }: { customer: any }) {
   return (
-    <div className="bg-white border rounded-lg p-6 space-y-4">
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        <div className="text-base font-medium">Thông tin cá nhân</div>
-        <button className="text-sm text-blue-600 hover:underline">Cập nhật</button>
+    <div className="bg-white border border-[#E4E4E7] shadow-sm rounded-lg p-6 w-[904px]">
+      <div className="flex flex-row justify-between items-center mb-6">
+        <h3 className="text-[20px] font-semibold leading-6 tracking-[-0.6px] text-[#09090B]">
+          Thông tin cá nhân
+        </h3>
+        <button className="text-sm font-medium text-[#2563EB] px-3 py-2 rounded-md hover:underline">
+          Cập nhật
+        </button>
       </div>
 
-      <div className="grid grid-cols-2 gap-y-3 text-sm text-muted-foreground">
+      <div className="grid grid-cols-2 gap-x-[253px] gap-y-[15.8px] text-sm text-[#6B7280]">
         <div>
-          <div className="text-[13px]">Ngày sinh</div>
-          <div className="text-black">{customer.birthday || "—"}</div>
+          <div className="text-[14px] leading-5">Ngày sinh</div>
+          <div className="text-black leading-5">{customer.birthday || "—"}</div>
         </div>
         <div>
-          <div className="text-[13px]">Nhóm khách hàng</div>
-          <div className="text-blue-600">{customer.group || "—"}</div>
+          <div className="text-[14px] leading-5">Nhóm khách hàng</div>
+          <div className="text-[#2563EB] leading-5">{customer.group || "—"}</div>
         </div>
         <div>
-          <div className="text-[13px]">Giới tính</div>
-          <div className="text-black">{customer.gender || "—"}</div>
+          <div className="text-[14px] leading-5">Giới tính</div>
+          <div className="text-black leading-5">{customer.gender || "—"}</div>
         </div>
         <div>
-          <div className="text-[13px]">Mã khách hàng</div>
-          <div className="text-black">{customer.code}</div>
+          <div className="text-[14px] leading-5">Mã khách hàng</div>
+          <div className="text-black leading-5">{customer.code || "—"}</div>
         </div>
         <div>
-          <div className="text-[13px]">Số điện thoại</div>
-          <div className="text-black">{customer.phone}</div>
+          <div className="text-[14px] leading-5">Số điện thoại</div>
+          <div className="text-black leading-5">{customer.phone || "—"}</div>
         </div>
         <div>
-          <div className="text-[13px]">Mô tả</div>
-          <div className="text-black">{customer.description || "—"}</div>
+          <div className="text-[14px] leading-5">Mô tả</div>
+          <div className="text-black leading-5">{customer.description || "—"}</div>
         </div>
         <div className="col-span-2">
-          <div className="text-[13px]">Email</div>
-          <div className="text-black">{customer.email}</div>
+          <div className="text-[14px] leading-5">Email</div>
+          <div className="text-black leading-5">{customer.email || "—"}</div>
         </div>
         <div className="col-span-2">
-          <div className="text-[13px]">Tags</div>
-          <div className="flex gap-2 pt-1">
-            {(customer.tags ?? []).length > 0 ? (
+          <div className="text-[16px] font-normal text-[#6B7280] leading-6 mb-[4.5px]">Tags</div>
+          <div className="flex gap-[3.78px]">
+            {(customer?.tags ?? []).length > 0 ? (
               customer.tags.map((tag: string) => (
-                <Badge key={tag}>{tag}</Badge>
+                <Badge key={tag} className="bg-[#F4F4F5] text-[#18181B] px-[11px] py-[3px] text-[12px] font-semibold rounded-full">
+                  {tag}
+                </Badge>
               ))
             ) : (
-              <span>Không có</span>
+              <span className="text-black">Không có</span>
             )}
           </div>
         </div>
@@ -53,4 +61,5 @@ export function CustomerPersonalInfo({ customer }: { customer: any }) {
     </div>
   )
 }
-export default CustomerPersonalInfo;
+
+export default CustomerPersonalInfo
