@@ -1,54 +1,50 @@
-// src/components/customer/CustomerPurchaseInfo.tsx
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+export function CustomerPurchaseInfo({ customerId }: { customerId: string }) {
+  // Dữ liệu tạm
+  const info = {
+    totalSpent: "979.000₫",
+    totalOrders: 2,
+    totalProducts: 3,
+    totalReturns: 0,
+    lastPurchase: "2024-01-15",
+    debt: "0₫"
+  }
 
-interface CustomerPurchaseInfoProps {
-  totalSpending: string
-  totalOrders: number
-  totalProducts: number
-  totalReturnedProducts: number
-  lastPurchaseDate: string
-  currentDebt: string
-}
-
-export function CustomerPurchaseInfo({
-  totalSpending,
-  totalOrders,
-  totalProducts,
-  totalReturnedProducts,
-  lastPurchaseDate,
-  currentDebt,
-}: CustomerPurchaseInfoProps) {
   return (
-    <Card className="w-full">
-      <CardHeader className="pb-3">
-        <CardTitle className="text-base">Thông tin mua hàng</CardTitle>
-      </CardHeader>
-      <CardContent className="grid grid-cols-2 gap-x-4 gap-y-2 text-sm text-muted-foreground">
+    <div className="bg-white border rounded-lg p-6 space-y-4">
+      <div className="flex items-start justify-between">
+        <div className="text-base font-medium">Thông tin mua hàng</div>
+        <button className="text-sm text-blue-600 hover:underline">Cập nhật</button>
+      </div>
+
+      <div className="text-sm text-muted-foreground grid grid-cols-2 gap-y-3">
         <div>
-          <p className="text-muted-foreground">Tổng chi tiêu</p>
-          <p className="text-foreground font-medium">{totalSpending}</p>
+          <div className="text-[13px]">Tổng chi tiêu</div>
+          <div className="text-black">{info.totalSpent}</div>
         </div>
         <div>
-          <p className="text-muted-foreground">Tổng SL sản phẩm đã mua</p>
-          <p className="text-foreground font-medium">{totalProducts}</p>
+          <div className="text-[13px]">Tổng SL sản phẩm đã mua</div>
+          <div className="text-black">{info.totalProducts}</div>
         </div>
         <div>
-          <p className="text-muted-foreground">Tổng SL đơn hàng</p>
-          <p className="text-foreground font-medium">{totalOrders}</p>
+          <div className="text-[13px]">Tổng SL đơn hàng</div>
+          <div className="text-black">{info.totalOrders}</div>
         </div>
         <div>
-          <p className="text-muted-foreground">Tổng SL sản phẩm hoàn trả</p>
-          <p className="text-foreground font-medium">{totalReturnedProducts}</p>
+          <div className="text-[13px]">Tổng SL sản phẩm hoàn trả</div>
+          <div className="text-black">{info.totalReturns}</div>
         </div>
         <div>
-          <p className="text-muted-foreground">Ngày cuối cùng mua hàng</p>
-          <p className="text-foreground font-medium">{lastPurchaseDate}</p>
+          <div className="text-[13px]">Ngày cuối cùng mua hàng</div>
+          <div className="text-black">{info.lastPurchase}</div>
         </div>
         <div>
-          <p className="text-muted-foreground">Công nợ hiện tại</p>
-          <p className="text-foreground font-medium">{currentDebt}</p>
+          <div className="text-[13px]">Công nợ hiện tại</div>
+          <div className="text-black">{info.debt}</div>
         </div>
-      </CardContent>
-    </Card>
+      </div>
+    </div>
   )
 }
+
+
+export default CustomerPurchaseInfo;

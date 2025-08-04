@@ -1,18 +1,31 @@
-import { Card, CardContent, CardHeader } from "@/components/ui/card"
-
-export function CustomerPointsInfo() {
+export function CustomerPointsInfo({ points }: { points: any }) {
   return (
-    <Card className="p-6">
-      <CardHeader className="p-0 mb-4 flex justify-between items-center">
-        <h3 className="text-lg font-semibold">Thông tin tích điểm</h3>
-        <a href="#" className="text-sm text-blue-600 hover:underline">Chi tiết</a>
-      </CardHeader>
-      <CardContent className="grid gap-y-2 text-sm p-0">
-        <div><p className="text-muted-foreground">Điểm hiện tại</p><p>97</p></div>
-        <div><p className="text-muted-foreground">Hạng thẻ hiện tại</p><p>Bạc</p></div>
-        <div><p className="text-muted-foreground">Ngày hết hạn thẻ</p><p>2024-12-31</p></div>
-        <div><p className="text-muted-foreground">Giá trị còn lại để lên hạng</p><p>103</p></div>
-      </CardContent>
-    </Card>
+    <div className="bg-white border rounded-lg p-6 space-y-4">
+      <div className="flex items-start justify-between">
+        <div className="text-base font-medium">Thông tin tích điểm</div>
+        <button className="text-sm text-blue-600 hover:underline">Chi tiết</button>
+      </div>
+
+      <div className="text-sm text-muted-foreground grid gap-3">
+        <div>
+          <div className="text-[13px]">Điểm hiện tại</div>
+          <div className="text-black">{points?.current || 0}</div>
+        </div>
+        <div>
+          <div className="text-[13px]">Hạng thẻ hiện tại</div>
+          <div className="text-black">{points?.rank || "—"}</div>
+        </div>
+        <div>
+          <div className="text-[13px]">Ngày hết hạn thẻ</div>
+          <div className="text-black">{points?.expire || "—"}</div>
+        </div>
+        <div>
+          <div className="text-[13px]">Giá trị còn lại để lên hạng</div>
+          <div className="text-black">{points?.toNextRank || "—"}</div>
+        </div>
+      </div>
+    </div>
   )
 }
+
+export default CustomerPointsInfo;

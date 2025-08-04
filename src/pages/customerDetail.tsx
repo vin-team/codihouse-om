@@ -1,123 +1,53 @@
-import { Badge } from "@/components/ui/badge"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Button } from "@/components/ui/button"
+'use client';
+import Layout from '@/components/Layout';
+import React from 'react';
+import CustomerPersonalInfo from '@/components/customers/Details/CustomerPersonalInfo';
+import CustomerSalesInfo  from '@/components/customers/Details/CustomerSalesInfo';
+import CustomerPointsInfo from '@/components/customers/Details/CustomerPointInfo';
+import CustomerOrderHistory from '@/components/customers/Details/Customerorderhistory';
+import CustomerPurchaseInfo from '@/components/customers/Details/CustomerPurchaseInfo';
+import { useRouter } from 'next/dist/client/components/navigation';
+import { Button } from '@/components/ui/button';
+import { ArrowLeft, Pencil } from 'lucide-react';
 
-export default function CustomerDetailPage() {
+interface CustomerDetailProps { }
+
+export function CustomerDetailView({
+  customerDetail
+}: {
+  customerDetail: any;
+}) {
+  const router = useRouter();
   return (
-    <div className="p-6 space-y-6">
-      {/* Header */}
-      <div className="flex justify-between items-start">
-        <div>
-          <h1 className="text-2xl font-bold">Bùi Thị Hạnh</h1>
-          <p className="text-sm text-gray-500">Mã khách hàng: CUSN12185</p>
-        </div>
-        <Button variant="outline">Cập nhật</Button>
-      </div>
-
-      {/* Thông tin */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* Thông tin cá nhân */}
-        <Card className="lg:col-span-2">
-          <CardHeader>
-            <CardTitle className="flex justify-between items-center">
-              <span>Thông tin cá nhân</span>
-              <Button variant="link" className="text-blue-600">Cập nhật</Button>
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-1 text-sm text-gray-600">
-            <div className="grid grid-cols-2 gap-2">
-              <div>Ngày sinh: <span className="font-medium">1990-05-15</span></div>
-              <div>Giới tính: <span className="font-medium">Nữ</span></div>
-              <div>Số điện thoại: <span className="font-medium">0904500014</span></div>
-              <div>Email: <span className="font-medium">trantientoan@email.com</span></div>
-              <div>Nhóm khách hàng: <span className="text-blue-600 font-medium">Bán lẻ</span></div>
-              <div>Mã khách hàng: <span className="font-medium">CUSN12185</span></div>
-            </div>
-            <div className="mt-2">
-              Mô tả: <span className="font-medium">Khách hàng VIP, thường xuyên mua hàng</span>
-            </div>
-            <div>
-              Tags:
-              <Badge variant="secondary" className="ml-2">VIP</Badge>
-              <Badge variant="secondary" className="ml-2">Khách quen</Badge>
-            </div>
-          </CardContent>
-        </Card>
-
-        {/* Thông tin gợi ý */}
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex justify-between items-center">
-              <span>Thông tin gợi ý khi bán hàng</span>
-              <Button variant="link" className="text-blue-600">Cập nhật</Button>
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="text-sm text-gray-600 space-y-1">
-            <div>Chính sách giá mặc định: <strong>Giá bán lẻ</strong></div>
-            <div>Chiết khấu khách hàng: <strong>5%</strong></div>
-            <div>Hình thức thanh toán mặc định: <strong>Chuyển khoản</strong></div>
-          </CardContent>
-        </Card>
-      </div>
-
-      {/* Mua hàng & điểm */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* Thông tin mua hàng */}
-        <Card className="lg:col-span-2">
-          <CardHeader>
-            <CardTitle className="flex justify-between items-center">
-              <span>Thông tin mua hàng</span>
-              <Button variant="link" className="text-blue-600">Cập nhật</Button>
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="text-sm text-gray-600 grid grid-cols-2 gap-2">
-            <div>Tổng chi tiêu: <strong>979.000₫</strong></div>
-            <div>Tổng SL đơn hàng: <strong>2</strong></div>
-            <div>Tổng SL sản phẩm đã mua: <strong>3</strong></div>
-            <div>Tổng SL hoàn trả: <strong>0</strong></div>
-            <div>Ngày cuối cùng mua hàng: <strong>2024-01-15</strong></div>
-            <div>Công nợ hiện tại: <strong>0₫</strong></div>
-          </CardContent>
-        </Card>
-
-        {/* Tích điểm */}
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex justify-between items-center">
-              <span>Thông tin tích điểm</span>
-              <Button variant="link" className="text-blue-600">Chi tiết</Button>
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="text-sm text-gray-600 space-y-1">
-            <div>Điểm hiện tại: <strong>97</strong></div>
-            <div>Hạng thẻ hiện tại: <strong>Bạc</strong></div>
-            <div>Ngày hết hạn thẻ: <strong>2024-12-31</strong></div>
-            <div>Giá trị còn lại để lên hạng: <strong>103</strong></div>
-          </CardContent>
-        </Card>
-      </div>
-
-      {/* Lịch sử mua hàng */}
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex justify-between items-center">
-            <span>Lịch sử mua hàng</span>
-            <Button variant="link" className="text-blue-600">Cập nhật</Button>
-          </CardTitle>
-        </CardHeader>
-        <CardContent className="text-sm text-gray-600">
-          <div className="flex justify-between items-center border rounded p-3">
-            <div>
-              <div className="font-medium">#ORD-001</div>
-              <div className="text-muted-foreground">2024-01-15</div>
-            </div>
-            <div className="text-right">
-              <div className="font-medium">30.319.000₫</div>
-              <Badge className="bg-green-100 text-green-700">Hoàn thành</Badge>
-            </div>
+    <div className="space-y-6 px-8 py-6">
+      <div className="flex items-center justify-between">
+        <div className="flex items-center gap-2">
+          <ArrowLeft className="w-5 h-5" onClick={() => router.back()} />
+          <div>
+            <h1 className="text-xl font-semibold">{customerDetail.name}</h1>
+            <p className="text-sm text-muted-foreground">
+              Mã khách hàng: {customerDetail.code}
+            </p>
           </div>
-        </CardContent>
-      </Card>
+        </div>
+        <Button variant="outline" className="gap-2">
+          <Pencil className="w-4 h-4" /> Cập nhật
+        </Button>
+      </div>
+
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <CustomerPersonalInfo customer={customerDetail} />
+        <CustomerPointsInfo points={customerDetail.points} />
+      </div>
+
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <CustomerSalesInfo customerId={customerDetail.id} />
+        <CustomerPurchaseInfo customerId={customerDetail.id} />
+      </div>
+
+      <div className="grid grid-cols-1 gap-6">
+        <CustomerOrderHistory customerId={customerDetail.id} />
+      </div>
     </div>
-  )
+  );
 }

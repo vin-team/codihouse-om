@@ -1,57 +1,56 @@
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Button } from "@/components/ui/button"
+import { Badge } from "@/components/ui/badge"
 
-export function CustomerPersonalInfo() {
+export function CustomerPersonalInfo({ customer }: { customer: any }) {
   return (
-    <Card
-      className="w-full border border-[#E4E4E7] shadow-[0_1px_2px_0_rgba(0,0,0,0.05)] rounded-[8px] p-6"
-    >
-      <CardHeader className="flex flex-row items-start justify-between p-0 mb-4">
-        <CardTitle className="text-base flex items-center gap-2">
-          <span className="text-lg">👤</span> Thông tin cá nhân
-        </CardTitle>
-        <Button variant="link" className="text-primary px-0 h-auto">Cập nhật</Button>
-      </CardHeader>
+    <div className="bg-white border rounded-lg p-6 space-y-4">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <div className="text-base font-medium">Thông tin cá nhân</div>
+        <button className="text-sm text-blue-600 hover:underline">Cập nhật</button>
+      </div>
 
-      <CardContent className="grid grid-cols-2 gap-y-4 gap-x-8 p-0 text-sm">
+      <div className="grid grid-cols-2 gap-y-3 text-sm text-muted-foreground">
         <div>
-          <p className="text-muted-foreground">Ngày sinh</p>
-          <p className="text-foreground font-medium">1990-05-15</p>
+          <div className="text-[13px]">Ngày sinh</div>
+          <div className="text-black">{customer.birthday || "—"}</div>
         </div>
         <div>
-          <p className="text-muted-foreground">Nhóm khách hàng</p>
-          <p className="text-foreground font-medium text-primary">Bán lẻ</p>
+          <div className="text-[13px]">Nhóm khách hàng</div>
+          <div className="text-blue-600">{customer.group || "—"}</div>
         </div>
         <div>
-          <p className="text-muted-foreground">Giới tính</p>
-          <p className="text-foreground font-medium">Nam</p>
+          <div className="text-[13px]">Giới tính</div>
+          <div className="text-black">{customer.gender || "—"}</div>
         </div>
         <div>
-          <p className="text-muted-foreground">Mã khách hàng</p>
-          <p className="text-foreground font-medium">CUSN12185</p>
+          <div className="text-[13px]">Mã khách hàng</div>
+          <div className="text-black">{customer.code}</div>
         </div>
         <div>
-          <p className="text-muted-foreground">Số điện thoại</p>
-          <p className="text-foreground font-medium">0904500014</p>
+          <div className="text-[13px]">Số điện thoại</div>
+          <div className="text-black">{customer.phone}</div>
         </div>
         <div>
-          <p className="text-muted-foreground">Mô tả</p>
-          <p className="text-foreground font-medium">
-            Khách hàng VIP, thường xuyên mua hàng
-          </p>
+          <div className="text-[13px]">Mô tả</div>
+          <div className="text-black">{customer.description || "—"}</div>
         </div>
-        <div>
-          <p className="text-muted-foreground">Email</p>
-          <p className="text-foreground font-medium">trantientoan@email.com</p>
+        <div className="col-span-2">
+          <div className="text-[13px]">Email</div>
+          <div className="text-black">{customer.email}</div>
         </div>
-        <div>
-          <p className="text-muted-foreground">Tags</p>
-          <div className="flex gap-2 mt-1">
-            <span className="bg-muted text-xs px-2 py-0.5 rounded-full">VIP</span>
-            <span className="bg-muted text-xs px-2 py-0.5 rounded-full">Khách quen</span>
+        <div className="col-span-2">
+          <div className="text-[13px]">Tags</div>
+          <div className="flex gap-2 pt-1">
+            {(customer.tags ?? []).length > 0 ? (
+              customer.tags.map((tag: string) => (
+                <Badge key={tag}>{tag}</Badge>
+              ))
+            ) : (
+              <span>Không có</span>
+            )}
           </div>
         </div>
-      </CardContent>
-    </Card>
+      </div>
+    </div>
   )
 }
+export default CustomerPersonalInfo;

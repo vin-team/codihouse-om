@@ -1,21 +1,33 @@
-import { Card, CardContent, CardHeader } from "@/components/ui/card"
-import { Button } from "@/components/ui/button"
+export function CustomerSalesInfo({ customerId }: { customerId: string }) {
+  // Dữ liệu tạm
+  const sales = {
+    pricePolicy: "Giá bán lẻ",
+    discount: "5%",
+    paymentMethod: "Chuyển khoản"
+  }
 
-export function CustomerSalesInfo() {
   return (
-    <Card className="p-6">
-      <CardHeader className="p-0 mb-4 flex justify-between items-center">
-        <h3 className="text-lg font-semibold">Thông tin mua hàng</h3>
-        <Button variant="link" size="sm">Cập nhật</Button>
-      </CardHeader>
-      <CardContent className="grid grid-cols-2 gap-x-6 gap-y-4 text-sm p-0">
-        <div><p className="text-muted-foreground">Tổng chi tiêu</p><p>979.000₫</p></div>
-        <div><p className="text-muted-foreground">Tổng SL sản phẩm đã mua</p><p>3</p></div>
-        <div><p className="text-muted-foreground">Tổng SL đơn hàng</p><p>2</p></div>
-        <div><p className="text-muted-foreground">Tổng SL sản phẩm hoàn trả</p><p>0</p></div>
-        <div><p className="text-muted-foreground">Ngày cuối cùng mua hàng</p><p>2024-01-15</p></div>
-        <div><p className="text-muted-foreground">Công nợ hiện tại</p><p>0₫</p></div>
-      </CardContent>
-    </Card>
+    <div className="bg-white border rounded-lg p-6 space-y-4">
+      <div className="flex items-start justify-between">
+        <div className="text-base font-medium">Thông tin gợi ý khi bán hàng</div>
+        <button className="text-sm text-blue-600 hover:underline">Cập nhật</button>
+      </div>
+
+      <div className="text-sm text-muted-foreground grid gap-3">
+        <div>
+          <div className="text-[13px]">Chính sách giá mặc định</div>
+          <div className="text-black">{sales.pricePolicy}</div>
+        </div>
+        <div>
+          <div className="text-[13px]">Chiết khấu khách hàng</div>
+          <div className="text-black">{sales.discount}</div>
+        </div>
+        <div>
+          <div className="text-[13px]">Hình thức thanh toán mặc định</div>
+          <div className="text-black">{sales.paymentMethod}</div>
+        </div>
+      </div>
+    </div>
   )
 }
+export default CustomerSalesInfo;
