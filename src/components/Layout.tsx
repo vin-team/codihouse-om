@@ -3,6 +3,10 @@ import { ReactNode } from 'react';
 import Head from 'next/head';
 import Header from './Header';
 import Footer from './Footer';
+import { SearchDialog } from './search/SearchDialog';
+import { useDispatch } from 'react-redux';
+import { useAppSelector } from '@/hooks/redux';
+import { setIsOpenSearchDialog } from '@/slices/app';
 interface IMainLayoutProps {
 	children: ReactNode | ReactNode[];
 	title?: string;
@@ -15,6 +19,9 @@ interface IMetaData {
 	description?: string | null;
 }
 export default function MainLayout({ children }: IMainLayoutProps) {
+	const dispatch = useDispatch();
+	const isOpenSearchDialog = useAppSelector(state => state.app.isOpenSearchDialog);
+
 	return (
 		<>
 			<Head>
@@ -29,6 +36,7 @@ export default function MainLayout({ children }: IMainLayoutProps) {
 					{children}
 				</main>
 			</div>
+			<SearchDialog isOpen={isOpenSearchDialog} onClose={() => dispatch(setIsOpenSearchDialog(false))} />
 		</>
 	);
 }

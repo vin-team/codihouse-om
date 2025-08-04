@@ -10,7 +10,6 @@ import MainLayout from '@/components/Layout';
 import { initializeAuth } from '@/slices/authSlice';
 import { useAppDispatch } from '@/hooks/redux';
 
-// Component để khởi tạo app sau khi Provider đã sẵn sàng
 function AppInitializer({ children }: { children: React.ReactNode }) {
 	const dispatch = useAppDispatch();
 

@@ -9,7 +9,8 @@ const initialState: AppState = {
 	firebaseApp: null,
 	webData: false,
 	fetchState: { status: "idle" },
-	isLogined: false
+	isLogined: false,
+	isOpenSearchDialog: false
 }
 const appSlice = createSlice({
 	name: 'app',
@@ -35,11 +36,14 @@ const appSlice = createSlice({
 		},
 		setLogined(state, action: PayloadAction<boolean>) {
 			state.isLogined = action.payload
+		},
+		setIsOpenSearchDialog(state, action: PayloadAction<boolean>) {
+			state.isOpenSearchDialog = action.payload
 		}
 	}
 });
 
-export const { startRouting, endRouting, setDescription, setSeoImageLink, setTitle, initFirebase, setLogined } = appSlice.actions;
+export const { startRouting, endRouting, setDescription, setSeoImageLink, setTitle, initFirebase, setLogined, setIsOpenSearchDialog } = appSlice.actions;
 export default appSlice.reducer;
 export interface AppState {
 	isRouteChanging: boolean,
@@ -49,5 +53,6 @@ export interface AppState {
 	firebaseApp?: any,
 	webData: any,
 	fetchState: RequestState,
-	isLogined: boolean
+	isLogined: boolean,
+	isOpenSearchDialog: boolean
 }

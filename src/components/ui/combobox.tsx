@@ -1,0 +1,82 @@
+"use client"
+
+import * as React from "react"
+import { CheckIcon, ChevronsUpDownIcon } from "lucide-react"
+
+import { cn } from "@/lib/utils"
+import { Button } from "@/components/ui/button"
+import {
+  Command,
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+  CommandList,
+} from "@/components/ui/command"
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover"
+
+export function Combobox({
+  options,
+  value,
+  onChange,
+  placeholder = "Select option...",
+}: {
+  options: { value: string, label: string }[]
+  value: string
+  onChange: (value: string) => void
+  placeholder?: string
+}) {
+  const [open, setOpen] = React.useState(false)
+  const [selectedValue, setSelectedValue] = React.useState(value)
+
+  const handleSelect = (value: string) => {
+    setSelectedValue(value)
+    onChange(value)
+  }
+
+  return (
+    <Popover open={open} onOpenChange={setOpen}>
+      <PopoverTrigger asChild>
+        <Button
+          variant="outline"
+          role="combobox"
+          aria-expanded={open}
+          className="w-80 justify-between h-10">
+          <p className="text-sm text-gray-600">{selectedValue
+            ? options.find((option) => option.value === selectedValue)?.label
+            : placeholder}</p>
+          <ChevronsUpDownIcon className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+        </Button>
+      </PopoverTrigger>
+      <PopoverContent className="w-80 p-0">
+        <Command>
+          <CommandInput placeholder={placeholder} />
+          <CommandList>
+            <CommandEmpty>Không tìm thấy tùy chọn.</CommandEmpty>
+            <CommandGroup>
+              {options.map((option) => (
+                <CommandItem
+                  key={option.value}
+                  value={option.value}
+                  onSelect={handleSelect}>
+                  <div className="flex flex-row justify-between w-full">
+                    {option.label}
+                    <CheckIcon
+                      className={cn(
+                        "mr-2 h-4 w-4",
+                        selectedValue === option.value ? "opacity-100" : "opacity-0"
+                      )} />
+                  </div>
+                </CommandItem>
+              ))}
+            </CommandGroup>
+          </CommandList>
+        </Command>
+      </PopoverContent>
+    </Popover>
+  )
+}
