@@ -4,32 +4,41 @@ import React from 'react';
 import { useRouter } from 'next/router';
 
 interface OrderItemProps {
-  orderId: string;
-  source: 'SHOPIFY' | 'SAPO';
-  customerName: string;
-  products: string[];
+  id: string;
+  customer: string;
+  customerPhone: string;
+  customerEmail: string;
+  branch: string;
+  salesChannel: string;
+  amount: string;
+  date: string;
+  time: string;
   phone: string;
   orderDate: string;
   totalAmount: string;
+  products: { name: string, price: number, quantity: number, total: number }[];
   status: 'completed' | 'pending';
   statusDate: string;
 }
 
 const OrderItem: React.FC<OrderItemProps> = ({
-  orderId,
-  source,
-  customerName,
+  id,
+  customer,
+  customerPhone,
+  customerEmail,
+  branch,
+  salesChannel,
+  amount,
+  date,
+  time,
   products,
-  phone,
-  orderDate,
-  totalAmount,
   status,
   statusDate
 }) => {
   const router = useRouter();
 
   const handleClick = () => {
-    const cleanOrderId = orderId.replace('#', '');
+    const cleanOrderId = id.replace('#', '');
     router.push(`/orders/${cleanOrderId}`);
   };
 
@@ -48,7 +57,7 @@ const OrderItem: React.FC<OrderItemProps> = ({
   };
 
   const getSourceBadgeColor = () => {
-    return source === 'SHOPIFY'
+    return salesChannel === 'Facebook'
       ? 'bg-blue-100 text-blue-800'
       : 'bg-green-100 text-green-800';
   };
@@ -62,19 +71,19 @@ const OrderItem: React.FC<OrderItemProps> = ({
         <div className='flex-1 flex flex-col gap-1'>
           <div className='flex flex-row'>
             <div className="flex items-center space-x-2 mb-1">
-              <span className="font-medium text-gray-900">{orderId}</span>
-              <span className={`px-2 py-1 ${getSourceBadgeColor()} text-xs rounded-full`}>
-                {source}
-              </span>
+              <span className="font-medium text-gray-900">{id}</span>
+              {salesChannel !== '-' && <span className={`px-2 py-1 ${getSourceBadgeColor()} text-xs rounded-full`}>
+                {salesChannel}
+              </span>}
             </div>
           </div>
           <div className='flex flex-row justify-between'>
             <div className="text-sm text-gray-600 w-1/3">
-              <p><strong>Khách hàng:</strong>{customerName}</p>
+              <p><strong>Khách hàng: </strong>{customer}</p>
             </div>
             <div className='flex flex-row justify-around w-2/3'>
-              <p className="text-sm text-gray-500"><strong>SĐT:</strong>{phone}</p>
-              <p className="text-sm text-gray-500"><strong>Ngày:</strong>{orderDate}</p>
+              <p className="text-sm text-gray-500"><strong>SĐT: </strong>{customerPhone}</p>
+              <p className="text-sm text-gray-500"><strong>Ngày: </strong>{date}</p>
             </div>
           </div>
           <div className='flex flex-row'>
@@ -85,14 +94,14 @@ const OrderItem: React.FC<OrderItemProps> = ({
                   <path d="M2 4.5H14" stroke="#6B7280" strokeLinecap="round" strokeLinejoin="round" />
                   <path d="M10.6666 7.1665C10.6666 7.87375 10.3857 8.55203 9.8856 9.05212C9.3855 9.55222 8.70722 9.83317 7.99998 9.83317C7.29274 9.83317 6.61446 9.55222 6.11436 9.05212C5.61426 8.55203 5.33331 7.87375 5.33331 7.1665" stroke="#6B7280" strokeLinecap="round" strokeLinejoin="round" />
                 </svg>}
-                <span className='text-xs text-gray-500'>{product} {index == 0 && index < products.length - 1 && ','}</span>
+                <span className='text-xs text-gray-500'>{product.name} {index == 0 && index < products.length - 1 && ','}</span>
               </div>
             ))}
           </div>
         </div>
       </div>
       <div className="text-right flex flex-col items-end gap-1 w-24">
-        <p className="text-base font-semibold">{totalAmount}</p>
+        <p className="text-base font-semibold">{amount}</p>
         <span className={`inline-block px-3 py-1 ${getStatusBadgeColor()} text-xs font-semibold rounded-full w-fit`}>
           {getStatusText()}
         </span>

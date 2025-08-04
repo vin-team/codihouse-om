@@ -4,6 +4,7 @@ import { useRouter } from 'next/router';
 import React from 'react';
 import { useDispatch } from 'react-redux';
 import ClientOnly from './ClientOnly';
+import { selectIsAuthenticated } from '@/slices/authSlice';
 
 const Header: React.FC = () => {
   const router = useRouter();
@@ -11,6 +12,7 @@ const Header: React.FC = () => {
   const dispatch = useDispatch();
   const role = useAppSelector(state => state.app.role);
   const isAdmin = role === 'admin';
+  const isAuthenticated = useAppSelector(selectIsAuthenticated);
 
   const isActive = (path: string) => {
     return router.pathname.startsWith(path);
@@ -63,6 +65,21 @@ const Header: React.FC = () => {
       </button>
     </nav>
   );
+
+  if (!isAuthenticated) {
+    return (
+      <header className="fixed top-0 left-0 right-0 z-50">
+        <div className="flex items-center h-16 justify-center">
+          <div className="flex items-center space-x-2">
+            <div className="w-8 h-8 bg-primary-600 rounded-lg flex items-center justify-center">
+              <span className="text-white font-bold text-sm">OM</span>
+            </div>
+            <span className="text-xl font-bold">OrderManager</span>
+          </div>
+        </div>
+      </header>
+    )
+  }
 
   return (
     <header className="fixed top-0 left-0 right-0 z-50 bg-white border-b border-gray-200 shadow-sm">

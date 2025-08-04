@@ -2,7 +2,6 @@
 import { ReactNode } from 'react';
 import Head from 'next/head';
 import Header from './Header';
-import Footer from './Footer';
 import { SearchDialog } from './search/SearchDialog';
 import { useDispatch } from 'react-redux';
 import { useAppSelector } from '@/hooks/redux';
@@ -33,7 +32,7 @@ export default function MainLayout({ children }: IMainLayoutProps) {
 			</Head>
 			<div>
 				<Header />
-				<main className="pt-8 min-h-screen">
+				<main className="pt-8 min-h-full">
 					{children}
 				</main>
 			</div>

@@ -2,17 +2,23 @@
 
 import React from 'react';
 import OrderItem from './OrderItem';
-
-interface Order {
-  orderId: string;
-  source: 'SHOPIFY' | 'SAPO';
-  customerName: string;
-  products: string[];
-  phone: string;
-  orderDate: string;
-  totalAmount: string;
-  status: 'completed' | 'pending';
-  statusDate: string;
+export interface Order {
+  id: string,
+  customer: string,
+  customerPhone: string,
+  customerEmail: string,
+  branch: string,
+  salesChannel: string,
+  amount: string,
+  status: string,
+  date: string,
+  time: string,
+  note: string,
+  products:
+  { name: string, price: number, quantity: number, total: number }[],
+  subtotal: number,
+  discount: number,
+  finalAmount: number
 }
 
 interface RecentOrdersProps {
@@ -30,16 +36,22 @@ const RecentOrders: React.FC<RecentOrdersProps> = ({ orders, onViewAll }) => {
       <div className="p-6 space-y-4">
         {orders.map((order, index) => (
           <OrderItem
-            key={index}
-            orderId={order.orderId}
-            source={order.source}
-            customerName={order.customerName}
+            id={order.id}
+            customer={order.customer}
+            customerPhone={order.customerPhone}
+            customerEmail={order.customerEmail}
+            branch={order.branch}
+            salesChannel={order.salesChannel}
+            amount={order.amount}
+            date={order.date}
+            time={order.time}
             products={order.products}
-            phone={order.phone}
-            orderDate={order.orderDate}
-            totalAmount={order.totalAmount}
-            status={order.status}
-            statusDate={order.statusDate}
+            status={order.status as 'completed' | 'pending'}
+            statusDate={order.date}
+            phone={order.customerPhone}
+            orderDate={order.date}
+            totalAmount={order.amount}
+            key={index}
           />
         ))}
       </div>

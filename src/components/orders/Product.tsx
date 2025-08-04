@@ -42,15 +42,15 @@ const Product: React.FC<ProductProps> = ({ orderDetail }) => {
       <div className="border-t pt-4 space-y-2">
         <div className="flex justify-between">
           <span>Tạm tính:</span>
-          <span>{orderDetail.summary.subtotal}</span>
+          <span>{orderDetail.subtotal}</span>
         </div>
         <div className="flex justify-between">
           <span>Phí vận chuyển:</span>
-          <span>{orderDetail.summary.shippingFee}</span>
+          <span>0</span>
         </div>
         <div className="flex justify-between font-bold text-lg">
           <span>Tổng cộng:</span>
-          <span>{orderDetail.summary.total}</span>
+          <span>{orderDetail.finalAmount}</span>
         </div>
       </div>
     </div>

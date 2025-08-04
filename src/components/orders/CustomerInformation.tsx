@@ -25,7 +25,7 @@ const CustomerInformation: React.FC<CustomerInformationProps> = ({ orderDetail }
         <div className='flex flex-col'>
           <div className='text-gray-500'>Họ tên</div>
           <div className='flex flex-row space-x-6 items-center'>
-            <span className="font-medium">{orderDetail.customer.name}</span>
+            <span className="font-medium">{orderDetail.customer}</span>
             <Button
               variant="outline"
               size="sm"
@@ -40,22 +40,22 @@ const CustomerInformation: React.FC<CustomerInformationProps> = ({ orderDetail }
             <Phone className="h-4 w-4 text-gray-500" />
             <div className='text-gray-500'>Số điện thoại</div>
           </div>
-          <span className='font-medium'>{orderDetail.customer.phone}</span>
+          <span className='font-medium'>{orderDetail.customerPhone}</span>
         </div>
         <div className='flex flex-col'>
           <div className='flex flex-row space-x-2'>
             <MapPin className="h-4 w-4 text-gray-500 mt-0.5" />
             <div className='text-gray-500'>Địa chỉ giao hàng</div>
           </div>
-          <span className='font-medium'>{orderDetail.customer.address}</span>
+          <span className='font-medium'>{orderDetail.shippingAddress.address}</span>
         </div>
         <div className='flex flex-col'>
           <div>Nhóm khách hàng:</div>
-          <span className="font-medium">{orderDetail.customer.group}</span>
+          <span className="font-medium">{orderDetail.customerStatus}</span>
         </div>
         <div className='flex flex-col'>
           <div>Tổng chi tiêu:</div>
-          <span className="font-medium">{orderDetail.customer.totalSpending}</span>
+          <span className="font-medium">{orderDetail.finalAmount}</span>
         </div>
       </div>
     </div>

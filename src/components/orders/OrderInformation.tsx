@@ -22,13 +22,13 @@ const OrderInformation: React.FC<OrderInformationProps> = ({ orderDetail }) => {
           </svg>
           <span className='text-xl font-medium'>Thông tin đơn hàng</span>
         </div>
-        <Button
+        {/* <Button
           variant="outline"
           size="sm"
           className="flex items-center gap-2">
           <ExternalLink className="h-4 w-4" />
           Xem trên {orderDetail.platform}
-        </Button>
+        </Button> */}
       </div>
       <div className="space-y-3 text-sm">
         <div className="grid grid-cols-2 gap-2">
@@ -38,23 +38,23 @@ const OrderInformation: React.FC<OrderInformationProps> = ({ orderDetail }) => {
           </div>
           <div className='flex flex-col'>
             <div className='text-gray-500'>Ngày đặt</div>
-            <div className="font-medium">{orderDetail.orderDate}</div>
+            <div className="font-medium">{orderDetail.date}</div>
           </div>
           <div className='flex flex-col'>
             <div className='text-gray-500'>Mã đóng gói</div>
-            <div className="font-medium">{orderDetail.packingCode}</div>
+            <div className="font-medium">FUN86833</div>
           </div>
           <div className='flex flex-col'>
             <div className='text-gray-500'>Bán tại</div>
-            <div className="font-medium">{orderDetail.soldAt}</div>
+            <div className="font-medium">{orderDetail.branch}</div>
           </div>
           <div className='flex flex-col'>
             <div className='text-gray-500'>Ngày bán</div>
-            <div className="font-medium">{orderDetail.salesDate}</div>
+            <div className="font-medium">{orderDetail.date}</div>
           </div>
           <div className='flex flex-col'>
             <div className='text-gray-500'>Nền tảng</div>
-            <div className="font-medium">{orderDetail.platform}</div>
+            <div className="font-medium">{orderDetail.salesChannel}</div>
           </div>
           <div className='flex flex-col'>
             <div className='text-gray-500'>Trạng thái</div>
@@ -62,11 +62,11 @@ const OrderInformation: React.FC<OrderInformationProps> = ({ orderDetail }) => {
           </div>
           <div className='flex flex-col'>
             <div className='text-gray-500'>Hình thức giao hàng</div>
-            <div className="font-medium">{orderDetail.deliveryMethod}</div>
+            <div className="font-medium">COD</div>
           </div>
           <div className='flex flex-col'>
             <div className='text-gray-500'>Bán bởi</div>
-            <div className="font-medium">{orderDetail.soldBy}</div>
+            <div className="font-medium">Codihouse</div>
           </div>
           <div className='flex flex-col'>
             <div className='text-gray-500'>Kênh bán hàng</div>

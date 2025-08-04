@@ -6,6 +6,19 @@ interface HistoryProps {
 }
 
 const History: React.FC<HistoryProps> = ({ orderDetail }) => {
+  const history = [
+    {
+      status: 'created',
+      action: 'Đơn hàng đã được tạo',
+      date: '2024-01-15'
+    },
+    {
+      status: 'completed',
+      action: 'Đơn hàng đã được giao thành công',
+      date: '2024-01-17'
+    },
+  ];
+
   return (
     <div className="bg-white rounded-lg p-6 border border-gray-200">
       <div className='flex flex-row justify-between pb-2'>
@@ -21,7 +34,7 @@ const History: React.FC<HistoryProps> = ({ orderDetail }) => {
       </div>
 
       <div className="space-y-4">
-        {orderDetail.history.map((item, index) => (
+        {history.map((item, index) => (
           <div key={index} className="flex items-center gap-3">
             <div className={`w-3 h-3 rounded-full ${item.status === 'completed' ? 'bg-blue-500' :
               item.status === 'created' ? 'bg-green-500' : 'bg-gray-400'

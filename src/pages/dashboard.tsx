@@ -3,7 +3,7 @@
 import DashboardHeader from '@/components/dashboard/DashboardHeader';
 import SummaryCards from '@/components/dashboard/SummaryCards';
 import SearchBar from '@/components/dashboard/SearchBar';
-import RecentOrders from '@/components/dashboard/RecentOrders';
+import RecentOrders, { Order } from '@/components/dashboard/RecentOrders';
 import React from 'react';
 import { useDispatch } from 'react-redux';
 import { useKeyboardShortcut } from '@/hooks/useKeyboardShortcut';
@@ -24,64 +24,106 @@ const dashboard: React.FC = () => {
   });
 
   // Mock data for recent orders
-  const recentOrders = [
+  const recentOrders: Order[] = [
     {
-      orderId: "#ORD-001",
-      source: "SHOPIFY" as const,
-      customerName: "Nguyễn Văn An",
-      products: ["Bao da Airpods 4 & Airpods 4 Anc (1)"],
-      phone: "0901234567",
-      orderDate: "2024-01-15",
-      totalAmount: "30.319.000₫",
-      status: "completed" as const,
-      statusDate: "2024-01-15"
-    },
-    {
-      orderId: "#SP-123",
-      source: "SAPO" as const,
-      customerName: "Trần Thị Bình",
+      id: "DH001234",
+      customer: "Nguyễn Văn A",
+      customerPhone: "0901234567",
+      customerEmail: "nguyenvana@email.com",
+      branch: "Quận 1",
+      salesChannel: "-",
+      amount: "450,000",
+      status: "Đang xử lý",
+      date: "2024-01-15",
+      time: "08:30",
+      note: "Khách yêu cầu giao hàng nhanh",
       products: [
-        "Ốp lưng kèm ví - Flip Cover IPhone 16 Pro Max... (1)",
-        "Túi đeo chéo dạng hộp Unisex - SOWER M (1)"
+        { name: "Áo thun basic", price: 150000, quantity: 2, total: 300000 },
+        { name: "Quần jean slim", price: 250000, quantity: 1, total: 250000 }
       ],
-      phone: "0901234567",
-      orderDate: "2024-01-15",
-      totalAmount: "26.010.000₫",
-      status: "pending" as const,
-      statusDate: "2024-01-16"
+      subtotal: 550000,
+      discount: 100000,
+      finalAmount: 450000
     },
     {
-      orderId: "#ORD-002",
-      source: "SHOPIFY" as const,
-      customerName: "Lê Minh Cường",
-      products: ["Ví nam dáng đứng gập 3 Cian V (1)"],
-      phone: "0901234567",
-      orderDate: "2024-01-15",
-      totalAmount: "31.310.000₫",
-      status: "completed" as const,
-      statusDate: "2024-01-14"
+      id: "DH001235",
+      customer: "Trần Thị B",
+      customerPhone: "0907654321",
+      customerEmail: "tranthib@email.com",
+      branch: "Online",
+      salesChannel: "Facebook",
+      amount: "680,000",
+      status: "Hoàn thành",
+      date: "2024-01-15",
+      time: "09:15",
+      note: "Đã thanh toán COD",
+      products: [
+        { name: "Áo sơ mi", price: 280000, quantity: 1, total: 280000 },
+        { name: "Chân váy", price: 200000, quantity: 2, total: 400000 }
+      ],
+      subtotal: 680000,
+      discount: 0,
+      finalAmount: 680000
     },
     {
-      orderId: "#SP-124",
-      source: "SAPO" as const,
-      customerName: "Phạm Thị Dung",
-      products: ["Ốp lưng nắp gập nam châm IPhone 16 Series - MagCover (1)"],
-      phone: "0901234567",
-      orderDate: "2024-01-15",
-      totalAmount: "28.010.000₫",
-      status: "pending" as const,
-      statusDate: "2024-01-17"
+      id: "DH001236",
+      customer: "Lê Văn C",
+      customerPhone: "0912345678",
+      customerEmail: "levanc@email.com",
+      branch: "Quận 7",
+      salesChannel: "-",
+      amount: "320,000",
+      status: "Chờ thanh toán",
+      date: "2024-01-15",
+      time: "10:00",
+      note: "Khách đặt cọc 50%",
+      products: [
+        { name: "Áo khoác", price: 320000, quantity: 1, total: 320000 }
+      ],
+      subtotal: 320000,
+      discount: 0,
+      finalAmount: 320000
     },
     {
-      orderId: "#ORD-003",
-      source: "SAPO" as const,
-      customerName: "Hoàng Văn Em",
-      products: ["Ví Dài Meron L - Lethnic (1)"],
-      phone: "0901234567",
-      orderDate: "2024-01-15",
-      totalAmount: "14.300.000₫",
-      status: "completed" as const,
-      statusDate: "2024-01-13"
+      id: "DH001237",
+      customer: "Phạm Thị D",
+      customerPhone: "0987654321",
+      customerEmail: "phamthid@email.com",
+      branch: "Online",
+      salesChannel: "Zalo",
+      amount: "890,000",
+      status: "Hoàn thành",
+      date: "2024-01-15",
+      time: "10:30",
+      note: "",
+      products: [
+        { name: "Áo len", price: 350000, quantity: 1, total: 350000 },
+        { name: "Quần tây", price: 450000, quantity: 1, total: 450000 },
+        { name: "Giày thể thao", price: 90000, quantity: 1, total: 90000 }
+      ],
+      subtotal: 890000,
+      discount: 0,
+      finalAmount: 890000
+    },
+    {
+      id: "DH001238",
+      customer: "Hoàng Văn E",
+      customerPhone: "0965432109",
+      customerEmail: "hoangvane@email.com",
+      branch: "Online",
+      salesChannel: "Website",
+      amount: "1,200,000",
+      status: "Đã hủy",
+      date: "2024-01-15",
+      time: "11:00",
+      note: "Khách hàng hủy do thay đổi ý kiến",
+      products: [
+        { name: "Áo dạ hội", price: 800000, quantity: 1, total: 800000 },
+        { name: "Giày cao gót", price: 400000, quantity: 1, total: 400000 }
+      ],
+      subtotal: 1200000,
+      discount: 0,
+      finalAmount: 1200000
     }
   ];
 
@@ -100,7 +142,7 @@ const dashboard: React.FC = () => {
     <Layout>
       <div className={`p-8 flex flex-col gap-6`}>
         <DashboardHeader />
-        {isAdmin && <SummaryCards />}
+        {/* {isAdmin && <SummaryCards />} */}
         <SearchBar />
         {isAdmin && <RecentOrders orders={recentOrders} onViewAll={handleViewAll} />}
         {!isAdmin && example.length > 0 && <div className='flex justify-center'>

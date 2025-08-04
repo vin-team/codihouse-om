@@ -9,43 +9,33 @@ import OrderInformation from '@/components/orders/OrderInformation';
 import CustomerInformation from '@/components/orders/CustomerInformation';
 import Product from '@/components/orders/Product';
 import History from '@/components/orders/History';
+import Loading from '@/components/Loading';
 
 interface OrderDetailProps { }
 
 export interface OrderDetail {
-  id: string;
-  orderDate: string;
-  packingCode: string;
-  soldAt: string;
-  salesDate: string;
-  platform: string;
-  status: string;
-  deliveryMethod: string;
-  soldBy: string;
-  salesChannel: string;
-  customer: {
-    name: string;
-    phone: string;
-    address: string;
-    group: string;
-    totalSpending: string;
-  };
-  products: Array<{
-    name: string;
-    quantity: number;
-    price: string;
-    total: string;
-  }>;
-  summary: {
-    subtotal: string;
-    shippingFee: string;
-    total: string;
-  };
-  history: Array<{
-    action: string;
-    date: string;
-    status: 'completed' | 'pending' | 'created';
-  }>;
+  id: string,
+  customer: string,
+  customerId: string,
+  customerPhone: string,
+  customerEmail: string,
+  customerStatus: string,
+  branch: string,
+  salesChannel: string,
+  status: string,
+  date: string,
+  time: string,
+  note: string,
+  shippingAddress: {
+    recipientName: string,
+    recipientPhone: string,
+    address: string
+  },
+  requiresShipping: true,
+  products: { name: string, price: number, quantity: number, total: number }[],
+  subtotal: number,
+  discount: number,
+  finalAmount: number
 }
 
 const OrderDetailPage: React.FC<OrderDetailProps> = () => {
@@ -61,54 +51,31 @@ const OrderDetailPage: React.FC<OrderDetailProps> = () => {
   useEffect(() => {
     if (id) {
       const mockOrderDetail: OrderDetail = {
-        id: id as string,
-        orderDate: '2024-01-15',
-        packingCode: 'FUN86833',
-        soldAt: 'LETHNIC QUANG TRUNG',
-        salesDate: '23/05/2025 11:17',
-        platform: 'Shopify',
-        status: 'Hoàn thành',
-        deliveryMethod: 'Nhận tại cửa hàng',
-        soldBy: 'Lethnic Gò Vấp - Ca Sáng (Ngọc Yến)',
-        salesChannel: 'POS',
-        customer: {
-          name: 'Nguyễn Văn An',
-          phone: '0901234567',
-          address: '123 Nguyễn Huệ, Quận 1, TP.HCM',
-          group: 'Bán lẻ',
-          totalSpending: '979.000₫'
+        id: "DH001234",
+        customer: "Nguyễn Văn A",
+        customerId: "KH001",
+        customerPhone: "0901234567",
+        customerEmail: "nguyenvana@email.com",
+        customerStatus: "VIP",
+        branch: "Quận 1",
+        salesChannel: "-",
+        status: "Đang xử lý",
+        date: "2024-01-15",
+        time: "08:30",
+        note: "Khách yêu cầu giao hàng nhanh",
+        shippingAddress: {
+          recipientName: "Nguyễn Thị Mai",
+          recipientPhone: "0912345678",
+          address: "456 Lê Lợi, Quận 1, TP.HCM"
         },
+        requiresShipping: true,
         products: [
-          {
-            name: 'iPhone 15 Pro Max',
-            quantity: 1,
-            price: '29.990.000₫',
-            total: '29.990.000₫'
-          },
-          {
-            name: 'Ốp lưng iPhone 15 Pro Max',
-            quantity: 1,
-            price: '299.000₫',
-            total: '299.000₫'
-          }
+          { name: "Áo thun basic", price: 150000, quantity: 2, total: 300000 },
+          { name: "Quần jean slim", price: 250000, quantity: 1, total: 250000 }
         ],
-        summary: {
-          subtotal: '30.289.000₫',
-          shippingFee: '0₫',
-          total: '30.289.000₫'
-        },
-        history: [
-          {
-            action: 'Đơn hàng được tạo',
-            date: '2024-01-15',
-            status: 'created'
-          },
-          {
-            action: 'Đơn hàng hoàn thành',
-            date: '2 ngày trước',
-            status: 'completed'
-          }
-        ]
+        subtotal: 550000,
+        discount: 100000,
+        finalAmount: 450000
       };
 
       setOrderDetail(mockOrderDetail);
@@ -119,9 +86,7 @@ const OrderDetailPage: React.FC<OrderDetailProps> = () => {
   if (loading) {
     return (
       <Layout>
-        <div className="p-8 flex items-center justify-center">
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900"></div>
-        </div>
+        <Loading />
       </Layout>
     );
   }
@@ -138,7 +103,7 @@ const OrderDetailPage: React.FC<OrderDetailProps> = () => {
 
   return (
     <Layout>
-      <div className='absolute top-[72px] left-8'>
+      <div className='absolute top-[75px] left-8'>
         <button onClick={handleBack} className='flex items-center gap-3'>
           <ArrowLeft className="h-4 w-4" />
           <p className='text-sm'>Quay lại</p>
