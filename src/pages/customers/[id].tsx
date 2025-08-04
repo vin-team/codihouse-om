@@ -58,7 +58,7 @@ const CustomerDetailPage: React.FC<CustomerDetailProps> = () => {
     return (
       <Layout>
         children={<></>}
-        <div className="flex items-center justify-center h-screen w-full max">
+        <div className="flex items-center justify-center h-screen">
           <Loading />
         </div>
       </Layout>
