@@ -4,7 +4,7 @@ import { Badge } from '@/components/ui/badge'
 
 export function CustomerPersonalInfo({ customer }: { customer: any }) {
   return (
-    <div className="bg-white border border-[#E4E4E7] shadow-sm rounded-lg p-6 w-[904px]">
+    <div className="bg-white border border-[#E4E4E7] shadow-sm rounded-lg p-6 w-full">
       <div className="flex flex-row justify-between items-center mb-6">
         <h3 className="text-[20px] font-semibold leading-6 tracking-[-0.6px] text-[#09090B]">
           Thông tin cá nhân

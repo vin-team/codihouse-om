@@ -8,7 +8,7 @@ export function CustomerSalesInfo({ customerId }: { customerId: string }) {
   }
 
   return (
-    <div className="w-[440px] h-[266px] bg-white border border-[#E4E4E7] shadow-sm rounded-[8px] p-[25px] flex flex-col gap-[24px]">
+    <div className="w-full h-full bg-white border border-[#E4E4E7] shadow-sm rounded-[8px] p-[25px] flex flex-col gap-[24px]">
       {/* Header */}
       <div className="flex items-center justify-between">
         <h3 className="text-[20px] font-semibold leading-[24px] tracking-[-0.6px] text-[#09090B]">

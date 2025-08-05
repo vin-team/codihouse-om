@@ -1,7 +1,7 @@
 import { CustomerPersonalInfo } from "./customers/Details/CustomerPersonalInfo"
 import { CustomerSalesInfo } from "./customers/Details/CustomerSalesInfo"
 import { CustomerPointsInfo } from "./customers/Details/CustomerPointInfo"
-import { CustomerOrderHistory } from "./customers/Details/Customerorderhistory"
+import { CustomerOrderHistory } from "./customers/Details/CustomerOrderHistory"
 import { CustomerPurchaseInfo } from "./customers/Details/CustomerPurchaseInfo"
 import { Button } from "./ui/button"
 

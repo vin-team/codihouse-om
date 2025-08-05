@@ -104,7 +104,7 @@ const OrderDetailPage: React.FC<OrderDetailProps> = () => {
   return (
     <Layout>
       <div className='absolute top-[75px] left-8'>
-        <button onClick={handleBack} className='flex items-center gap-3'>
+        <button onClick={handleBack} className='flex items-center gap-3 hover:underline'>
           <ArrowLeft className="h-4 w-4" />
           <p className='text-sm'>Quay lại</p>
         </button>

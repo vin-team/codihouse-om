@@ -28,6 +28,7 @@ const Login: React.FC<LoginProps> = ({ }) => {
   const authActionState = useAppSelector(state => state.auth.actionState);
   const userActionState = useAppSelector(state => state.user.actionState);
   const roleActionState = useAppSelector(state => state.role.actionState);
+  const isLogined = useAppSelector(state => state.app.isLogined);
 
   const validationSchema = Yup.object({
     email: Yup.string()
@@ -96,7 +97,6 @@ const Login: React.FC<LoginProps> = ({ }) => {
       case 'completed':
         if (authActionState.type === 'login') {
           dispatch(setLogined(true))
-          router.push('/dashboard');
         }
         break;
       case 'failed':
@@ -104,6 +104,13 @@ const Login: React.FC<LoginProps> = ({ }) => {
         break;
     }
   }, [roleActionState])
+
+  useEffect(() => {
+    if (isLogined) {
+      router.push('/dashboard');
+    }
+
+  }, [isLogined])
 
   return (
     <div className='min-h-[calc(100vh-32px)] flex flex-col justify-center items-center'>

@@ -2,9 +2,9 @@
 
 import React from 'react';
 import Layout from '@/components/Layout'
-import CustomerList from '@/components/Customers/CustomerList';
-import CustomersHeader from '@/components/Customers/CustomersHeader';
-import FilterCustomers from '@/components/Customers/FilterCustomers';
+import CustomerList from '@/components/customers/CustomerList';
+import CustomersHeader from '@/components/customers/CustomersHeader';
+import FilterCustomers from '@/components/customers/FilterCustomers';
 
 export default function CustomerListPage() {
   return (

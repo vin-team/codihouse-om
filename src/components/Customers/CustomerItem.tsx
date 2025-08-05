@@ -3,6 +3,7 @@ import React from 'react';
 import { Badge } from '../ui/badge';
 import { Eye, Mail, Phone } from 'lucide-react';
 import { Button } from '../ui/button';
+import { formatCurrency } from '@/utils/data.util';
 
 interface CustomerItemProps {
   key: number;
@@ -50,7 +51,7 @@ const CustomerItem: React.FC<CustomerItemProps> = (props) => {
           </div>
           <div className='flex flex-row justify-between'>
             <div className='flex flex-row justify-around space-x-4'>
-              <p className="text-xs text-gray-500 flex flex-row items-center gap-2">Tổng chi tiêu: {props.totalSpend}</p>
+              <p className="text-xs text-gray-500 flex flex-row items-center gap-2">Tổng chi tiêu: {formatCurrency(props.totalSpend.toString())} đ</p>
               <p className="text-xs text-gray-500 flex flex-row items-center gap-2">Đơn hàng: {props.orders}</p>
               <p className="text-xs text-gray-500 flex flex-row items-center gap-2 pl-8">Điểm tích luỹ: {props.points}</p>
             </div>

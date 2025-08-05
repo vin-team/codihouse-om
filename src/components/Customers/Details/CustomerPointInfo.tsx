@@ -2,7 +2,7 @@
 
 export function CustomerPointsInfo({ points }: { points: any }) {
   return (
-    <div className="w-[440px] h-[322.12px] bg-white border border-[#E4E4E7] shadow-sm rounded-[8px] p-[25px] flex flex-col gap-[20px] relative">
+    <div className="w-full h-full bg-white border border-[#E4E4E7] shadow-sm rounded-[8px] p-[25px] flex flex-col gap-[20px] relative">
       {/* Header */}
       <div className="flex items-center justify-between">
         <h3 className="text-[20px] font-semibold leading-[24px] tracking-[-0.6px] text-[#09090B]">

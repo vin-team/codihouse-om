@@ -11,7 +11,7 @@ export function CustomerOrderHistory({ customerId }: { customerId: string }) {
   ]
 
   return (
-    <div className="w-[1368px] h-[190px] bg-white border border-[#E4E4E7] shadow-sm rounded-[8px] p-[24px] flex flex-col gap-[24px]">
+    <div className="w-full h-full bg-white border border-[#E4E4E7] shadow-sm rounded-[8px] p-[24px] flex flex-col gap-[24px]">
       {/* Header */}
       <div className="flex items-center justify-between w-full h-[36px]">
         <h3 className="text-[20px] font-semibold leading-[24px] tracking-[-0.6px] text-[#09090B]">
@@ -23,7 +23,7 @@ export function CustomerOrderHistory({ customerId }: { customerId: string }) {
       </div>
 
       {/* Orders */}
-      <div className="w-[1334px] h-[82px] border border-[#E4E4E7] rounded-[8px] px-[17px] py-[14px] relative">
+      <div className="w-full h-full border border-[#E4E4E7] rounded-[8px] px-4 py-3 relative">
         {orders.map((order) => (
           <div key={order.id} className="flex justify-between items-center h-full">
             {/* Left side */}

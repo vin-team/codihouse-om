@@ -1,24 +1,28 @@
 'use client';
 
 import React from 'react';
+import { Button } from '../ui/button';
+import { Pencil } from 'lucide-react';
 
 interface CustomerDetailHeaderProps {
-  title?: string;
-  subtitle?: string;
+  customerName: string;
+  customerCode: string;
 }
 const CustomerDetailHeader: React.FC<CustomerDetailHeaderProps> = ({
-  title = "Chi tiết khách hàng",
-  subtitle = "Thông tin chi tiết về khách hàng"
+  customerName,
+  customerCode
 }) => {
   return (
     <div className='flex flex-row justify-between'>
       <div className='flex flex-col'>
-        <h1 className="text-3xl font-bold text-gray-900 mb-2">{title}</h1>
-        <p className="text-gray-600">{subtitle}</p>
+        <h1 className="text-3xl font-bold text-gray-900 mb-2">{customerName}</h1>
+        <p className="text-gray-600">Mã khách hàng: {customerCode}</p>
       </div>
-      <div className='flex flex-col items-end'>
-        <span className='text-2xl font-bold'>#12345</span>
-        <p className='text-base text-gray-500'>ID Khách hàng</p>
+      <div className='flex flex-col justify-end'>
+        <Button variant="outline" className="gap-2 py-2 px-6">
+          <Pencil className="w-4 h-4" />
+          Cập nhật
+        </Button>
       </div>
     </div>
   );

@@ -4,11 +4,12 @@ import { useRouter } from "next/router";
 import { ArrowLeft, Pencil } from "lucide-react";
 import { CustomerPersonalInfo } from "@/components/customers/Details/CustomerPersonalInfo";
 import { CustomerPointsInfo } from "@/components/customers/Details/CustomerPointInfo";
-import { CustomerOrderHistory } from "@/components/customers/Details/Customerorderhistory";
+import { CustomerOrderHistory } from "@/components/customers/Details/CustomerOrderHistory";
 import { CustomerPurchaseInfo } from "@/components/customers/Details/CustomerPurchaseInfo";
 import { CustomerSalesInfo } from "@/components/customers/Details/CustomerSalesInfo";
 import Loading from "@/components/Loading";
 import { Button } from "@/components/ui/button";
+import CustomerDetailHeader from "@/components/customers/CustomerDetailHeader";
 
 interface CustomerDetailProps { }
 
@@ -78,45 +79,32 @@ const CustomerDetailPage: React.FC<CustomerDetailProps> = () => {
 
   return (
     <Layout>
+      <div className='absolute top-[75px] left-8'>
+        <button onClick={handleBack} className='flex items-center gap-3 hover:underline'>
+          <ArrowLeft className="h-4 w-4" />
+          <p className='text-sm'>Quay lại</p>
+        </button>
+      </div>
       <div className="p-8 space-y-6">
-        {/* Header */}
-        <div className="flex items-start justify-between mb-6">
-          {/* Cột trái: Mũi tên + Tên + ID */}
-          <div>
-            <button onClick={handleBack} className="flex items-center gap-1 text-sm text-muted-foreground mb-1 hover:underline">
-              <ArrowLeft className="w-4 h-4" />
-              Quay lại
-            </button>
-            <h1 className="text-xl font-semibold">{customerDetail.name}</h1>
-            <p className="text-sm text-muted-foreground">Mã khách hàng: {customerDetail.id}</p>
+        <CustomerDetailHeader customerName={customerDetail.name} customerCode={customerDetail.id} />
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          <div className="lg:col-span-2">
+            <CustomerPersonalInfo customer={customerDetail} />
+          </div>
+          <div className="lg:col-span-1">
+            <CustomerSalesInfo customerId={customerDetail.id} />
           </div>
 
-          {/* Cột phải: Nút cập nhật */}
-          <Button variant="outline" className="gap-2 h-9">
-            <Pencil className="w-4 h-4" />
-            Cập nhật
-          </Button>
+          <div className="lg:col-span-2">
+            <CustomerPurchaseInfo customerId={customerDetail.id} />
+          </div>
+          <div className="lg:col-span-1">
+            <CustomerPointsInfo points={customerDetail.points} />
+          </div>
         </div>
-
-
-        {/* Row 1: Thông tin cá nhân | Gợi ý bán hàng */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <CustomerPersonalInfo customer={customerDetail} />
-          <CustomerSalesInfo customerId={customerDetail.id} />
-        </div>
-
-        {/* Row 2: Thông tin mua hàng | Thông tin tích điểm */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <CustomerPurchaseInfo customerId={customerDetail.id} />
-          <CustomerPointsInfo points={customerDetail.points} />
-        </div>
-
-        {/* Row 3: Lịch sử mua hàng (full width) */}
-        <div className="grid grid-cols-1 gap-6">
-          <CustomerOrderHistory customerId={customerDetail.id} />
-        </div>
+        <CustomerOrderHistory customerId={customerDetail.id} />
       </div>
-    </Layout >
+    </Layout>
   );
 };
 
