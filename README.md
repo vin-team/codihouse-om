@@ -91,3 +91,13 @@ For open source projects, say how it is licensed.
 
 ## Project status
 If you have run out of energy or time for your project, put a note at the top of the README saying that development has slowed down or stopped completely. Someone may choose to fork your project or volunteer to step in as a maintainer or owner, allowing your project to keep going. You can also make an explicit request for maintainers.
+
+
+
+NEXT_PUBLIC_baseApiURL = https://order-manager-cms.codihaus.io
+NEXT_PUBLIC_storageAccessTokenKey = storageAccessTokenKey
+NEXT_PUBLIC_storageRefreshTokenKey = storageRefreshTokenKey
+NEXT_PUBLIC_storageIsRefreshingTokenKey = storageIsRefreshingTokenKey
+NEXT_PUBLIC_storageDeviceIdKey = storageDeviceIdKey
+NEXT_PUBLIC_storageUserKey = storageUserKey
+NEXT_PUBLIC_storageRoleKey = storageRoleKey

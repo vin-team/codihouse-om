@@ -1,0 +1,43 @@
+stages:
+    - docker-image
+variables:
+    VARIABLE_DATA: Gitlab-CI-YAML
+
+docker-image:
+    stage: docker-image
+    rules:
+        -   if: '$CI_COMMIT_BRANCH == "staging" || $CI_COMMIT_BRANCH == "prod"'
+    image: docker:20-git
+    services:
+        - docker:20-dind
+    environment:
+        name: $CI_COMMIT_BRANCH
+    script:
+        - apk update && apk add jq && apk add curl
+
+        - eval "$SEND_MM_FUNCS"
+        - send_to_mattermost "[FE] $CI_COMMIT_BRANCH build start"
+
+        - export VERSION=`jq -r ".version" < ./package.json`
+        - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY
+
+        - >
+            docker build
+            --build-arg="NODE_ENV=production"
+            --build-arg="APP_URL=$APP_URL"
+            --build-arg="BACKEND_URL=$BACKEND_URL"
+            --build-arg="BACKEND_TOKEN=$BACKEND_TOKEN"
+            --build-arg="COOKIE_PREFIX=$COOKIE_PREFIX"
+            --build-arg="SENTRY_DSN=$SENTRY_DSN"
+            --build-arg="SENTRY_ENVIRONMENT=$SENTRY_ENVIRONMENT"
+            --build-arg="SENTRY_FEEDBACK_WIDGET=$SENTRY_FEEDBACK_WIDGET"
+            --build-arg="SENTRY_ORG=$SENTRY_ORG"
+            --build-arg="SENTRY_PROJECT=$SENTRY_PROJECT"
+            --build-arg="SENTRY_AUTH_TOKEN=$SENTRY_AUTH_TOKEN"
+            . -t $CI_REGISTRY_IMAGE:$IMAGE_TAG
+
+        - docker push $CI_REGISTRY_IMAGE:$IMAGE_TAG
+
+        - send_to_mattermost "[FE] $CI_COMMIT_BRANCH build completed, check $APP_URL"
+        - echo $AUTO_DEPLOY_URL
+        - curl -X GET $AUTO_DEPLOY_URL
