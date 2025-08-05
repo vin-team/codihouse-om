@@ -1,12 +1,25 @@
-import React from 'react';
+import { useAppSelector } from '@/hooks/redux';
+import { LoaderCircle } from 'lucide-react';
+import { useRouter } from 'next/router';
+import { useEffect } from 'react';
 
 const Home: React.FC = () => {
-    return (
-        <div>
-            <h1>Welcome to My Next.js App</h1>
-            <p>This is the homepage of your Next.js application.</p>
-        </div>
-    );
+  const router = useRouter();
+  const isLogined = useAppSelector(state => state.app.isLogined);
+
+  useEffect(() => {
+    if (isLogined) {
+      router.push('/dashboard');
+    } else {
+      router.push('/login');
+    }
+  }, []);
+
+  return (
+    <div className="flex items-center justify-center min-h-screen">
+      <LoaderCircle className='w-16 h-16 text-blue-400 animate-spin' />
+    </div>
+  );
 };
 
 export default Home;
