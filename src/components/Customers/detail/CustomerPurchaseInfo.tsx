@@ -1,6 +1,11 @@
 'use client'
+import React from 'react';
 
-export function CustomerPurchaseInfo({ customerId }: { customerId: string }) {
+interface CustomerPurchaseInfoProps {
+  customerId: string
+}
+
+const CustomerPurchaseInfo: React.FC<CustomerPurchaseInfoProps> = ({ customerId }: { customerId: string }) => {
   const info = {
     totalSpent: "979.000₫",
     totalOrders: 2,
@@ -11,7 +16,7 @@ export function CustomerPurchaseInfo({ customerId }: { customerId: string }) {
   }
 
   return (
-    <div className="w-full h-full bg-white border border-[#E4E4E7] shadow-sm rounded-[8px] p-[24px] flex flex-col gap-[24px]">
+    <div key={customerId} className="w-full h-full bg-white border border-[#E4E4E7] shadow-sm rounded-[8px] p-[24px] flex flex-col gap-[24px]">
       {/* Header */}
       <div className="flex items-center justify-between w-[856px] h-[36px]">
         <h3 className="text-[20px] font-semibold leading-[24px] tracking-[-0.6px] text-[#09090B]">
@@ -58,6 +63,6 @@ export function CustomerPurchaseInfo({ customerId }: { customerId: string }) {
       </div>
     </div>
   )
-}
+};
 
-export default CustomerPurchaseInfo
+export default CustomerPurchaseInfo;

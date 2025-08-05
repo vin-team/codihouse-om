@@ -1,15 +1,16 @@
+'use client';
+
 import React, { useEffect, useState } from "react";
 import Layout from "@/components/Layout";
 import { useRouter } from "next/router";
-import { ArrowLeft, Pencil } from "lucide-react";
-import { CustomerPersonalInfo } from "@/components/customers/Details/CustomerPersonalInfo";
-import { CustomerPointsInfo } from "@/components/customers/Details/CustomerPointInfo";
-import { CustomerOrderHistory } from "@/components/customers/Details/CustomerOrderHistory";
-import { CustomerPurchaseInfo } from "@/components/customers/Details/CustomerPurchaseInfo";
-import { CustomerSalesInfo } from "@/components/customers/Details/CustomerSalesInfo";
+import { ArrowLeft } from "lucide-react";
 import Loading from "@/components/Loading";
-import { Button } from "@/components/ui/button";
 import CustomerDetailHeader from "@/components/customers/CustomerDetailHeader";
+import CustomerOrderHistory from "@/components/customers/detail/CustomerOrderHistory";
+import CustomerPersonalInfo from "@/components/customers/detail/CustomerPersonalInfo";
+import CustomerPointsInfo from "@/components/customers/detail/CustomerPointInfo";
+import CustomerPurchaseInfo from "@/components/customers/detail/CustomerPurchaseInfo";
+import CustomerSalesInfo from "@/components/customers/detail/CustomerSalesInfo";
 
 interface CustomerDetailProps { }
 

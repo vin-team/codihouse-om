@@ -1,6 +1,12 @@
-'use client'
+'use client';
 
-export function CustomerPointsInfo({ points }: { points: any }) {
+import React from 'react';
+
+interface CustomerPointInfoProps {
+  points: any
+}
+
+const CustomerPointInfo: React.FC<CustomerPointInfoProps> = ({ points }: { points: any }) => {
   return (
     <div className="w-full h-full bg-white border border-[#E4E4E7] shadow-sm rounded-[8px] p-[25px] flex flex-col gap-[20px] relative">
       {/* Header */}
@@ -37,6 +43,6 @@ export function CustomerPointsInfo({ points }: { points: any }) {
       </div>
     </div>
   )
-}
+};
 
-export default CustomerPointsInfo
+export default CustomerPointInfo;

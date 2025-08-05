@@ -1,8 +1,13 @@
-'use client'
+'use client';
 
-import { Badge } from '@/components/ui/badge'
+import { Badge } from '@/components/ui/badge';
+import React from 'react';
 
-export function CustomerPersonalInfo({ customer }: { customer: any }) {
+interface CustomerPersonalInfoProps {
+  customer: any
+}
+
+const CustomerPersonalInfo: React.FC<CustomerPersonalInfoProps> = ({ customer }: { customer: any }) => {
   return (
     <div className="bg-white border border-[#E4E4E7] shadow-sm rounded-lg p-6 w-full">
       <div className="flex flex-row justify-between items-center mb-6">
@@ -60,6 +65,6 @@ export function CustomerPersonalInfo({ customer }: { customer: any }) {
       </div>
     </div>
   )
-}
+};
 
-export default CustomerPersonalInfo
+export default CustomerPersonalInfo;
