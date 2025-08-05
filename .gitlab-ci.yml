@@ -1,0 +1,36 @@
+stages:
+    - docker-image
+variables:
+    VARIABLE_DATA: Gitlab-CI-YAML
+
+docker-image:
+    stage: docker-image
+    rules:
+        -   if: '$CI_COMMIT_BRANCH == "staging"'
+    image: docker:20-git
+    services:
+        - docker:20-dind
+    environment:
+        name: $CI_COMMIT_BRANCH
+    script:
+        - apk update && apk add jq && apk add curl
+
+        - eval "$SEND_MM_FUNCS"
+        - send_to_mattermost "[FE] $CI_COMMIT_BRANCH build start"
+
+        - export VERSION=`jq -r ".version" < ./package.json`
+        - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY
+        - export IMAGE_TAG=$CI_COMMIT_BRANCH
+        - >
+            docker build
+            --build-arg="NEXT_PUBLIC_baseApiURL=$NEXT_PUBLIC_baseApiURL"
+            --build-arg="NEXT_PUBLIC_storageAccessTokenKey=$NEXT_PUBLIC_storageAccessTokenKey"
+            --build-arg="NEXT_PUBLIC_storageRefreshTokenKey=$NEXT_PUBLIC_storageRefreshTokenKey"
+            --build-arg="NEXT_PUBLIC_storageIsRefreshingTokenKey=$NEXT_PUBLIC_storageIsRefreshingTokenKey"
+            --build-arg="NEXT_PUBLIC_storageDeviceIdKey=$NEXT_PUBLIC_storageDeviceIdKey"
+            --build-arg="NEXT_PUBLIC_storageUserKey=$NEXT_PUBLIC_storageUserKey"
+            --build-arg="NEXT_PUBLIC_storageRoleKey=$NEXT_PUBLIC_storageRoleKey"
+            . -t $CI_REGISTRY_IMAGE:$IMAGE_TAG
+
+        - docker push $CI_REGISTRY_IMAGE:$IMAGE_TAG
+        - send_to_mattermost "[FE] $CI_COMMIT_BRANCH build completed, check $APP_URL"
