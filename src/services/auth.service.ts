@@ -58,15 +58,11 @@ class AuthService {
   async refreshToken() {
     try {
       const refreshToken = HttpService.getLocalRefreshToken();
-      const username = HttpService.getUsername();
-      const deviceId = HttpService.getLocalDeviceId();
 
       const response = await HttpService.doPostRequest(
         '/auth/refresh',
         {
-          username,
-          refreshToken,
-          device: deviceId
+          refreshToken: HttpService.getLocalRefreshToken(),
         },
         false
       );
