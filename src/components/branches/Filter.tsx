@@ -1,6 +1,5 @@
 import { useState } from "react";
 import { Button } from "../ui/button";
-import { Combobox } from "../ui/combobox";
 
 export default function BranchesFilter() {
   const [search, setSearch] = useState("");
