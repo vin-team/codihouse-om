@@ -1,12 +1,9 @@
 'use client';
 
 import { Button } from "@/components/ui/button";
-import router from "next/dist/client/router";
+import Link from "next/link";
 
 export default function UsersAddHeader() {
-  const handleBack = () => {
-    router.push('/users');
-  }
 
   return (
     <div className='flex flex-row justify-between'>
@@ -15,7 +12,9 @@ export default function UsersAddHeader() {
         <p className="text-gray-600">Tạo tài khoản mới cho nhân viên chi nhánh</p>
       </div>
       <div className='flex flex-row gap-2'>
-        <Button variant="outline" onClick={handleBack}>Quay lại</Button>
+        <Link href={'/users'}>
+          <Button variant="outline">Quay lại</Button>
+        </Link>
       </div>
     </div>
   );

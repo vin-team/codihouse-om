@@ -1,11 +1,7 @@
 import { Button } from "@/components/ui/button";
-import router from "next/dist/client/router";
+import Link from "next/dist/client/link";
 
 export default function BranchAddHeader() {
-  const handleBack = () => {
-    router.push('/branches');
-  }
-  
   return (
     <div className='flex flex-row justify-between'>
       <div className='flex flex-col'>
@@ -13,7 +9,9 @@ export default function BranchAddHeader() {
         <p className="text-gray-600">Nhập thông tin chi nhánh mới</p>
       </div>
       <div className='flex flex-row gap-2'>
-        <Button variant="outline" onClick={handleBack}>Quay lại</Button>
+        <Link href="/branches">
+          <Button variant="outline">Quay lại</Button>
+        </Link>
       </div>
     </div>
   );

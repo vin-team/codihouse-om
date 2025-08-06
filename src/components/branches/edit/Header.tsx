@@ -1,14 +1,10 @@
 import { Button } from "@/components/ui/button";
 import { useParams } from "next/dist/client/components/navigation";
-import router from "next/dist/client/router";
+import Link from "next/dist/client/link";
 
 export default function BranchEditHeader() {
   const params = useParams();
   const id = params?.id;
-
-  const handleBack = () => {
-    router.push('/branches');
-  }
 
   return (
     <div className='flex flex-row justify-between'>
@@ -17,7 +13,9 @@ export default function BranchEditHeader() {
         <p className="text-gray-600">Cập nhật thông tin chi nhánh {id}</p>
       </div>
       <div className='flex flex-row gap-2'>
-        <Button variant="outline" onClick={handleBack}>Quay lại</Button>
+        <Link href="/branches">
+          <Button variant="outline">Quay lại</Button>
+        </Link>
       </div>
     </div>
   );

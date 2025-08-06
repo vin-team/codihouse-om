@@ -1,10 +1,8 @@
 import router from "next/dist/client/router";
 import { Button } from "../ui/button";
+import Link from "next/dist/client/link";
 
 export default function UsersHeader() {
-  const handleAddUser = () => {
-    router.push('/users/add');
-  }
   return (
     <div className='flex flex-row justify-between'>
       <div className='flex flex-col'>
@@ -12,7 +10,9 @@ export default function UsersHeader() {
         <p className="text-gray-600">Quản lý tài khoản người dùng của các chi nhánh</p>
       </div>
       <div className='flex flex-row gap-2 items-end'>
-        <Button variant="default" onClick={handleAddUser}>Thêm người dùng</Button>
+        <Link href="/users/add">
+          <Button variant="default">Thêm người dùng</Button>
+        </Link>
       </div>
     </div>
   );

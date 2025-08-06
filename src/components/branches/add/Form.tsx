@@ -3,7 +3,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Combobox } from "@/components/ui/combobox";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import Link from "next/link";
+import Link from "next/dist/client/link";
 import { useState } from "react";
 
 export default function BranchAddForm() {
@@ -80,14 +80,10 @@ export default function BranchAddForm() {
             <h3 className="text-lg font-semibold mb-2">Tích hợp Sapo.vn</h3>
             <p className="text-sm text-gray-600 mb-4">
               Nhập thông tin API để đồng bộ dữ liệu từ Sapo.vn.
-              <a
-                href="https://help.sapo.vn/ung-dung-rieng-private-apps"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-blue-600 hover:text-blue-800 underline ml-1"
-              >
+              <Link href="https://help.sapo.vn/ung-dung-rieng-private-apps"
+                target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:text-blue-800 underline ml-1">
                 Hướng dẫn tạo Private App
-              </a>
+              </Link>
             </p>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div className="space-y-2">

@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import { useRouter } from 'next/router';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
 import { useAppDispatch, useAppSelector } from '@/hooks/redux';
@@ -9,6 +8,8 @@ import { getRole } from '@/slices/roleSlice';
 import { userService } from '@/services/user.service';
 import { setLogined } from '@/slices/app';
 import { useToastContext } from '@/contexts/ToastContext';
+import { useRouter } from 'next/dist/client/router';
+import Link from 'next/dist/client/link';
 
 interface LoginProps { }
 
@@ -214,9 +215,9 @@ const Login: React.FC<LoginProps> = ({ }) => {
                         </label>
                       </div>
                       <div className="text-sm">
-                        <a href="/reset-password" className="font-medium text-primary-600 hover:text-primary-500">
+                        <Link href="/reset-password" className="font-medium text-primary-600 hover:text-primary-500">
                           Quên mật khẩu
-                        </a>
+                        </Link>
                       </div>
                     </div>
 

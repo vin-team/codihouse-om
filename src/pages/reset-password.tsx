@@ -13,6 +13,7 @@ import {
   requestResetPassword
 } from '@/slices/authSlice';
 import { useToastContext } from '@/contexts/ToastContext';
+import Link from 'next/dist/client/link';
 
 interface ResetPasswordProps { }
 
@@ -95,10 +96,6 @@ const ResetPassword: React.FC<ResetPasswordProps> = ({ }) => {
     } finally {
       setSubmitting(false);
     }
-  };
-
-  const handleBackToLogin = () => {
-    router.push('/login');
   };
 
   const renderStep1 = () => (
@@ -285,11 +282,10 @@ const ResetPassword: React.FC<ResetPasswordProps> = ({ }) => {
           Mật khẩu đã được cập nhật thành công. Bạn đã sẵn sàng để đăng nhập với mật khẩu mới.
         </p>
       </div>
-
+      <Link href={'/login'}>
+      </Link>
       <button
-        onClick={handleBackToLogin}
-        className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-primary-600 hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500"
-      >
+        className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-primary-600 hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500">
         Quay lại đăng nhập
       </button>
     </div>

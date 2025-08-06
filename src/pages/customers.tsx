@@ -1,7 +1,6 @@
 'use client'
 
 import React, { useEffect } from 'react';
-import Layout from '@/components/Layout'
 import CustomerList from '@/components/customers/CustomerList';
 import CustomersHeader from '@/components/customers/CustomersHeader';
 import FilterCustomers from '@/components/customers/FilterCustomers';

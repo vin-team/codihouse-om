@@ -1,10 +1,9 @@
 import { useAppSelector } from '@/hooks/redux';
 import { LoaderCircle } from 'lucide-react';
-import { useRouter } from 'next/router';
+import router from 'next/dist/client/router';
 import { useEffect } from 'react';
 
 const Home: React.FC = () => {
-  const router = useRouter();
   const isLogined = useAppSelector(state => state.app.isLogined);
 
   useEffect(() => {

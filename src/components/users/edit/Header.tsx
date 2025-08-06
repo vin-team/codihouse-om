@@ -1,14 +1,11 @@
 import { Button } from "@/components/ui/button";
 import { useParams } from "next/dist/client/components/navigation";
+import Link from "next/dist/client/link";
 import router from "next/dist/client/router";
 
 export default function UsersEditHeader() {
   const params = useParams();
   const id = params?.id;
-
-  const handleBack = () => {
-    router.push('/users');
-  }
 
   return (
     <div className='flex flex-row justify-between'>
@@ -17,7 +14,9 @@ export default function UsersEditHeader() {
         <p className="text-gray-600">Cập nhật thông tin người dùng {id}</p>
       </div>
       <div className='flex flex-row gap-2'>
-        <Button variant="outline" onClick={handleBack}>Quay lại</Button>
+        <Link href={'/users'}>
+          <Button variant="outline">Quay lại</Button>
+        </Link>
       </div>
     </div>
   );

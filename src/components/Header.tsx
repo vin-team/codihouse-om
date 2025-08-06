@@ -2,6 +2,7 @@ import { useRouter } from 'next/router';
 import React from 'react';
 import { MenuUser } from './ui/menu_user';
 import { useAppSelector } from '@/hooks/redux';
+import Link from 'next/dist/client/link';
 
 const Header: React.FC = () => {
   const router = useRouter();
@@ -13,12 +14,13 @@ const Header: React.FC = () => {
         <div className="max-w-screen px-10">
           <div className="flex justify-center items-center h-16">
             <div className="flex items-center space-x-8">
-              <button
-                onClick={() => { router.push('/dashboard') }}
-                className="flex items-center space-x-3">
-                <img src="/favicon.ico" alt="LNC" className="w-8 h-8" />
-                <span className="text-xl font-bold text-gray-900">LNC</span>
-              </button>
+              <Link href={'/dashboard'}>
+                <button
+                  className="flex items-center space-x-3">
+                  <img src="/favicon.ico" alt="LNC" className="w-8 h-8" />
+                  <span className="text-xl font-bold text-gray-900">LNC</span>
+                </button>
+              </Link>
             </div>
           </div>
         </div>
@@ -31,12 +33,13 @@ const Header: React.FC = () => {
       <div className="max-w-screen px-10">
         <div className="flex justify-between items-center h-16">
           <div className="flex items-center space-x-8">
-            <button
-              onClick={() => { router.push('/dashboard') }}
-              className="flex items-center space-x-3">
-              <img src="/favicon.ico" alt="LNC" className="w-10 h-10" />
-              <span className="text-xl font-bold text-gray-900">LNC</span>
-            </button>
+            <Link href={'/dashboard'}>
+              <button
+                className="flex items-center space-x-3">
+                <img src="/favicon.ico" alt="LNC" className="w-10 h-10" />
+                <span className="text-xl font-bold text-gray-900">LNC</span>
+              </button>
+            </Link>
           </div>
 
           <div className="flex items-center">

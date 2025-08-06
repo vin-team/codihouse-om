@@ -10,6 +10,7 @@ export default function OrdersEdit() {
       router.push('/dashboard');
     }
   }, [isAdmin])
+
   return (
     <div>
       <h1>OrdersEdit</h1>
