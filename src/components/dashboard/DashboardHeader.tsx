@@ -8,10 +8,10 @@ interface DashboardHeaderProps {
 }
 
 const DashboardHeader: React.FC<DashboardHeaderProps> = ({
-  title = "Dashboard Quản trị",
-  subtitle = "Tổng quan đơn hàng từ Shopify và Sapo"
+  title = "Tổng quan hệ thống",
+  subtitle = "Quản lý toàn bộ hệ thống khách hàng và đơn hàng"
 }) => {
-    const isAdmin = roleService.isAdmin();
+  const isAdmin = roleService.isAdmin();
 
   if (isAdmin) {
     return (

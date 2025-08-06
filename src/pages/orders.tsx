@@ -21,14 +21,11 @@ const Order: React.FC<OrdersProps> = ({ }) => {
   }, [isAdmin])
 
   return (
-    <Layout
-      children={
-        <div className="p-8 flex flex-col gap-6">
-          <OrdersHeader />
-          <FilterOrders />
-          <OrderList />
-        </div>
-      } />
+    <div className="min-h-full flex flex-col gap-4">
+      <OrdersHeader />
+      <FilterOrders />
+      <OrderList />
+    </div>
   );
 };
 

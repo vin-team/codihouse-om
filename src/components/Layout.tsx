@@ -6,6 +6,8 @@ import { SearchDialog } from './search/SearchDialog';
 import { useDispatch } from 'react-redux';
 import { useAppSelector } from '@/hooks/redux';
 import { setIsOpenSearchDialog } from '@/slices/app';
+import { SidebarInset, SidebarProvider, SidebarTrigger } from './ui/sidebar';
+import { AppSidebar } from './app-sidebar';
 interface IMainLayoutProps {
 	children: ReactNode | ReactNode[];
 	title?: string;
@@ -28,13 +30,21 @@ export default function MainLayout({ children }: IMainLayoutProps) {
 				<meta name='viewport' content='width=device-width, initial-scale=1' />
 				<meta property="og:type" content="website" />
 				<meta name="keywords" content="Codihouse" />
-				<title>Codihouse OM</title>
+				<title>Order Manager</title>
 			</Head>
 			<div>
 				<Header />
-				<main className="pt-8 min-h-full">
-					{children}
-				</main>
+				<SidebarProvider className="pt-16 min-h-screen flex flex-row">
+					<AppSidebar />
+					<SidebarInset>
+						<div className="flex flex-1 flex-col gap-4 p-4">
+							<div className="min-h-[100vh] flex-1 rounded-xl md:min-h-min">
+								{children}
+							</div>
+						</div>
+					</SidebarInset>
+
+				</SidebarProvider>
 			</div>
 			<SearchDialog isOpen={isOpenSearchDialog} onClose={() => dispatch(setIsOpenSearchDialog(false))} />
 		</>

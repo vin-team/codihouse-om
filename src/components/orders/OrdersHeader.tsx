@@ -9,7 +9,7 @@ interface OrdersHeaderProps {
 
 const OrdersHeader: React.FC<OrdersHeaderProps> = ({
   title = "Danh sách đơn hàng",
-  subtitle = "Quản lý tất cả đơn hàng từ Shopify và Sapo"
+  subtitle = "Xem tất cả đơn hàng từ các chi nhánh"
 }) => {
   return (
     <div className='flex flex-row justify-between'>

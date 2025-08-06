@@ -1,7 +1,7 @@
 "use client"
 
 import * as React from "react"
-import { CheckIcon, ChevronsUpDownIcon } from "lucide-react"
+import { CheckIcon, ChevronDownIcon, ChevronsUpDownIcon } from "lucide-react"
 
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
@@ -20,11 +20,13 @@ import {
 } from "@/components/ui/popover"
 
 export function Combobox({
+  className,
   options,
   value,
   onChange,
   placeholder = "Select option...",
 }: {
+  className?: string
   options: { value: string, label: string }[]
   value: string
   onChange: (value: string) => void
@@ -45,14 +47,14 @@ export function Combobox({
           variant="outline"
           role="combobox"
           aria-expanded={open}
-          className="w-80 justify-between h-10">
+          className={cn("w-80 justify-between h-10", className)}>
           <p className="text-sm text-gray-600">{selectedValue
             ? options.find((option) => option.value === selectedValue)?.label
             : placeholder}</p>
-          <ChevronsUpDownIcon className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+          <ChevronDownIcon className="ml-2 h-4 w-4 shrink-0 opacity-50" />
         </Button>
       </PopoverTrigger>
-      <PopoverContent className="w-80 p-0">
+      <PopoverContent className="w-auto p-0">
         <Command>
           <CommandInput placeholder={placeholder} />
           <CommandList>

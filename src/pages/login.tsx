@@ -55,6 +55,8 @@ const Login: React.FC<LoginProps> = ({ }) => {
   }, [dispatch]);
 
   useEffect(() => {
+    if (!authActionState.type) return;
+
     if (authActionState.type === 'login') {
       switch (authActionState.status) {
         case 'loading':
@@ -222,10 +224,10 @@ const Login: React.FC<LoginProps> = ({ }) => {
                     <div>
                       <button
                         type="submit"
-                        disabled={authActionState.status === 'loading'}
+                        disabled={authActionState?.status === 'loading'}
                         className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-primary-600 hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 disabled:opacity-50 disabled:cursor-not-allowed"
                       >
-                        {authActionState.status === 'loading' ? 'Đang đăng nhập...' : 'Đăng nhập'}
+                        {authActionState?.status === 'loading' ? 'Đang đăng nhập...' : 'Đăng nhập'}
                       </button>
                     </div>
                   </Form>

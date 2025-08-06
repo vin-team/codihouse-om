@@ -8,12 +8,11 @@ import FilterCustomers from '@/components/customers/FilterCustomers';
 
 export default function CustomerListPage() {
   return (
-    <Layout>
-      <div className="p-8 flex flex-col gap-6">
-        <CustomersHeader />
-        <FilterCustomers />
-        <CustomerList />
-      </div>
-    </Layout>
+    <div className="min-h-full flex flex-col gap-4">
+      <CustomersHeader />
+      <FilterCustomers />
+      <CustomerList />
+    </div>
+
   )
 }

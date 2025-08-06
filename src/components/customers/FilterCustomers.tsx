@@ -1,30 +1,30 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Combobox } from '../ui/combobox';
+import { Button } from '../ui/button';
 
-interface FilterCustomersProps {
-  placeholder?: string;
-  onSearch?: (value: string) => void;
-}
+export default function FilterCustomers() {
+  const [search, setSearch] = useState('');
+  const [status, setStatus] = useState('');
+  const [orderCount, setOrderCount] = useState('');
+  const [totalSpending, setTotalSpending] = useState('');
 
-const FilterCustomers: React.FC<FilterCustomersProps> = ({
-  placeholder = "Tìm theo tên, SDT, mã khách hàng, email...",
-  onSearch
-}) => {
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    onSearch?.(e.target.value);
+    setSearch(e.target.value);
+  };
+
+  const handleClearSearch = () => {
+    setSearch('');
+    setStatus('');
+    setOrderCount('');
+    setTotalSpending('');
   };
 
   return (
-    <div className="bg-white rounded-lg p-6 border border-gray-200 flex flex-row justify-between space-x-6">
-      <div className='flex flex-col space-y-3 w-full'>
-        <div className='flex flex-row space-x-2 items-center'>
-          <svg width="20" height="21" viewBox="0 0 20 21" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M18.3332 3H1.6665L8.33317 10.8833V16.3333L11.6665 18V10.8833L18.3332 3Z" stroke="#09090B" stroke-width="1.66667" strokeLinecap="round" strokeLinejoin="round" />
-          </svg>
-          <h1 className='text-xl font-bold'>Tìm kiếm và lọc</h1>
-        </div>
-        <div className='flex flex-row space-x-4 w-full'>
-          <div className="flex-1 relative bg-white rounded-lg w-full">
+    <div className="bg-white rounded-lg p-4 md:p-6 border border-gray-200">
+      <div className='flex flex-col space-y-4'>
+        {/* Search Row */}
+        <div className='flex flex-row sm:flex-row gap-4'>
+          <div className="relative flex-1">
             <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
               <svg width="20" height="21" viewBox="0 0 20 21" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <path d="M9.16667 16.3333C12.8486 16.3333 15.8333 13.3486 15.8333 9.66667C15.8333 5.98477 12.8486 3 9.16667 3C5.48477 3 2.5 5.98477 2.5 9.66667C2.5 13.3486 5.48477 16.3333 9.16667 16.3333Z" stroke="#9CA3AF" strokeWidth="1.66667" strokeLinecap="round" strokeLinejoin="round" />
@@ -33,36 +33,67 @@ const FilterCustomers: React.FC<FilterCustomersProps> = ({
             </div>
             <input
               type="text"
-              placeholder={placeholder}
+              value={search}
+              placeholder={"Tìm theo mã đơn hàng, số điện thoại hoặc email..."}
               onChange={handleChange}
               className="block w-full pl-12 pr-20 h-10 border border-gray-300 rounded-lg text-sm placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
             />
           </div>
+          <Button variant="outline" className='h-10 whitespace-nowrap'>
+            <span>Tìm kiếm</span>
+          </Button>
+        </div>
+
+        {/* Filters Row */}
+        <div className='flex flex-col sm:flex-row gap-2 sm:gap-4 flex-wrap'>
           <Combobox
+            className='w-full flex-1'
             options={[
-              { value: 'all', label: 'Tất cả nhóm' },
-              { value: 'retail', label: 'Bán lẻ' },
-              { value: 'wholesale', label: 'Bán sỉ' },
+              { value: 'all', label: 'Tất cả' },
+              { value: 'vip', label: 'VIP' },
+              { value: 'normal', label: 'Thường' },
+              { value: 'new', label: 'Mới' },
             ]}
-            value="all"
-            onChange={() => { }}
-            placeholder='Tất cả nhóm'
+            value={status}
+            onChange={(value) => setStatus(value)}
+            placeholder='Trạng thái'
           />
           <Combobox
+            className='w-full flex-1'
             options={[
-              { value: 'all', label: 'Tất cả hạng thẻ' },
-              { value: 'gold', label: 'Vàng' },
-              { value: 'silver', label: 'Bạc' },
-              { value: 'bronze', label: 'Đồng' },
+              { value: 'all', label: 'Tất cả' },
+              { value: '1_5', label: '1-5 đơn' },
+              { value: '6_15', label: '6-15 đơn' },
+              { value: '16_30', label: '16-30 đơn' },
+              { value: '30', label: 'Trên 30 đơn' },
             ]}
-            value="all"
-            onChange={() => { }}
-            placeholder='Tất cả trạng thái'
+            value={orderCount}
+            onChange={(value) => setOrderCount(value)}
+            placeholder='Số lượng đơn hàng'
           />
+          <Combobox
+            className='w-full flex-1'
+            options={[
+              { value: 'all', label: 'Tất cả' },
+              { value: '1M', label: 'Dưới 1M' },
+              { value: '1_3M', label: '1M-3M' },
+              { value: '3_5M', label: '3M-5M' },
+              { value: '5M', label: 'Trên 5M' },
+            ]}
+            value={totalSpending}
+            onChange={(value) => setTotalSpending(value)}
+            placeholder='Tổng chỉ tiêu'
+          />
+          <div className='flex flex-row gap-2'>
+            <Button variant="outline" className='h-10 w-full sm:w-24'>
+              <span>Lọc</span>
+            </Button>
+            <Button variant="outline" className='h-10 w-full sm:w-24' onClick={handleClearSearch}>
+              <span>Xóa lọc</span>
+            </Button>
+          </div>
         </div>
       </div>
     </div>
   );
-};
-
-export default FilterCustomers;
+}

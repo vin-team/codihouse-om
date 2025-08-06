@@ -1,43 +1,57 @@
 import React from 'react';
-import CustomerItem from './CustomerItem';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '../ui/table';
+import { Badge } from '../ui/badge';
+import { Button } from '../ui/button';
+import Link from 'next/link';
 
 interface CustomerListProps { }
 
 const CustomerList: React.FC<CustomerListProps> = ({ }) => {
   const customers = [
     {
-      name: 'Nguyễn Văn Tươi',
-      code: 'CUSN121990',
-      phone: '0904762101',
-      email: 'nguyenvantuoi99@email.com',
-      group: 'Bán sỉ',
-      totalSpend: 979000,
-      orders: 2,
-      points: 97,
-      lastPurchase: '2025-06-15',
+      id: "KH001",
+      name: "Nguyễn Văn A",
+      email: "nguyenvana@email.com",
+      phone: "0901234567",
+      totalOrders: 12,
+      totalSpent: "2,450,000",
+      lastOrder: "2024-01-15",
+      branch: "Quận 1",
+      status: "VIP"
     },
     {
-      name: 'Nguyễn Thị Lan',
-      code: 'CUSN12186',
-      phone: '0987654321',
-      email: 'nguyenthilian@email.com',
-      group: 'Bán sỉ',
-      totalSpend: 1250000,
-      orders: 5,
-      points: 245,
-      lastPurchase: '2024-01-18',
+      id: "KH002",
+      name: "Trần Thị B",
+      email: "tranthib@email.com",
+      phone: "0902345678",
+      totalOrders: 8,
+      totalSpent: "1,800,000",
+      lastOrder: "2024-01-14",
+      branch: "Online",
+      status: "Thường"
     },
     {
-      name: 'Lê Minh Cường',
-      code: 'CUSN12187',
-      phone: '0912345678',
-      email: 'leminhcuong@email.com',
-      group: 'Bán lẻ',
-      totalSpend: 31310000,
-      orders: 1,
-      points: 156,
-      lastPurchase: '2024-01-14',
+      id: "KH003",
+      name: "Lê Văn C",
+      email: "levanc@email.com",
+      phone: "0903456789",
+      totalOrders: 25,
+      totalSpent: "5,200,000",
+      lastOrder: "2024-01-15",
+      branch: "Quận 7",
+      status: "VIP"
     },
+    {
+      id: "KH004",
+      name: "Phạm Thị D",
+      email: "phamthid@email.com",
+      phone: "0904567890",
+      totalOrders: 3,
+      totalSpent: "650,000",
+      lastOrder: "2024-01-13",
+      branch: "Online",
+      status: "Mới"
+    }
   ]
 
   return (
@@ -46,20 +60,50 @@ const CustomerList: React.FC<CustomerListProps> = ({ }) => {
         <h2 className="text-xl font-bold text-gray-900">Kết quả ({customers.length} khách hàng)</h2>
       </div>
 
-      <div className="p-6 space-y-4">
-        {customers.map((customer, index) => (
-          <CustomerItem
-            key={index}
-            name={customer.name}
-            code={customer.code}
-            phone={customer.phone}
-            email={customer.email}
-            group={customer.group}
-            totalSpend={customer.totalSpend}
-            orders={customer.orders}
-            points={customer.points}
-            lastPurchase={customer.lastPurchase} />
-        ))}
+      <div className="p-6">
+        <Table>
+          <TableHeader>
+            <TableRow>
+              <TableHead>Mã KH</TableHead>
+              <TableHead>Tên khách hàng</TableHead>
+              <TableHead>Email</TableHead>
+              <TableHead>Điện thoại</TableHead>
+              <TableHead>Tổng đơn</TableHead>
+              <TableHead>Tổng chi tiêu</TableHead>
+              <TableHead>Đơn cuối</TableHead>
+              <TableHead>Chi nhánh</TableHead>
+              <TableHead>Trạng thái</TableHead>
+              <TableHead>Thao tác</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {customers.map((customer) => (
+              <TableRow key={customer.id}>
+                <TableCell className="font-medium">{customer.id}</TableCell>
+                <TableCell>{customer.name}</TableCell>
+                <TableCell>{customer.email}</TableCell>
+                <TableCell>{customer.phone}</TableCell>
+                <TableCell>{customer.totalOrders}</TableCell>
+                <TableCell>{customer.totalSpent}₫</TableCell>
+                <TableCell>{customer.lastOrder}</TableCell>
+                <TableCell>{customer.branch}</TableCell>
+                <TableCell>
+                  <Badge variant={
+                    customer.status === "VIP" ? "default" :
+                      customer.status === "Mới" ? "secondary" : "outline"
+                  }>
+                    {customer.status}
+                  </Badge>
+                </TableCell>
+                <TableCell>
+                  <Link href={`/customers/${customer.id}`}>
+                    <Button variant="outline" size="sm">Xem chi tiết</Button>
+                  </Link>
+                </TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
       </div>
     </div>
   );

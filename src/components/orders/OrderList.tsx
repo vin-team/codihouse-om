@@ -1,12 +1,17 @@
 'use client';
 
 import React from 'react';
-import OrderItem from './OrderItem';
 import Pagination from './Pagination';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '../ui/table';
+import { useAppSelector } from '@/hooks/redux';
+import { Badge } from '../ui/badge';
+import { Button } from '../ui/button';
+import Link from 'next/link';
+import { orderService } from '@/services/order.service';
 
-interface OrderListProps { }
+export default function OrderList() {
+  const visibleColumns = useAppSelector(state => state.order.visibleColumns);
 
-const OrderList: React.FC<OrderListProps> = ({ }) => {
   const orders = [
     {
       id: "DH001234",
@@ -110,40 +115,89 @@ const OrderList: React.FC<OrderListProps> = ({ }) => {
     }
   ];
 
+  const getStatusColor = (status: string) => {
+    switch (status) {
+      case "Hoàn thành": return "default"
+      case "Đang xử lý": return "secondary"
+      case "Chờ thanh toán": return "outline"
+      case "Đã hủy": return "destructive"
+      default: return "outline"
+    }
+  }
+
+  const getSalesChannelColor = (channel: string) => {
+    switch (channel) {
+      case "Facebook": return "default"
+      case "Zalo": return "secondary"
+      case "Website": return "outline"
+      default: return "outline"
+    }
+  }
+
   return (
     <div className="bg-white rounded-lg border border-gray-200">
       <div className="p-6 pb-0">
-        <h2 className="text-xl font-bold text-gray-900">1356 đơn hàng</h2>
+        <h2 className="text-xl font-bold text-gray-900">{orders.length} đơn hàng</h2>
+      </div>
+      <div className='p-5'>
+        <Table>
+          <TableHeader>
+            <TableRow>
+              <TableHead>Mã đơn hàng</TableHead>
+              {Array.from(visibleColumns.keys()).map((column) => (
+                <TableHead key={column}>{orderService.translateColumn(column)}</TableHead>
+              ))}
+              <TableHead>Thao tác</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {orders.map((order) => (
+              <TableRow key={order.id}>
+                <TableCell className="font-medium">{order.id}</TableCell>
+                {visibleColumns.get('customer') && <TableCell>{order.customer}</TableCell>}
+                {visibleColumns.get('customerPhone') && <TableCell>{order.customerPhone}</TableCell>}
+                {visibleColumns.get('customerEmail') && <TableCell>{order.customerEmail}</TableCell>}
+                {visibleColumns.get('branch') && <TableCell>{order.branch}</TableCell>}
+                {visibleColumns.get('salesChannel') && (
+                  <TableCell>
+                    {order.salesChannel !== "-" ? (
+                      <Badge variant={getSalesChannelColor(order.salesChannel)}>
+                        {order.salesChannel}
+                      </Badge>
+                    ) : (
+                      "-"
+                    )}
+                  </TableCell>
+                )}
+                {visibleColumns.get('amount') && <TableCell>{order.amount}₫</TableCell>}
+                {visibleColumns.get('status') && (
+                  <TableCell>
+                    <Badge variant={getStatusColor(order.status)}>
+                      {order.status}
+                    </Badge>
+                  </TableCell>
+                )}
+                {visibleColumns.get('date') && <TableCell>{order.date}</TableCell>}
+                {visibleColumns.get('time') && <TableCell>{order.time}</TableCell>}
+                {visibleColumns.get('note') && (
+                  <TableCell className="max-w-[200px] truncate">
+                    {order.note || "-"}
+                  </TableCell>
+                )}
+                <TableCell>
+                  <Link href={`/orders/${order.id}`}>
+                    <Button variant="outline" size="sm">Xem chi tiết</Button>
+                  </Link>
+                </TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
       </div>
 
-      <div className="p-6 space-y-4">
-        {orders.map((order, index) => (
-          <OrderItem
-            key={index}
-            id={order.id}
-            customer={order.customer}
-            customerPhone={order.customerPhone}
-            customerEmail={order.customerEmail}
-            branch={order.branch}
-            salesChannel={order.salesChannel}
-            amount={order.amount}
-            date={order.date}
-            time={order.time}
-            products={order.products}
-            status={order.status as 'completed' | 'pending'}
-            statusDate={order.date}
-            phone={order.customerPhone}
-            orderDate={order.date}
-            totalAmount={order.amount}
-          />
-        ))}
-      </div>
-
-      <div className="pb-6 flex justify-center">
+      {/* <div className="pb-6 flex justify-center">
         <Pagination />
-      </div>
+      </div> */}
     </div>
   );
-};
-
-export default OrderList;
+}
