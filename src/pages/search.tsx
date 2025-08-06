@@ -7,6 +7,7 @@ import { Search } from 'lucide-react';
 import SearchHeader from '@/components/search/SearchHeader';
 import SearchOrder from '@/components/search/SearchOrder';
 import SearchCustomer from '@/components/search/SearchCustomer';
+import Loading from '@/components/Loading';
 
 interface SearchResultProps { }
 
@@ -108,32 +109,26 @@ const SearchResultPage: React.FC<SearchResultProps> = () => {
 
   if (loading) {
     return (
-      <Layout>
-        <div className="p-8 flex items-center justify-center">
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900"></div>
-        </div>
-      </Layout>
+      <Loading />
     );
   }
 
   return (
-    <Layout>
-      <div className="p-8 space-y-6">
-        <SearchHeader keyword={keyword as string} totalResults={totalResults} />
-        {searchResults.orders.length > 0 && <SearchOrder orders={searchResults.orders} />}
-        {searchResults.customers.length > 0 && <SearchCustomer customers={searchResults.customers} />}
+    <div className="min-h-full flex flex-col gap-4">
+      <SearchHeader keyword={keyword as string} totalResults={totalResults} />
+      {searchResults.orders.length > 0 && <SearchOrder orders={searchResults.orders} />}
+      {searchResults.customers.length > 0 && <SearchCustomer customers={searchResults.customers} />}
 
-        {totalResults === 0 && (
-          <div className="text-center py-12">
-            <Search className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-            <h3 className="text-lg font-medium text-gray-900 mb-2">Không tìm thấy kết quả</h3>
-            <p className="text-gray-600">
-              Không có kết quả nào cho từ khóa "{keyword}". Vui lòng thử từ khóa khác.
-            </p>
-          </div>
-        )}
-      </div>
-    </Layout>
+      {totalResults === 0 && (
+        <div className="text-center py-12">
+          <Search className="h-12 w-12 text-gray-400 mx-auto mb-4" />
+          <h3 className="text-lg font-medium text-gray-900 mb-2">Không tìm thấy kết quả</h3>
+          <p className="text-gray-600">
+            Không có kết quả nào cho từ khóa "{keyword}". Vui lòng thử từ khóa khác.
+          </p>
+        </div>
+      )}
+    </div>
   );
 };
 

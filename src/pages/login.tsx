@@ -55,7 +55,7 @@ const Login: React.FC<LoginProps> = ({ }) => {
   }, [dispatch]);
 
   useEffect(() => {
-    if (!authActionState.type) return;
+    if (!authActionState || !authActionState.type) return;
 
     if (authActionState.type === 'login') {
       switch (authActionState.status) {

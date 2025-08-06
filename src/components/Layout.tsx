@@ -30,8 +30,8 @@ export default function MainLayout({ children }: IMainLayoutProps) {
 				<meta charSet='UTF-8' />
 				<meta name='viewport' content='width=device-width, initial-scale=1' />
 				<meta property="og:type" content="website" />
-				<meta name="keywords" content="Codihouse" />
-				<title>Order Manager</title>
+				<meta name="keywords" content="LNC" />
+				<title>LNC</title>
 			</Head>
 			{isLogined ? <div>
 				<Header />

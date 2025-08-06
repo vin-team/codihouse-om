@@ -35,5 +35,5 @@ docker-image:
         - docker push $CI_REGISTRY_IMAGE:$IMAGE_TAG
         - send_to_mattermost "[FE] $CI_COMMIT_BRANCH build completed, check $APP_URL"
         
-        - curl -X POST https://system.codihaus.com/api/deploy/compose/sj7uxKAIEQ-b89FGgar-Z
+        - curl -X GET $AUTO_DEPLOY_URL
         - send_to_mattermost "[FE] $CI_COMMIT_BRANCH deployment triggered"

@@ -16,10 +16,8 @@ const Header: React.FC = () => {
               <button
                 onClick={() => { router.push('/dashboard') }}
                 className="flex items-center space-x-3">
-                <div className="w-8 h-8 bg-primary-600 rounded-lg flex items-center justify-center">
-                  <span className="text-white font-bold text-sm">OM</span>
-                </div>
-                <span className="text-xl font-bold text-gray-900">Order Manager</span>
+                <img src="/favicon.ico" alt="LNC" className="w-8 h-8" />
+                <span className="text-xl font-bold text-gray-900">LNC</span>
               </button>
             </div>
           </div>
@@ -36,10 +34,8 @@ const Header: React.FC = () => {
             <button
               onClick={() => { router.push('/dashboard') }}
               className="flex items-center space-x-3">
-              <div className="w-8 h-8 bg-primary-600 rounded-lg flex items-center justify-center">
-                <span className="text-white font-bold text-sm">OM</span>
-              </div>
-              <span className="text-xl font-bold text-gray-900">Order Manager</span>
+              <img src="/favicon.ico" alt="LNC" className="w-10 h-10" />
+              <span className="text-xl font-bold text-gray-900">LNC</span>
             </button>
           </div>
 
