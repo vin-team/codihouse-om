@@ -19,6 +19,7 @@ import {
 } from "@/components/ui/sidebar"
 import router from "next/dist/client/router"
 import { roleService } from "@/services/role.service"
+import Link from "next/link"
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const isAdmin = roleService.isAdmin();
@@ -72,12 +73,12 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                 asChild
                 isActive={isActive(item.url)}
                 className={`w-full p-4 py-6 rounded-lg text-gray-500 ${isActive(item.url) ? '!bg-blue-100 !text-blue-600' : ''}`} >
-                <a href={item.url}>
+                <Link href={item.url}>
                   <div className="flex items-center gap-4">
                     {item.icon}
                     <span className="text-base">{item.title}</span>
                   </div>
-                </a>
+                </Link>
               </SidebarMenuButton>
             </SidebarMenuItem>
           </SidebarMenu>
