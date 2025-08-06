@@ -104,27 +104,6 @@ const SearchResultPage: React.FC<SearchResultProps> = () => {
     }
   }, [keyword]);
 
-  const handleViewOrder = (orderId: string) => {
-    const cleanOrderId = orderId.replace('#', '');
-    router.push(`/orders/${cleanOrderId}`);
-  };
-
-  const handleViewCustomer = (customerCode: string) => {
-    router.push(`/customers/${customerCode}`);
-  };
-
-  const getStatusColor = (status: string) => {
-    return status === 'completed' ? 'bg-green-100 text-green-700' : 'bg-blue-100 text-blue-700';
-  };
-
-  const getStatusText = (status: string) => {
-    return status === 'completed' ? 'Hoàn thành' : 'Chờ xử lý';
-  };
-
-  const getSourceColor = (source: string) => {
-    return source === 'SHOPIFY' ? 'bg-blue-100 text-blue-800' : 'bg-gray-100 text-gray-800';
-  };
-
   const totalResults = searchResults.orders.length + searchResults.customers.length;
 
   if (loading) {

@@ -6,7 +6,7 @@ import { SearchDialog } from './search/SearchDialog';
 import { useDispatch } from 'react-redux';
 import { useAppSelector } from '@/hooks/redux';
 import { setIsOpenSearchDialog } from '@/slices/app';
-import { SidebarInset, SidebarProvider, SidebarTrigger } from './ui/sidebar';
+import { SidebarInset, SidebarProvider } from './ui/sidebar';
 import { AppSidebar } from './app-sidebar';
 interface IMainLayoutProps {
 	children: ReactNode | ReactNode[];
@@ -22,6 +22,7 @@ interface IMetaData {
 export default function MainLayout({ children }: IMainLayoutProps) {
 	const dispatch = useDispatch();
 	const isOpenSearchDialog = useAppSelector(state => state.app.isOpenSearchDialog);
+	const isLogined = useAppSelector(state => state.app.isLogined);
 
 	return (
 		<>
@@ -32,7 +33,7 @@ export default function MainLayout({ children }: IMainLayoutProps) {
 				<meta name="keywords" content="Codihouse" />
 				<title>Order Manager</title>
 			</Head>
-			<div>
+			{isLogined ? <div>
 				<Header />
 				<SidebarProvider className="pt-16 min-h-screen flex flex-row">
 					<AppSidebar />
@@ -45,7 +46,17 @@ export default function MainLayout({ children }: IMainLayoutProps) {
 					</SidebarInset>
 
 				</SidebarProvider>
-			</div>
+			</div> :
+				<div>
+					<Header />
+					<div className="flex flex-1 flex-col gap-4 p-4">
+						<div className="min-h-[100vh] flex-1 rounded-xl md:min-h-min">
+							{children}
+						</div>
+					</div>
+				</div>
+			}
+
 			<SearchDialog isOpen={isOpenSearchDialog} onClose={() => dispatch(setIsOpenSearchDialog(false))} />
 		</>
 	);

@@ -13,7 +13,7 @@ const SearchBar: React.FC<SearchBarProps> = ({
   placeholder = "Nhấn để tìm kiếm đơn hàng... (⌘K)",
 }) => {
   const dispatch = useDispatch();
-    const isAdmin = roleService.isAdmin();
+  const isAdmin = roleService.isAdmin();
 
   if (isAdmin) {
     return (

@@ -18,43 +18,50 @@ import {
   SidebarRail,
 } from "@/components/ui/sidebar"
 import router from "next/dist/client/router"
-
-const data = {
-  navMain: [
-    {
-      title: "Tổng quan",
-      url: "/dashboard",
-      icon: <House />,
-    },
-    {
-      title: "Đơn hàng",
-      url: "/orders",
-      icon: <Package />,
-    },
-    {
-      title: "Khách hàng",
-      url: "/customers",
-      icon: <Users />,
-    },
-    {
-      title: "Chi nhánh",
-      url: "/branches",
-      icon: <Building2 />,
-    },
-    {
-      title: "Người dùng",
-      url: "/users",
-      icon: <User />,
-    },
-  ],
-}
-
-
-const isActive = (path: string) => {
-  return router.pathname.startsWith(path);
-};
+import { roleService } from "@/services/role.service"
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
+  const isAdmin = roleService.isAdmin();
+  const data = {
+    navMain: isAdmin ? [
+      {
+        title: "Tổng quan",
+        url: "/dashboard",
+        icon: <House />,
+      },
+      {
+        title: "Đơn hàng",
+        url: "/orders",
+        icon: <Package />,
+      },
+      {
+        title: "Khách hàng",
+        url: "/customers",
+        icon: <Users />,
+      },
+      {
+        title: "Chi nhánh",
+        url: "/branches",
+        icon: <Building2 />,
+      },
+      {
+        title: "Người dùng",
+        url: "/users",
+        icon: <User />,
+      },
+    ] : [
+      {
+        title: "Tổng quan",
+        url: "/dashboard",
+        icon: <House />,
+      },
+    ],
+  }
+
+  const isActive = (path: string) => {
+    return router.pathname.startsWith(path);
+  };
+
   return (
     <Sidebar {...props} className="pt-16">
       <SidebarContent className="p-4">
