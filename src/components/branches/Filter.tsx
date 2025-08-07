@@ -1,12 +1,12 @@
 import { useState } from "react";
 import { Button } from "../ui/button";
+import { useAppDispatch, useAppSelector } from "@/hooks/redux";
+import { setFilter as setFilterBranch } from "@/slices/branchSlice";
 
 export default function BranchesFilter() {
-  const [search, setSearch] = useState("");
+  const dispatch = useAppDispatch();
+  const filter = useAppSelector(state => state.branch.filter);
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setSearch(e.target.value);
-  };
 
   return (
     <div className="bg-white rounded-lg p-4 md:p-6 border border-gray-200">
@@ -22,13 +22,13 @@ export default function BranchesFilter() {
             </div>
             <input
               type="text"
-              value={search}
+              value={filter.search}
               placeholder={"Tìm theo chi nhánh..."}
-              onChange={handleChange}
+              onChange={(e) => dispatch(setFilterBranch({ ...filter, search: e.target.value }))}
               className="block w-full pl-12 pr-20 h-10 border border-gray-300 rounded-lg text-sm placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
             />
           </div>
-          <Button variant="outline" className='h-10 whitespace-nowrap'>
+          <Button variant="outline" className='h-10 whitespace-nowrap' onClick={() => dispatch(setFilterBranch(filter))}>
             <span>Tìm kiếm</span>
           </Button>
         </div>

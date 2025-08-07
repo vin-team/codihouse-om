@@ -13,10 +13,11 @@ import { CalendarIcon } from "lucide-react"
 import { Combobox } from "./combobox"
 import { cn } from "@/lib/utils"
 
-export function RangeCalendar({ className }: { className?: string }) {
-
-  const [dateRange, setDateRange] = useState<DateRange | undefined>(undefined)
-
+export function RangeCalendar({ className, dateRange, onChangeDateRange }: {
+  className?: string,
+  dateRange: DateRange | undefined,
+  onChangeDateRange: (dateRange: DateRange | { from?: string; to?: string; }) => void
+}) {
   const getQuickDateRange = (option: string): DateRange | undefined => {
     const today = new Date()
     switch (option) {
@@ -43,7 +44,7 @@ export function RangeCalendar({ className }: { className?: string }) {
 
   const handleQuickDateSelect = (option: string) => {
     const range = getQuickDateRange(option)
-    setDateRange(range)
+    onChangeDateRange(range || { from: "", to: "" })
   }
 
   return (
@@ -54,11 +55,11 @@ export function RangeCalendar({ className }: { className?: string }) {
           {dateRange?.from ? (
             dateRange.to ? (
               <>
-                {format(dateRange.from, "dd/MM", { locale: vi })} -{" "}
-                {format(dateRange.to, "dd/MM", { locale: vi })}
+                {format(new Date(dateRange.from), "dd/MM", { locale: vi })} -{" "}
+                {format(new Date(dateRange.to), "dd/MM", { locale: vi })}
               </>
             ) : (
-              format(dateRange.from, "dd/MM/yyyy", { locale: vi })
+              format(new Date(dateRange.from), "dd/MM/yyyy", { locale: vi })
             )
           ) : (
             <span>Khoảng thời gian</span>
@@ -90,7 +91,9 @@ export function RangeCalendar({ className }: { className?: string }) {
           mode="range"
           defaultMonth={dateRange?.from}
           selected={dateRange}
-          onSelect={setDateRange}
+          onSelect={(dateRange) => {
+            onChangeDateRange(dateRange || { from: "", to: "" })
+          }}
           numberOfMonths={1}
           disabled={(date) => date > new Date()}
         />

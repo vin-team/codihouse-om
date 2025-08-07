@@ -1,20 +1,59 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Combobox } from '../ui/combobox';
 import { Button } from '../ui/button';
 import { RangeCalendar } from '../ui/range-calendar';
 import ColumnOptions from './ColumnOptions';
 import { useAppDispatch, useAppSelector } from '@/hooks/redux';
-import { toggleColumn } from '@/slices/orderSlice';
+import { setFilter as setFilterAction, toggleColumn } from '@/slices/orderSlice';
+import { getBranches } from '@/slices/branchSlice';
 
 export default function FilterOrders() {
   const dispatch = useAppDispatch();
+  const branches = useAppSelector(state => state.branch.branches);
   const columns = useAppSelector(state => state.order.visibleColumns);
-  const [search, setSearch] = useState('');
+  const [filter, setFilter] = useState<any>({
+    search: '',
+    status: '',
+    branch: '',
+    dateRange: {
+      from: '',
+      to: '',
+    },
+  });
+
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setSearch?.(e.target.value);
+    setFilter({ ...filter, search: e.target.value });
   };
+
+  const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Enter') {
+      handleFilter();
+    }
+  };
+
+  const handleFilter = () => {
+    dispatch(setFilterAction(filter));
+  }
+
+  const handleClearFilter = () => {
+    const clearedFilter = {
+      search: '',
+      status: '',
+      branch: '',
+      dateRange: {
+        from: '',
+        to: '',
+      },
+    };
+    setFilter(clearedFilter);
+    dispatch(setFilterAction(clearedFilter));
+  }
+
+  useEffect(() => {
+    dispatch(getBranches());
+  }, []);
 
   return (
     <div className="bg-white rounded-lg p-4 md:p-6 border border-gray-200">
@@ -30,13 +69,14 @@ export default function FilterOrders() {
             </div>
             <input
               type="text"
-              value={search}
+              value={filter.search}
               placeholder={"Tìm theo mã đơn hàng, số điện thoại hoặc email..."}
               onChange={handleChange}
+              onKeyPress={handleKeyPress}
               className="block w-full pl-12 pr-20 h-10 border border-gray-300 rounded-lg text-sm placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
             />
           </div>
-          <Button variant="outline" className='h-10 whitespace-nowrap'>
+          <Button variant="outline" className='h-10 whitespace-nowrap' onClick={handleFilter}>
             <span>Tìm kiếm</span>
           </Button>
         </div>
@@ -47,38 +87,47 @@ export default function FilterOrders() {
             className='w-full flex-1'
             options={[
               { value: 'all', label: 'Tất cả' },
-              { value: 'processing', label: 'Đang xử lý' },
+              { value: 'processing', label: 'Đang giao dịch' },
               { value: 'completed', label: 'Hoàn thành' },
               { value: 'pending', label: 'Chờ thanh toán' },
               { value: 'cancelled', label: 'Đã hủy' },
             ]}
-            value=""
-            onChange={() => { }}
+            value={filter.status}
+            onChange={(value) => {
+              setFilter({ ...filter, status: value });
+            }}
             placeholder='Trạng thái'
           />
           <Combobox
             className='w-full flex-1'
             options={[
               { value: 'all', label: 'Tất cả' },
-              { value: 'q1', label: 'Quận 1' },
-              { value: 'q2', label: 'Quận 2' },
-              { value: 'q3', label: 'Quận 3' },
-              { value: 'q4', label: 'Quận 4' },
-              { value: 'q5', label: 'Quận 5' },
-              { value: 'q6', label: 'Quận 6' },
-              { value: 'q7', label: 'Quận 7' },
-              { value: 'offline', label: 'Offline' },
+              ...branches.map(branch => ({
+                value: branch.id.toString(),
+                label: branch.title
+              }))
             ]}
-            value=""
-            onChange={() => { }}
+            value={filter.branch}
+            onChange={(value) => {
+              setFilter({ ...filter, branch: value });
+            }}
             placeholder='Chi nhánh'
           />
-          <RangeCalendar className='w-full flex-1' />
+          <RangeCalendar className='w-full flex-1'
+            dateRange={filter.dateRange}
+            onChangeDateRange={(dateRange) => {
+              setFilter({
+                ...filter, dateRange: {
+                  from: dateRange.from ? dateRange.from : '',
+                  to: dateRange.to ? dateRange.to : ''
+                }
+              });
+            }} />
           <div className='flex flex-row gap-2'>
-            <Button variant="outline" className='h-10 w-full sm:w-24'>
+            <Button variant="outline" className='h-10 w-full sm:w-24' onClick={handleFilter}>
               <span>Lọc</span>
             </Button>
-            <Button variant="outline" className='h-10 w-full sm:w-24'>
+            <Button variant="outline" className='h-10 w-full sm:w-24' onClick={handleClearFilter}>
               <span>Xóa lọc</span>
             </Button>
             <ColumnOptions

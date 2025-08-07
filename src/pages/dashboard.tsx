@@ -4,14 +4,14 @@ import DashboardHeader from '@/components/dashboard/DashboardHeader';
 import SearchBar from '@/components/dashboard/SearchBar';
 import RecentOrders from '@/components/dashboard/RecentOrders';
 import React from 'react';
-import { useDispatch } from 'react-redux';
+import { useAppDispatch } from '@/hooks/redux';
 import { useKeyboardShortcut } from '@/hooks/useKeyboardShortcut';
 import { setIsOpenSearchDialog } from '@/slices/app';
 import { roleService } from '@/services/role.service';
 import Branches from '@/components/dashboard/Branches';
 
 const dashboard: React.FC = () => {
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
   const isAdmin = roleService.isAdmin();
 
   useKeyboardShortcut({

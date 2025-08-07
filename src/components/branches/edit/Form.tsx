@@ -3,24 +3,52 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Combobox } from "@/components/ui/combobox";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { useToastContext } from "@/contexts/ToastContext";
+import { useAppDispatch, useAppSelector } from "@/hooks/redux";
+import { Branch } from "@/model/Branch.model";
+import { updateBranch } from "@/slices/branchSlice";
 import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
-export default function BranchEditForm() {
-  const [branch, setBranch] = useState({
-    name: "Chi nhánh Quận 1",
-    type: "offline",
-    status: "active",
-    address: "123 Đường ABC, Quận 1, TP.HCM",
-    phone: "0909090909",
-    manager: "Nguyễn Văn A",
-    notes: "Ghi chú thêm về chi nhánh",
+export default function BranchEditForm({ branch }: { branch: Branch }) {
+  const dispatch = useAppDispatch();
+  const { success, error } = useToastContext();
+
+  const requestState = useAppSelector(state => state.branch.requestState);
+
+  const [form, setForm] = useState({
+    title: branch.title,
+    type: branch.type,
+    address: branch.address,
+    status: branch.status,
+    phone: branch.phone,
+    manager: branch.manager,
+    note: branch.note,
   });
 
   const [sapoKey, setSapoKey] = useState({
     apiKey: "1234567890",
     apiSecret: "1234567890",
   });
+
+  const handleUpdateBranch = () => {
+    dispatch(updateBranch({ ...form, id: branch.id }));
+  }
+
+  useEffect(() => {
+    if (requestState.type === 'updateBranch') {
+      switch (requestState.status) {
+        case 'loading':
+          break;
+        case 'completed':
+          success('Cập nhật chi nhánh thành công');
+          break;
+        case 'failed':
+          error("Cập nhật chi nhánh thất bại", requestState?.error || "Có lỗi xảy ra. Vui lòng thử lại.");
+          break;
+      }
+    }
+  }, [requestState]);
 
   return (
     <Card>
@@ -34,7 +62,7 @@ export default function BranchEditForm() {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div className="space-y-2">
             <Label htmlFor="name">Tên chi nhánh <span className="text-red-500">*</span></Label>
-            <Input id="name" placeholder="Nhập tên chi nhánh" value={branch.name} onChange={(e) => setBranch({ ...branch, name: e.target.value })} />
+            <Input id="name" placeholder="Nhập tên chi nhánh" value={form.title} onChange={(e) => setForm({ ...form, title: e.target.value })} />
           </div>
           <div className="space-y-2">
             <Label htmlFor="type">Loại chi nhánh <span className="text-red-500">*</span></Label>
@@ -45,16 +73,16 @@ export default function BranchEditForm() {
                 { value: 'offline', label: 'Offline' },
                 { value: 'online', label: 'Online' },
               ]}
-              value={branch.type}
-              onChange={(value) => setBranch({ ...branch, type: value })}
+              value={form.type || ''}
               placeholder='Chọn loại chi nhánh'
+              onChange={(value) => setForm({ ...form, type: value })}
             />
           </div>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div className="space-y-2">
             <Label htmlFor="address">Địa chỉ <span className="text-red-500">*</span></Label>
-            <Input id="address" placeholder="Nhập địa chỉ chi nhánh" value={branch.address} onChange={(e) => setBranch({ ...branch, address: e.target.value })} />
+            <Input id="address" placeholder="Nhập địa chỉ chi nhánh" value={form.address || ''} onChange={(e) => setForm({ ...form, address: e.target.value })} />
           </div>
           <div className="space-y-2">
             <Label htmlFor="status">Trạng thái</Label>
@@ -64,8 +92,8 @@ export default function BranchEditForm() {
                 { value: 'active', label: 'Hoạt động' },
                 { value: 'inactive', label: 'Tạm dừng' },
               ]}
-              value={branch.status}
-              onChange={(value) => setBranch({ ...branch, status: value })}
+              value={form.status}
+              onChange={(value) => setForm({ ...form, status: value })}
               placeholder='Chọn trạng thái'
             />
           </div>
@@ -74,17 +102,17 @@ export default function BranchEditForm() {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div className="space-y-2">
             <Label htmlFor="phone">Số điện thoại <span className="text-red-500">*</span></Label>
-            <Input type="number" id="phone" placeholder="Nhập số điện thoại" value={branch.phone} onChange={(e) => setBranch({ ...branch, phone: e.target.value })} />
+            <Input type="number" id="phone" placeholder="Nhập số điện thoại" value={form.phone || ''} onChange={(e) => setForm({ ...form, phone: e.target.value })} />
           </div>
           <div className="space-y-2">
             <Label htmlFor="manager">Người quản lý <span className="text-red-500">*</span></Label>
-            <Input id="manager" placeholder="Nhập tên người quản lý" value={branch.manager} />
+            <Input id="manager" placeholder="Nhập tên người quản lý" value={form.manager || ''} onChange={(e) => setForm({ ...form, manager: e.target.value })} />
           </div>
         </div>
 
         <div className="space-y-2">
           <Label htmlFor="notes">Ghi chú</Label>
-          <Input id="notes" placeholder="Ghi chú thêm về chi nhánh" value={branch.notes} onChange={(e) => setBranch({ ...branch, notes: e.target.value })} />
+          <Input id="notes" placeholder="Ghi chú thêm về chi nhánh" value={form.note || ''} onChange={(e) => setForm({ ...form, note: e.target.value })} />
         </div>
 
         <div className="space-y-4">
@@ -111,7 +139,9 @@ export default function BranchEditForm() {
         </div>
 
         <div className="flex space-x-4">
-          <Button>Cập nhật chi nhánh</Button>
+          <Button
+            onClick={handleUpdateBranch}
+            disabled={requestState?.type === 'updateBranch' && requestState?.status === 'loading'}>Cập nhật chi nhánh</Button>
           <Link href="/branches">
             <Button variant="outline">Hủy</Button>
           </Link>

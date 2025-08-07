@@ -3,12 +3,48 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Combobox } from "@/components/ui/combobox";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { useToastContext } from "@/contexts/ToastContext";
+import { useAppDispatch, useAppSelector } from "@/hooks/redux";
+import { createBranch } from "@/slices/branchSlice";
 import Link from "next/dist/client/link";
-import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
 
 export default function BranchAddForm() {
-  const [type, setType] = useState("");
-  const [status, setStatus] = useState("");
+  const router = useRouter();
+  const dispatch = useAppDispatch();
+  const { success, error } = useToastContext();
+  const requestState = useAppSelector(state => state.branch.requestState);
+
+  const [form, setForm] = useState({
+    title: "",
+    type: "",
+    address: "",
+    status: "",
+    phone: "",
+    manager: "",
+    note: "",
+  });
+
+  const handleCreateBranch = () => {
+    dispatch(createBranch(form));
+  }
+
+  useEffect(() => {
+    if (requestState?.type === 'createBranch') {
+      switch (requestState?.status) {
+        case 'loading':
+          break;
+        case 'completed':
+          success('Tạo chi nhánh thành công');
+          router.push(`/branches`);
+          break;
+        case 'failed':
+          error("Tạo chi nhánh thất bại", requestState?.error || "Có lỗi xảy ra. Vui lòng thử lại.");
+          break;
+      }
+    }
+  }, [requestState]);
 
   return (
     <Card>
@@ -33,8 +69,8 @@ export default function BranchAddForm() {
                 { value: 'offline', label: 'Offline' },
                 { value: 'online', label: 'Online' },
               ]}
-              value={type}
-              onChange={setType}
+              value={form.type}
+              onChange={(value) => setForm({ ...form, type: value })}
               placeholder='Chọn loại chi nhánh'
             />
           </div>
@@ -52,8 +88,8 @@ export default function BranchAddForm() {
                 { value: 'active', label: 'Hoạt động' },
                 { value: 'inactive', label: 'Tạm dừng' },
               ]}
-              value={status}
-              onChange={setStatus}
+              value={form.status}
+              onChange={(value) => setForm({ ...form, status: value })}
               placeholder='Chọn trạng thái'
             />
           </div>
@@ -62,17 +98,17 @@ export default function BranchAddForm() {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div className="space-y-2">
             <Label htmlFor="phone">Số điện thoại <span className="text-red-500">*</span></Label>
-            <Input type="number" id="phone" placeholder="Nhập số điện thoại" />
+            <Input type="number" id="phone" placeholder="Nhập số điện thoại" value={form.phone} onChange={(e) => setForm({ ...form, phone: e.target.value })} />
           </div>
           <div className="space-y-2">
             <Label htmlFor="manager">Người quản lý <span className="text-red-500">*</span></Label>
-            <Input id="manager" placeholder="Nhập tên người quản lý" />
+            <Input id="manager" placeholder="Nhập tên người quản lý" value={form.manager} onChange={(e) => setForm({ ...form, manager: e.target.value })} />
           </div>
         </div>
 
         <div className="space-y-2">
           <Label htmlFor="notes">Ghi chú</Label>
-          <Input id="notes" placeholder="Ghi chú thêm về chi nhánh" />
+          <Input id="notes" placeholder="Ghi chú thêm về chi nhánh" value={form.note} onChange={(e) => setForm({ ...form, note: e.target.value })} />
         </div>
 
         <div className="space-y-4">
@@ -99,7 +135,7 @@ export default function BranchAddForm() {
         </div>
 
         <div className="flex space-x-4">
-          <Button>Tạo chi nhánh</Button>
+          <Button onClick={handleCreateBranch} disabled={requestState?.type === 'createBranch' && requestState?.status === 'loading'}>Tạo chi nhánh</Button>
           <Link href="/branches">
             <Button variant="outline">Hủy</Button>
           </Link>

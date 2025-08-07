@@ -17,10 +17,10 @@ interface PaginationProps {
   onPageChange?: (page: number) => void;
 }
 
-const Pagination: React.FC<PaginationProps> = ({ 
-  currentPage = 1, 
-  totalPages = 10, 
-  onPageChange 
+const Pagination: React.FC<PaginationProps> = ({
+  currentPage = 1,
+  totalPages = 10,
+  onPageChange
 }) => {
   const handlePageClick = (page: number) => {
     if (onPageChange) {
@@ -43,7 +43,7 @@ const Pagination: React.FC<PaginationProps> = ({
   const getVisiblePages = () => {
     const pages = [];
     const maxVisible = 5;
-    
+
     if (totalPages <= maxVisible) {
       for (let i = 1; i <= totalPages; i++) {
         pages.push(i);
@@ -71,7 +71,7 @@ const Pagination: React.FC<PaginationProps> = ({
         pages.push(totalPages);
       }
     }
-    
+
     return pages;
   };
 
@@ -79,42 +79,19 @@ const Pagination: React.FC<PaginationProps> = ({
     <PaginationUI>
       <PaginationContent>
         <PaginationItem>
-          <PaginationPrevious 
-            href="#" 
-            onClick={(e) => {
-              e.preventDefault();
-              handlePrevious();
-            }}
-          />
+          <PaginationPrevious role='button' onClick={handlePrevious} />
         </PaginationItem>
-        
         {getVisiblePages().map((page, index) => (
           <PaginationItem key={index}>
-            {page === 'ellipsis' ? (
-              <PaginationEllipsis />
-            ) : (
-              <PaginationLink 
-                href="#" 
-                isActive={page === currentPage}
-                onClick={(e) => {
-                  e.preventDefault();
-                  handlePageClick(page as number);
-                }}
-              >
+            {page === 'ellipsis' ? <PaginationEllipsis /> : (
+              <PaginationLink role='button' onClick={() => handlePageClick(Number(page))} isActive={currentPage === Number(page)}>
                 {page}
               </PaginationLink>
             )}
           </PaginationItem>
         ))}
-        
         <PaginationItem>
-          <PaginationNext 
-            href="#" 
-            onClick={(e) => {
-              e.preventDefault();
-              handleNext();
-            }}
-          />
+          <PaginationNext role='button' onClick={handleNext} />
         </PaginationItem>
       </PaginationContent>
     </PaginationUI>

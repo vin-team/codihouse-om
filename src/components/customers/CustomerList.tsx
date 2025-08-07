@@ -1,58 +1,73 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '../ui/table';
 import { Badge } from '../ui/badge';
 import { Button } from '../ui/button';
 import Link from 'next/link';
+import { getCustomers, getCustomersCount, setPage } from '@/slices/customerSlice';
+import { useAppDispatch, useAppSelector } from '@/hooks/redux';
+import { Customer } from '@/model/Customer.model';
+import { formatCurrency } from '@/utils/data.util';
+import Pagination from '../orders/Pagination';
 
-interface CustomerListProps { }
+export default function CustomerList() {
+  const dispatch = useAppDispatch();
+  const pagination = useAppSelector(state => state.customer.pagination);
+  const customers = useAppSelector(state => state.customer.customers);
+  const filter = useAppSelector(state => state.customer.filter);
 
-const CustomerList: React.FC<CustomerListProps> = ({ }) => {
-  const customers = [
-    {
-      id: "KH001",
-      name: "Nguyễn Văn A",
-      email: "nguyenvana@email.com",
-      phone: "0901234567",
-      totalOrders: 12,
-      totalSpent: "2,450,000",
-      lastOrder: "2024-01-15",
-      branch: "Quận 1",
-      status: "VIP"
-    },
-    {
-      id: "KH002",
-      name: "Trần Thị B",
-      email: "tranthib@email.com",
-      phone: "0902345678",
-      totalOrders: 8,
-      totalSpent: "1,800,000",
-      lastOrder: "2024-01-14",
-      branch: "Online",
-      status: "Thường"
-    },
-    {
-      id: "KH003",
-      name: "Lê Văn C",
-      email: "levanc@email.com",
-      phone: "0903456789",
-      totalOrders: 25,
-      totalSpent: "5,200,000",
-      lastOrder: "2024-01-15",
-      branch: "Quận 7",
-      status: "VIP"
-    },
-    {
-      id: "KH004",
-      name: "Phạm Thị D",
-      email: "phamthid@email.com",
-      phone: "0904567890",
-      totalOrders: 3,
-      totalSpent: "650,000",
-      lastOrder: "2024-01-13",
-      branch: "Online",
-      status: "Mới"
+  const [filterCustomers, setFilterCustomers] = useState<Customer[]>([]);
+
+  const handlePageChange = (page: number) => {
+    dispatch(setPage(page));
+  };
+
+  useEffect(() => {
+    dispatch(getCustomersCount());
+  }, []);
+
+  useEffect(() => {
+    dispatch(getCustomers({ page: pagination.page, limit: pagination.limit }));
+  }, [pagination.page, pagination.limit]);
+
+  const customerMatchesFilter = (customer: Customer): boolean => {
+    if (filter.search && filter.search.trim() !== '') {
+      const searchTerm = filter.search.toLowerCase();
+      const matchesSearch =
+        customer.code?.toLowerCase().includes(searchTerm) ||
+        customer.email?.toLowerCase().includes(searchTerm) ||
+        customer.first_name?.toLowerCase().includes(searchTerm) ||
+        customer.last_name?.toLowerCase().includes(searchTerm)
+
+      if (!matchesSearch) return false;
     }
-  ]
+
+    if (filter.status && filter.status !== 'all') {
+      const statusMap: { [key: string]: string } = {};
+
+      if (customer.status !== statusMap[filter.status]) {
+        return false;
+      }
+    }
+
+    if (filter.orderCount && filter.orderCount !== 'all') {
+      if (customer.total_order.toString() !== filter.orderCount) {
+        return false;
+      }
+    }
+
+    if (filter.totalExpenditure && filter.totalExpenditure !== 'all') {
+      if (customer.total_expenditure.toString() !== filter.totalExpenditure) {
+        return false;
+      }
+    }
+
+    return true;
+  };
+
+  useEffect(() => {
+    const filtered = customers.filter(customerMatchesFilter);
+    setFilterCustomers(filtered);
+  }, [filter, customers]);
 
   return (
     <div className="bg-white rounded-lg border border-gray-200">
@@ -60,7 +75,7 @@ const CustomerList: React.FC<CustomerListProps> = ({ }) => {
         <h2 className="text-xl font-bold text-gray-900">Kết quả ({customers.length} khách hàng)</h2>
       </div>
 
-      <div className="p-6">
+      <div className="p-5">
         <Table>
           <TableHeader>
             <TableRow>
@@ -77,16 +92,16 @@ const CustomerList: React.FC<CustomerListProps> = ({ }) => {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {customers.map((customer) => (
+            {filterCustomers.map((customer) => (
               <TableRow key={customer.id}>
-                <TableCell className="font-medium">{customer.id}</TableCell>
-                <TableCell>{customer.name}</TableCell>
-                <TableCell>{customer.email}</TableCell>
-                <TableCell>{customer.phone}</TableCell>
-                <TableCell>{customer.totalOrders}</TableCell>
-                <TableCell>{customer.totalSpent}₫</TableCell>
-                <TableCell>{customer.lastOrder}</TableCell>
-                <TableCell>{customer.branch}</TableCell>
+                <TableCell className="font-medium">{customer.code}</TableCell>
+                <TableCell>{[customer.first_name, customer.last_name].filter(Boolean).join(' ')}</TableCell>
+                <TableCell>{customer.email || '-'}</TableCell>
+                <TableCell>{customer.phone || '_'}</TableCell>
+                <TableCell>{customer.total_order}</TableCell>
+                <TableCell>{formatCurrency(customer.total_expenditure.toString())}₫</TableCell>
+                <TableCell>{customer.orders.length > 0 ? customer.orders[0]?.code : '-'}</TableCell>
+                <TableCell className='max-w-[250px] truncate'>{customer.address_book.length > 0 ? customer.address_book[0]?.address : '-'}</TableCell>
                 <TableCell>
                   <Badge variant={
                     customer.status === "VIP" ? "default" :
@@ -105,8 +120,14 @@ const CustomerList: React.FC<CustomerListProps> = ({ }) => {
           </TableBody>
         </Table>
       </div>
+
+      <div className="pb-6 flex justify-center">
+        <Pagination
+          currentPage={pagination.page}
+          totalPages={pagination.totalPages || 1}
+          onPageChange={handlePageChange}
+        />
+      </div>
     </div>
   );
-};
-
-export default CustomerList;
+}

@@ -3,8 +3,7 @@ import { ReactNode } from 'react';
 import Head from 'next/head';
 import Header from './Header';
 import { SearchDialog } from './search/SearchDialog';
-import { useDispatch } from 'react-redux';
-import { useAppSelector } from '@/hooks/redux';
+import { useAppDispatch, useAppSelector } from '@/hooks/redux';
 import { setIsOpenSearchDialog } from '@/slices/app';
 import { SidebarInset, SidebarProvider } from './ui/sidebar';
 import { AppSidebar } from './app-sidebar';
@@ -20,7 +19,7 @@ interface IMetaData {
 	description?: string | null;
 }
 export default function MainLayout({ children }: IMainLayoutProps) {
-	const dispatch = useDispatch();
+	const dispatch = useAppDispatch();
 	const isOpenSearchDialog = useAppSelector(state => state.app.isOpenSearchDialog);
 	const isLogined = useAppSelector(state => state.app.isLogined);
 

@@ -15,7 +15,7 @@ const initialState: RoleState = {
   actionState: { status: 'idle' },
 };
 
-export const getRole = commonCreateAsyncThunk<string>({
+export const getRole: any = commonCreateAsyncThunk({
   type: 'role/get',
   action: roleService.getRole
 });

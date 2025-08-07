@@ -2,13 +2,14 @@
 
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/card';
 import { TableHeader, TableRow, TableHead, TableBody, TableCell, Table } from '@/components/ui/table';
-import { getStatusColor } from '@/utils/data.util';
+import { formatCurrency, getStatusColor } from '@/utils/data.util';
 import React from 'react';
 import { Badge } from '@/components/ui/badge';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
+import { Customer } from '@/model/Customer.model';
 
-export default function CustomerOrderHistory({ customer }: { customer: any }) {
+export default function CustomerOrderHistory({ customer }: { customer: Customer }) {
   return (
     <Card>
       <CardHeader>
@@ -29,21 +30,21 @@ export default function CustomerOrderHistory({ customer }: { customer: any }) {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {customer.orderHistory.map((order: any) => (
+            {customer.orders.map((order: any) => (
               <TableRow key={order.id}>
-                <TableCell className="font-medium">{order.id}</TableCell>
-                <TableCell>{order.date}</TableCell>
+                <TableCell className="font-medium">{order.code}</TableCell>
+                <TableCell>{order.date_created || '-'}</TableCell>
                 <TableCell>
                   <Badge variant={order.branch === "Online" ? "default" : "secondary"}>
-                    {order.branch}
+                    {order.branch.title}
                   </Badge>
                 </TableCell>
                 <TableCell>
                   <div className="max-w-[200px]">
-                    {order.products.join(", ")}
+                    {order.line_items.map((item: any) => item.name).join(", ")}
                   </div>
                 </TableCell>
-                <TableCell>{order.amount}₫</TableCell>
+                <TableCell>{formatCurrency(order.total_price.toString() || '0')}₫</TableCell>
                 <TableCell>
                   <Badge variant={getStatusColor(order.status)}>
                     {order.status}

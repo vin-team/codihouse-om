@@ -3,5 +3,5 @@ export const getTypeColor = (type: string) => {
 }
 
 export const getStatusColor = (status: string) => {
-  return status === "Hoạt động" ? "default" : "destructive"
+  return status === "active" ? "default" : "destructive"
 }

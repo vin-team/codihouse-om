@@ -1,9 +1,9 @@
 'use client';
 
+import { useAppDispatch } from '@/hooks/redux';
 import { roleService } from '@/services/role.service';
 import { setIsOpenSearchDialog } from '@/slices/app';
 import React from 'react';
-import { useDispatch } from 'react-redux';
 
 interface SearchBarProps {
   placeholder?: string;
@@ -12,7 +12,7 @@ interface SearchBarProps {
 const SearchBar: React.FC<SearchBarProps> = ({
   placeholder = "Nhấn để tìm kiếm đơn hàng... (⌘K)",
 }) => {
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
   const isAdmin = roleService.isAdmin();
 
   if (isAdmin) {

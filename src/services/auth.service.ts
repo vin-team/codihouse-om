@@ -18,11 +18,6 @@ export interface ResetPasswordRequest {
   email: string;
 }
 
-export interface VerifyOTPRequest {
-  email: string;
-  otp: string;
-}
-
 export interface ChangePasswordRequest {
   token: string;
   password: string;

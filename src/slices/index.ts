@@ -4,13 +4,17 @@ import authSlice from './authSlice';
 import roleSlice from './roleSlice';
 import userSlice from './userSlice';
 import orderSlice from './orderSlice';
+import branchSlice from "./branchSlice";
+import customerSlice from "./customerSlice";
 
 const rootReducer = combineReducers({
 	app: appSlice,
 	auth: authSlice,
 	user: userSlice,
 	role: roleSlice,
-	order: orderSlice
+	order: orderSlice,
+	branch: branchSlice,
+	customer: customerSlice,
 });
 
 export default rootReducer;

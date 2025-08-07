@@ -3,8 +3,9 @@
 import React from 'react';
 import { Button } from '../ui/button';
 import Link from 'next/dist/client/link';
+import { Customer } from '@/model/Customer.model';
 
-export default function CustomerDetailHeader({ customer }: { customer: any }) {
+export default function CustomerDetailHeader({ customer }: { customer: Customer }) {
   return (
     <div className='flex flex-row justify-between'>
       <div className='flex flex-col space-y-2'>
@@ -14,7 +15,7 @@ export default function CustomerDetailHeader({ customer }: { customer: any }) {
           </Button>
         </Link>
         <h1 className="text-3xl font-bold text-gray-900">Chi tiết khách hàng</h1>
-        <p className="text-gray-600">Thông tin khách hàng {customer.id}</p>
+        <p className="text-gray-600">Thông tin khách hàng {customer.code}</p>
       </div>
     </div>
   );

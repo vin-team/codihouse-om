@@ -4,8 +4,9 @@ import { formatCurrency } from '@/utils/data.util';
 import React from 'react';
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '../ui/card';
 import { TableHeader, TableRow, TableHead, TableBody, TableCell, Table } from '../ui/table';
+import { Order } from '@/model/Order.model';
 
-export default function Products({ order }: { order: any }) {
+export default function Products({ order }: { order: Order }) {
 
   return (
     <Card>
@@ -28,12 +29,12 @@ export default function Products({ order }: { order: any }) {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {order.products.map((product: any, index: number) => (
+            {order.line_items.map((product: any, index: number) => (
               <TableRow key={index}>
                 <TableCell className="font-medium">{product.name}</TableCell>
-                <TableCell>{product.price.toLocaleString()}₫</TableCell>
+                <TableCell>{product?.price ? product.price.toLocaleString() : 0}₫</TableCell>
                 <TableCell>{product.quantity}</TableCell>
-                <TableCell>{product.total.toLocaleString()}₫</TableCell>
+                <TableCell>{product?.total ? product.total.toLocaleString() : 0}₫</TableCell>
               </TableRow>
             ))}
           </TableBody>
@@ -42,17 +43,15 @@ export default function Products({ order }: { order: any }) {
         <div className="mt-6 space-y-2 border-t pt-4">
           <div className="flex justify-between">
             <span>Tạm tính:</span>
-            <span>{order.subtotal.toLocaleString()}₫</span>
+            <span>{order.subtotal_price ? order.subtotal_price.toLocaleString() : 0} ₫</span>
           </div>
-          {order.discount > 0 && (
-            <div className="flex justify-between text-red-600">
-              <span>Giảm giá:</span>
-              <span>-{order.discount.toLocaleString()}₫</span>
-            </div>
-          )}
+          <div className="flex justify-between text-red-600">
+            <span>Giảm giá:</span>
+            <span>{order.total_discount ? order.total_discount.toLocaleString() : 0}₫</span>
+          </div>
           <div className="flex justify-between font-bold text-lg border-t pt-2">
             <span>Tổng cộng:</span>
-            <span className="text-green-600">{order.finalAmount.toLocaleString()}₫</span>
+            <span className="text-green-600">{order.total_price ? order.total_price.toLocaleString() : 0}₫</span>
           </div>
         </div>
       </CardContent>

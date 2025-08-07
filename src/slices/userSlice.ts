@@ -16,7 +16,7 @@ const initialState: UserState = {
 };
 
 // Async thunks
-export const getUser = commonCreateAsyncThunk<void>({
+export const getUser: any = commonCreateAsyncThunk({
   type: 'user/get',
   action: userService.getUser
 });

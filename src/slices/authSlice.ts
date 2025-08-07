@@ -1,6 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { authService } from '../services/auth.service';
-import type { LoginRequest, ResetPasswordRequest, ChangePasswordRequest } from '../services/auth.service';
 import { commonCreateAsyncThunk } from '../app/thunk';
 import { RequestState } from '@/app/state';
 
@@ -14,22 +13,22 @@ export interface ResetPasswordState {
 }
 
 // Async thunks
-export const login = commonCreateAsyncThunk<LoginRequest>({
+export const login: any = commonCreateAsyncThunk({
   type: 'auth/login',
   action: authService.login
 });
 
-export const logout = commonCreateAsyncThunk<void>({
+export const logout: any = commonCreateAsyncThunk({
   type: 'auth/logout',
   action: authService.logout
 });
 
-export const requestResetPassword = commonCreateAsyncThunk<ResetPasswordRequest>({
+export const requestResetPassword: any = commonCreateAsyncThunk({
   type: 'auth/requestResetPassword',
   action: authService.requestResetPassword
 });
 
-export const resetPassword = commonCreateAsyncThunk<ChangePasswordRequest>({
+export const resetPassword: any = commonCreateAsyncThunk({
   type: 'auth/resetPassword',
   action: authService.resetPassword
 });

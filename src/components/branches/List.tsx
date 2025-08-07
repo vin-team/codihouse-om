@@ -3,54 +3,46 @@ import { Badge } from "../ui/badge";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "../ui/table";
 import { Button } from "../ui/button";
 import { getStatusColor, getTypeColor } from "@/utils/branches.util";
+import { useAppDispatch, useAppSelector } from "@/hooks/redux";
+import { Branch } from "@/model/Branch.model";
+import { useEffect, useState } from "react";
+import { getBranches, getBranchesCount, setPage } from "@/slices/branchSlice";
+import Pagination from "../orders/Pagination";
+import { formatCurrency } from "@/utils/data.util";
 
 export default function BranchesList() {
-  const branches = [
-    {
-      id: "CN001",
-      name: "Chi nhánh Quận 1",
-      type: "Offline",
-      address: "123 Nguyễn Huệ, Quận 1, TP.HCM",
-      phone: "0281234567",
-      manager: "Nguyễn Văn A",
-      dailyOrders: 45,
-      dailyRevenue: "12,500,000",
-      status: "Hoạt động"
-    },
-    {
-      id: "CN002",
-      name: "Chi nhánh Online",
-      type: "Online",
-      address: "Kho trung tâm, Quận Bình Thạnh, TP.HCM",
-      phone: "0281234568",
-      manager: "Trần Thị B",
-      dailyOrders: 78,
-      dailyRevenue: "18,900,000",
-      status: "Hoạt động"
-    },
-    {
-      id: "CN003",
-      name: "Chi nhánh Quận 7",
-      type: "Offline",
-      address: "456 Nguyễn Thị Thập, Quận 7, TP.HCM",
-      phone: "0281234569",
-      manager: "Lê Văn C",
-      dailyOrders: 32,
-      dailyRevenue: "8,200,000",
-      status: "Hoạt động"
-    },
-    {
-      id: "CN004",
-      name: "Chi nhánh Thủ Đức",
-      type: "Offline",
-      address: "789 Võ Văn Ngân, Thủ Đức, TP.HCM",
-      phone: "0281234570",
-      manager: "Phạm Thị D",
-      dailyOrders: 28,
-      dailyRevenue: "6,800,000",
-      status: "Tạm dừng"
+  const dispatch = useAppDispatch();
+  const branches = useAppSelector(state => state.branch.branches);
+  const filter = useAppSelector(state => state.branch.filter);
+  const pagination = useAppSelector(state => state.branch.pagination);
+  const [filterBranches, setFilterBranches] = useState<Branch[]>([]);
+
+  const branchMatchesFilter = (branch: Branch): boolean => {
+    if (filter.search && filter.search.trim() !== '') {
+      const searchTerm = filter.search.toLowerCase();
+      const matchesSearch = branch.title.toLowerCase().includes(searchTerm);
+      if (!matchesSearch) return false;
     }
-  ]
+
+    return true;
+  };
+
+  const handlePageChange = (page: number) => {
+    dispatch(setPage(page));
+  };
+
+  useEffect(() => {
+    dispatch(getBranchesCount());
+  }, []);
+
+  useEffect(() => {
+    dispatch(getBranches({ page: pagination.page, limit: pagination.limit }));
+  }, [pagination.page, pagination.limit]);
+
+  useEffect(() => {
+    const filtered = branches.filter(branchMatchesFilter);
+    setFilterBranches(filtered);
+  }, [filter, branches]);
 
   return (
     <div className="bg-white rounded-lg border border-gray-200">
@@ -75,27 +67,17 @@ export default function BranchesList() {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {branches.map((branch: any) => (
+            {filterBranches.map((branch: any) => (
               <TableRow key={branch.id}>
                 <TableCell className="font-medium">{branch.id}</TableCell>
-                <TableCell>{branch.name}</TableCell>
-                <TableCell>
-                  <Badge variant={getTypeColor(branch.type)}>
-                    {branch.type}
-                  </Badge>
-                </TableCell>
-                <TableCell className="max-w-[200px] truncate">
-                  {branch.address}
-                </TableCell>
-                <TableCell>{branch.phone}</TableCell>
-                <TableCell>{branch.manager}</TableCell>
-                <TableCell>{branch.dailyOrders}</TableCell>
-                <TableCell>{branch.dailyRevenue}₫</TableCell>
-                <TableCell>
-                  <Badge variant={getStatusColor(branch.status)}>
-                    {branch.status}
-                  </Badge>
-                </TableCell>
+                <TableCell>{branch.title}</TableCell>
+                <TableCell> {branch.type || '-'}</TableCell>
+                <TableCell className="max-w-[200px] truncate"> {branch.address || '-'}</TableCell>
+                <TableCell>{branch.phone || '-'}</TableCell>
+                <TableCell>{branch.manager || '-'}</TableCell>
+                <TableCell>{branch.today_order_count || '-'}</TableCell>
+                <TableCell>{branch.today_revenue ? formatCurrency(branch.today_revenue) : '-'}</TableCell>
+                <TableCell><Badge variant={getStatusColor(branch.status)}> {branch.status}</Badge></TableCell>
                 <TableCell>
                   <div className="flex space-x-2">
                     <Link href={`/branches/edit/${branch.id}`}>
@@ -109,6 +91,14 @@ export default function BranchesList() {
           </TableBody>
         </Table>
       </div>
+
+      {pagination.totalPages !== 1 && <div className="pb-6 flex justify-center">
+        <Pagination
+          currentPage={pagination.page}
+          totalPages={pagination.totalPages || 1}
+          onPageChange={handlePageChange}
+        />
+      </div>}
     </div>
   );
 }

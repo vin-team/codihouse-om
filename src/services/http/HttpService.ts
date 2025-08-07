@@ -15,9 +15,8 @@ class HttpService {
   static refreshMethod: Promise<AxiosResponse<any, any>>
   static commonParams() {
     return {
-      create_user: storage.getItem(process.env.NEXT_PUBLIC_storageUserKey!),
-      update_user: storage.getItem(process.env.NEXT_PUBLIC_storageUserKey!),
-      code_store: 'ROOT'
+      // create_user: storage.getItem(process.env.NEXT_PUBLIC_storageUserKey!),
+      // update_user: storage.getItem(process.env.NEXT_PUBLIC_storageUserKey!),
     }
   }
   static getLocalToken() {

@@ -1,22 +1,33 @@
 import React, { useState } from 'react';
 import { Combobox } from '../ui/combobox';
 import { Button } from '../ui/button';
+import { useAppDispatch } from '@/hooks/redux';
+import { setFilter as setFilterCustomer } from '@/slices/customerSlice';
 
 export default function FilterCustomers() {
-  const [search, setSearch] = useState('');
-  const [status, setStatus] = useState('');
-  const [orderCount, setOrderCount] = useState('');
-  const [totalSpending, setTotalSpending] = useState('');
+  const dispatch = useAppDispatch();
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setSearch(e.target.value);
-  };
+  const [filter, setFilter] = useState<any>({
+    search: '',
+    status: '',
+    orderCount: '',
+    totalExpenditure: '',
+  });
+
 
   const handleClearSearch = () => {
-    setSearch('');
-    setStatus('');
-    setOrderCount('');
-    setTotalSpending('');
+    setFilter({
+      search: '',
+      status: '',
+      orderCount: '',
+      totalExpenditure: '',
+    });
+    dispatch(setFilterCustomer({
+      search: '',
+      status: '',
+      orderCount: '',
+      totalExpenditure: '',
+    }));
   };
 
   return (
@@ -33,13 +44,13 @@ export default function FilterCustomers() {
             </div>
             <input
               type="text"
-              value={search}
+              value={filter.search}
               placeholder={"Tìm theo mã đơn hàng, số điện thoại hoặc email..."}
-              onChange={handleChange}
+              onChange={(e) => setFilter({ ...filter, search: e.target.value })}
               className="block w-full pl-12 pr-20 h-10 border border-gray-300 rounded-lg text-sm placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
             />
           </div>
-          <Button variant="outline" className='h-10 whitespace-nowrap'>
+          <Button variant="outline" className='h-10 whitespace-nowrap' onClick={() => dispatch(setFilterCustomer(filter))}>
             <span>Tìm kiếm</span>
           </Button>
         </div>
@@ -54,8 +65,8 @@ export default function FilterCustomers() {
               { value: 'normal', label: 'Thường' },
               { value: 'new', label: 'Mới' },
             ]}
-            value={status}
-            onChange={(value) => setStatus(value)}
+            value={filter.status}
+            onChange={(value) => setFilter({ ...filter, status: value })}
             placeholder='Trạng thái'
           />
           <Combobox
@@ -67,8 +78,8 @@ export default function FilterCustomers() {
               { value: '16_30', label: '16-30 đơn' },
               { value: '30', label: 'Trên 30 đơn' },
             ]}
-            value={orderCount}
-            onChange={(value) => setOrderCount(value)}
+            value={filter.orderCount}
+            onChange={(value) => setFilter({ ...filter, orderCount: value })}
             placeholder='Số lượng đơn hàng'
           />
           <Combobox
@@ -80,12 +91,12 @@ export default function FilterCustomers() {
               { value: '3_5M', label: '3M-5M' },
               { value: '5M', label: 'Trên 5M' },
             ]}
-            value={totalSpending}
-            onChange={(value) => setTotalSpending(value)}
+            value={filter.totalExpenditure}
+            onChange={(value) => setFilter({ ...filter, totalExpenditure: value })}
             placeholder='Tổng chỉ tiêu'
           />
           <div className='flex flex-row gap-2'>
-            <Button variant="outline" className='h-10 w-full sm:w-24'>
+            <Button variant="outline" className='h-10 w-full sm:w-24' onClick={() => dispatch(setFilterCustomer(filter))}>
               <span>Lọc</span>
             </Button>
             <Button variant="outline" className='h-10 w-full sm:w-24' onClick={handleClearSearch}>
