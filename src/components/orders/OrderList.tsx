@@ -143,10 +143,10 @@ export default function OrderList() {
             {filteredOrders.map((order) => (
               <TableRow key={order.id}>
                 <TableCell className="font-medium">{order.code}</TableCell>
-                {visibleColumns.get('customer') && <TableCell>{[order.customer.first_name, order.customer.last_name].filter(Boolean).join(' ')}</TableCell>}
-                {visibleColumns.get('customerPhone') && <TableCell>{order.customer.phone ?? '-'}</TableCell>}
-                {visibleColumns.get('customerEmail') && <TableCell>{order.customer.email ?? '-'}</TableCell>}
-                {visibleColumns.get('branch') && <TableCell>{order.branch.title}</TableCell>}
+                {visibleColumns.get('customer') && <TableCell>{[order.customer?.first_name, order.customer?.last_name].filter(Boolean).join(' ')}</TableCell>}
+                {visibleColumns.get('customerPhone') && <TableCell>{order.customer?.phone ?? '-'}</TableCell>}
+                {visibleColumns.get('customerEmail') && <TableCell>{order.customer?.email ?? '-'}</TableCell>}
+                {visibleColumns.get('branch') && <TableCell>{order.branch?.title}</TableCell>}
                 {visibleColumns.get('source') && (
                   <TableCell>
                     {order.source !== "-" ? (

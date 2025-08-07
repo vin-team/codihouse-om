@@ -25,19 +25,19 @@ export default function CustomerInformation({ order }: { order: Order }) {
         <div className='flex flex-col space-y-2'>
           <p className="text-sm font-medium text-gray-600">Tên khách hàng</p>
           <div className="flex items-center space-x-3">
-            <p className="text-lg font-semibold">{[order.customer.first_name, order.customer.last_name].join('')}</p>
-            <Link href={`/customers/${order.customer.id}`}>
+            <p className="text-lg font-semibold">{[order?.customer?.first_name, order?.customer?.last_name].join('')}</p>
+            <Link href={`/customers/${order?.customer?.id}`}>
               <Button variant="outline" size="sm">Xem hồ sơ</Button>
             </Link>
           </div>
         </div>
         <div>
           <p className="text-sm font-medium text-gray-600">Số điện thoại</p>
-          <p className="text-lg">{order.customer?.phone || '-'}</p>
+          <p className="text-lg">{order?.customer?.phone || '-'}</p>
         </div>
         <div>
           <p className="text-sm font-medium text-gray-600">Email</p>
-          <p className="text-lg">{order.customer?.email || '-'}</p>
+          <p className="text-lg">{order?.customer?.email || '-'}</p>
         </div>
       </CardContent>
     </Card>
