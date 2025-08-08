@@ -18,7 +18,8 @@ class RoleService {
   }
 
   isAdmin() {
-    return this.getRoleLocal()?.name === 'Admin App' || this.getRoleLocal()?.name === 'Administrator';
+    const role = this.getRoleLocal();
+    return role?.app_role === 'admin';
   }
 }
 

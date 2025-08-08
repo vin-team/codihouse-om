@@ -1,6 +1,7 @@
 import { HttpService } from './http/HttpService';
 import { parseExecuteResult } from './http/parse.service';
 import { storage } from '../utils/storage.util';
+import { parseCommonHttpResult } from './http/parseCommonResult';
 
 export interface LoginRequest {
   email: string;
@@ -37,43 +38,29 @@ class AuthService {
   async logout() {
     const response = await HttpService.doPostRequest('/auth/logout',
       { refresh_token: HttpService.getLocalRefreshToken() });
-    return parseExecuteResult(response);
+    return parseCommonHttpResult(response);
   }
 
   async requestResetPassword(data: ResetPasswordRequest) {
     const response = await HttpService.doPostRequest('/auth/password/request', data, false);
-    return parseExecuteResult(response);
+    return parseCommonHttpResult(response);
   }
 
   async resetPassword(data: ChangePasswordRequest) {
     const response = await HttpService.doPostRequest('/auth/password/reset', data, false);
-    return parseExecuteResult(response);
+    return parseCommonHttpResult(response);
   }
 
   async refreshToken() {
-    try {
-      const response = await HttpService.doPostRequest(
-        '/auth/refresh',
-        {
-          refreshToken: HttpService.getLocalRefreshToken(),
-        },
-        false
-      );
+    const response = await HttpService.doPostRequest(
+      '/auth/refresh',
+      {
+        refresh_token: HttpService.getLocalRefreshToken(),
+      },
+      false
+    );
 
-      const result = parseExecuteResult(response);
-
-      if (result.code === 200 && result.data) {
-        HttpService.setToken(result.data.data.access_token);
-        HttpService.setLocalRefToken(result.data.data.refresh_token);
-      }
-
-      return result;
-    } catch (error: any) {
-      return {
-        code: error.response?.status || 500,
-        message: error.response?.data?.message || 'Làm mới token thất bại'
-      };
-    }
+    return parseCommonHttpResult(response);
   }
 
   setTokens(data: LoginResponse) {
@@ -82,7 +69,11 @@ class AuthService {
   }
 
   clearTokens() {
-    storage.clear();
+    storage.removeItem(process.env.NEXT_PUBLIC_storageTokenKey!);
+    storage.removeItem(process.env.NEXT_PUBLIC_storageRefreshTokenKey!);
+    storage.removeItem(process.env.NEXT_PUBLIC_storageAccessTokenKey!);
+    storage.removeItem(process.env.NEXT_PUBLIC_storageUserKey!);
+    storage.removeItem(process.env.NEXT_PUBLIC_storageRoleKey!);
   }
 
   isAuthenticated(): boolean {

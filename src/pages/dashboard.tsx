@@ -24,10 +24,10 @@ const dashboard: React.FC = () => {
     <div className="min-h-full flex flex-col gap-4">
       <DashboardHeader />
       <SearchBar />
-      <div className={`grid grid-cols-1 lg:grid-cols-2 gap-6 ${isAdmin ? 'w-full' : 'w-[75%] mx-auto'}`}>
+      {isAdmin && <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 'w-full">
         <Branches />
-        <RecentOrders />
-      </div>
+        <RecentOrders />  
+      </div>}
     </div>
   );
 };

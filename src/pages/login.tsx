@@ -1,10 +1,10 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
 import { useAppDispatch, useAppSelector } from '@/hooks/redux';
 import { changeError, clearActionState, login } from '@/slices/authSlice';
-import { getUser } from '@/slices/userSlice';
-import { getRole } from '@/slices/roleSlice';
+import { getUser, clearActionState as userClearActionState } from '@/slices/userSlice';
+import { getRole, clearActionState as roleClearActionState } from '@/slices/roleSlice';
 import { userService } from '@/services/user.service';
 import { setLogined } from '@/slices/app';
 import { useToastContext } from '@/contexts/ToastContext';
@@ -50,35 +50,26 @@ const Login: React.FC<LoginProps> = ({ }) => {
   };
 
   useEffect(() => {
-    dispatch(clearActionState());
     dispatch(changeError(""));
+    dispatch(clearActionState());
   }, [dispatch]);
 
   useEffect(() => {
-    if (!authActionState || !authActionState.type) return;
-
-    if (authActionState.type === 'login') {
-      switch (authActionState.status) {
+    if (authActionState?.type === 'login') {
+      switch (authActionState?.status) {
         case 'loading':
           break;
         case 'completed':
-          success('Đăng nhập thành công!')
-          dispatch(getUser())
+          if (!userActionState.status || userActionState.status === 'idle') {
+            dispatch(getUser());
+          }
           break;
         case 'failed':
           error('Đăng nhập thất bại!', authActionState.error)
           break;
       }
     }
-
-    if (authActionState.type === 'logout') {
-      switch (authActionState.status) {
-        case 'completed':
-          router.push('/login');
-          break;
-      }
-    }
-  }, [authActionState])
+  }, [authActionState, userActionState.status])
 
   useEffect(() => {
     switch (userActionState.status) {
@@ -86,33 +77,37 @@ const Login: React.FC<LoginProps> = ({ }) => {
         break;
       case 'completed':
         if (userService.getUserLocal().role) {
-          dispatch(getRole(userService.getUserLocal().role));
+          if (!roleActionState.status || roleActionState.status === 'idle') {
+            dispatch(getRole(userService.getUserLocal().role));
+          }
         }
         break;
     }
   }, [userActionState])
 
   useEffect(() => {
-    switch (roleActionState.status) {
-      case 'loading':
-        break;
-      case 'completed':
-        if (authActionState.type === 'login') {
-          dispatch(setLogined(true))
-        }
-        break;
-      case 'failed':
-        dispatch(changeError(roleActionState.error || ""));
-        break;
+    console.log('roleActionState', roleActionState);
+    if (roleActionState?.type === 'getRole') {
+      switch (roleActionState?.status) {
+        case 'loading':
+          break;
+        case 'completed':
+          if (authActionState?.type === 'login') {
+            dispatch(clearActionState());
+            dispatch(userClearActionState());
+            dispatch(setLogined(true))
+            success('Đăng nhập thành công!')
+            router.push('/dashboard');
+          }
+          dispatch(roleClearActionState());
+          break;
+        case 'failed':
+          dispatch(changeError(roleActionState.error || ""));
+          dispatch(roleClearActionState());
+          break;
+      }
     }
   }, [roleActionState])
-
-  useEffect(() => {
-    if (isLogined) {
-      router.push('/dashboard');
-    }
-
-  }, [isLogined])
 
   return (
     <div className='min-h-[calc(100vh-32px)] flex flex-col justify-center items-center'>

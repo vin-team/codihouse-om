@@ -25,6 +25,7 @@ export interface Order {
   source: string;
   note: string;
   email: string | null;
+  shipping_fee: number | null;
   line_items: {
     name: string | null;
     quantity: number | 0;
@@ -69,6 +70,7 @@ export const parseOrder = (order: any): Order => {
     branch: order.branch,
     email: order.email,
     line_items: order.line_items,
+    shipping_fee: order.shipping_fee,
   };
 };
 

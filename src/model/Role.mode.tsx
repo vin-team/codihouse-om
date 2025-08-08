@@ -1,6 +1,7 @@
 export interface RoleModel {
   id: string;
   name: string;
+  app_role: string;
   icon: string;
   description: string | null;
   parent: string | null;
@@ -12,6 +13,7 @@ export const parseRole = (data: any): RoleModel => {
   return {
     id: data.id,
     name: data.name,
+    app_role: data.app_role,
     icon: data.icon,
     description: data.description,
     parent: data.parent,

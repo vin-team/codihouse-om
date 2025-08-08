@@ -1,69 +1,31 @@
 import { Action, Dispatch } from "@reduxjs/toolkit";
 import { setLogined } from "@/slices/app";
-import { authService } from "@/services/auth.service";
-import { storage } from "@/utils/storage.util";
-import { store } from "@/app/store";
+import { refreshToken } from "@/slices/authSlice";
+import { HttpService } from "@/services/http/HttpService";
 
 export const authMiddleware =
   ({ dispatch }: { dispatch: Dispatch<Action> }) =>
     (next: (arg0: any) => void) =>
-      (action: any) => {
-        // if (action.payload && action.payload.message) {
-        //   const { message } = action.payload;
-
-        //   if (message === "Invalid refresh token!" || message === "Refresh token expired") {
-        //     store.dispatch(setLogined(false));
-
-        //     const currentRoute = window.location.pathname + window.location.search;
-        //     if (currentRoute !== "/login") {
-        //       storage.setItem("redirectAfterLogin", currentRoute);
-        //     }
-
-        //     authService.clearTokens();
-
-        //     window.location.replace("/login");
-        //     return;
-        //   }
-
-        //   if (message === "Invalid access token!" || message === "Access token expired") {
-        //     const refreshToken = storage.getItem(process.env.NEXT_PUBLIC_storageRefreshTokenKey!);
-        //     if (refreshToken) {
-        //       authService.refreshToken().then((result) => {
-        //         if (result.code === 200 && result.data) {
-        //           return next(action);
-        //         } else {
-        //           store.dispatch(setLogined(false));
-        //           const currentRoute = window.location.pathname + window.location.search;
-        //           if (currentRoute !== "/login") {
-        //             storage.setItem("redirectAfterLogin", currentRoute);
-        //           }
-        //           authService.clearTokens();
-        //           window.location.replace("/login");
-        //           return;
-        //         }
-        //       }).catch(() => {
-        //         store.dispatch(setLogined(false));
-        //         const currentRoute = window.location.pathname + window.location.search;
-        //         if (currentRoute !== "/login") {
-        //           storage.setItem("redirectAfterLogin", currentRoute);
-        //         }
-        //         authService.clearTokens();
-        //         window.location.replace("/login");
-        //         return;
-        //       });
-        //       return;
-        //     } else {
-        //       store.dispatch(setLogined(false));
-        //       const currentRoute = window.location.pathname + window.location.search;
-        //       if (currentRoute !== "/login") {
-        //         storage.setItem("redirectAfterLogin", currentRoute);
-        //       }
-        //       authService.clearTokens();
-        //       window.location.replace("/login");
-        //       return;
-        //     }
-        //   }
-        // }
+      async (action: any) => {
+        const payload = action.payload as any;
+        const errors = payload?.errors ? payload.errors : [];
+        if (errors.length > 0) {
+          const error = errors[0];
+          const code = error.extensions.code;
+          if (code === "INVALID_TOKEN") {
+            dispatch(setLogined(false));
+            const result = await dispatch(refreshToken())
+            const payload = result.payload as any;
+            if (payload?.errors?.length > 0) {
+              const error = payload.errors[0];
+              const code = error?.extensions?.code;
+              if (code === "INVALID_CREDENTIALS") {
+                window.location.replace("/login");
+                return;
+              }
+            }
+          }
+        }
 
         next(action);
       }; 

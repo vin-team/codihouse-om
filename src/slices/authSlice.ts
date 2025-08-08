@@ -2,6 +2,7 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { authService } from '../services/auth.service';
 import { commonCreateAsyncThunk } from '../app/thunk';
 import { RequestState } from '@/app/state';
+import { HttpService } from '@/services/http/HttpService';
 
 // Reset password state
 export interface ResetPasswordState {
@@ -31,6 +32,11 @@ export const requestResetPassword: any = commonCreateAsyncThunk({
 export const resetPassword: any = commonCreateAsyncThunk({
   type: 'auth/resetPassword',
   action: authService.resetPassword
+});
+
+export const refreshToken: any = commonCreateAsyncThunk({
+  type: 'auth/refreshToken',
+  action: authService.refreshToken
 });
 
 interface AuthState {
@@ -133,6 +139,24 @@ const authSlice = createSlice({
       })
       .addCase(resetPassword.rejected, (state, action) => {
         state.actionState = { status: 'failed', error: action.payload as string, type: 'resetPassword' }
+      })
+
+      .addCase(refreshToken.pending, (state) => {
+        state.actionState = { status: 'loading', type: 'refreshToken' }
+      })
+      .addCase(refreshToken.fulfilled, (state, action) => {
+        const payload = action.payload as any;
+        const accessToken = payload.data?.data?.access_token;
+        const refreshToken = payload.data?.data?.refresh_token;
+        
+        if (accessToken && refreshToken) {
+          HttpService.setToken(accessToken);
+          HttpService.setLocalRefToken(refreshToken);
+        }
+        state.actionState = { status: 'completed', type: 'refreshToken' }
+      })
+      .addCase(refreshToken.rejected, (state, action) => {
+        state.actionState = { status: 'failed', error: action.payload as string, type: 'refreshToken' }
       })
   },
 });

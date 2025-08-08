@@ -27,21 +27,21 @@ const roleSlice = createSlice({
   initialState,
   reducers: {
     clearActionState: (state) => {
-      state.actionState = { status: 'idle' }
+      state.actionState = { status: 'idle', type: '' }
     },
   },
   extraReducers: (builder) => {
     builder
       .addCase(getRole.pending, (state) => {
-        state.actionState = { status: 'loading' }
+        state.actionState = { status: 'loading', type: 'getRole' }
       })
       .addCase(getRole.fulfilled, (state, action) => {
         state.role = parseRole(action.payload.data.data)
         roleService.setRole(state.role)
-        state.actionState = { status: 'completed' }
+        state.actionState = { status: 'completed', type: 'getRole' }
       })
       .addCase(getRole.rejected, (state, action) => {
-        state.actionState = { status: 'failed', error: action.payload as string }
+        state.actionState = { status: 'failed', error: action.payload as string, type: 'getRole' }
       });
   }
 })

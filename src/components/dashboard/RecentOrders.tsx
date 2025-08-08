@@ -6,6 +6,7 @@ import { Badge } from '../ui/badge';
 import { useAppDispatch, useAppSelector } from '@/hooks/redux';
 import { getRecentOrders } from '@/slices/orderSlice';
 import { getStatusColor } from '@/utils/data.util';
+import Link from 'next/link';
 
 export default function RecentOrders() {
   const dispatch = useAppDispatch();
@@ -26,13 +27,15 @@ export default function RecentOrders() {
       <CardContent>
         <div className="space-y-4">
           {sliceOrders.map((order) => (
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="font-medium">#{order.id}</p>
-                <p className="text-sm text-gray-500">{[order?.customer?.first_name, order?.customer?.last_name].join(' ')} • {order?.branch?.title}</p>
+            <Link href={`/orders/${order.id}`} key={order.id}>
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="font-medium">#{order.id}</p>
+                  <p className="text-sm text-gray-500">{[order?.customer?.first_name, order?.customer?.last_name].join(' ')} • {order?.branch?.title}</p>
+                </div>
+                <Badge className={`${getStatusColor(order.status)}`} variant="secondary">{order.status}</Badge>
               </div>
-              <Badge className={`${getStatusColor(order.status)}`} variant="secondary">{order.status}</Badge>
-            </div>
+            </Link>
           ))}
         </div>
       </CardContent>

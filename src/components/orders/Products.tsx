@@ -45,6 +45,10 @@ export default function Products({ order }: { order: Order }) {
             <span>Tạm tính:</span>
             <span>{formatCurrency(String(order?.line_items?.reduce((acc: number, product: any) => acc + (product.price || 0) * (product.quantity || 0), 0))) + ' đ'}</span>
           </div>
+          <div className="flex justify-between">
+            <span>Phí vận chuyển:</span>
+            <span>{formatCurrency(String(order?.shipping_fee || 0)) + ' đ'}</span>
+          </div>
           <div className="flex justify-between text-red-600">
             <span>Giảm giá:</span>
             <span>{formatCurrency(String(order?.total_discount || 0)) + ' đ'}</span>

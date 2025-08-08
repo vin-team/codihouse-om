@@ -22,9 +22,14 @@ export function MenuUser() {
   const user = userService.getUserLocal();
 
   useEffect(() => {
-    if (actionState.type === 'logout') {
-      switch (actionState.status) {
+    if (actionState?.type === 'logout') {
+      switch (actionState?.status) {
+        case 'loading':
+          break;
+        case 'failed':
+          break;
         case 'completed':
+          dispatch(clearActionState());
           dispatch(setLogined(false))
           router.push('/login');
           break;
