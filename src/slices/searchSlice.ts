@@ -7,6 +7,8 @@ import { parseSearchCustomers, parseSearchOrders, SearchResult } from "@/model/S
 interface SearchState {
   searchResult: SearchResult;
   requestState: RequestState;
+  currentPageOrders: number;
+  currentPageCustomers: number;
 }
 
 const initialState: SearchState = {
@@ -14,12 +16,19 @@ const initialState: SearchState = {
     orders: [],
     customers: [],
   },
+  currentPageOrders: 0,
+  currentPageCustomers: 0,
   requestState: { status: 'idle' },
 }
 
-export const search: any = commonCreateAsyncThunk({
-  type: 'search',
-  action: searchService.search
+export const searchOrders: any = commonCreateAsyncThunk({
+  type: 'searchOrders',
+  action: searchService.searchOrders
+});
+
+export const searchCustomers: any = commonCreateAsyncThunk({
+  type: 'searchCustomers',
+  action: searchService.searchCustomers
 });
 
 const searchSlice = createSlice({
@@ -35,20 +44,40 @@ const searchSlice = createSlice({
         customers: [],
       };
     },
+    setCurrentPageOrders: (state, action) => {
+      state.currentPageOrders = action.payload;
+    },
+    setCurrentPageCustomers: (state, action) => {
+      state.currentPageCustomers = action.payload;
+    },
   },
   extraReducers: (builder) => {
     builder
-      .addCase(search.pending, (state) => {
+      .addCase(searchOrders.pending, (state) => {
         state.requestState = { status: 'loading' };
       })
-      .addCase(search.fulfilled, (state, action) => {
+      .addCase(searchOrders.fulfilled, (state, action) => {
         const data = action.payload?.data.data?.results || [];
         if (data.length > 0) {
           data.forEach((item: any) => {
             if (item.indexUid === 'order') {
               state.searchResult.orders = parseSearchOrders(item.hits);
             }
+          });
+        }
+        state.requestState = { status: 'completed' };
+      })
+      .addCase(searchOrders.rejected, (state) => {
+        state.requestState = { status: 'failed' };
+      })
 
+      .addCase(searchCustomers.pending, (state) => {
+        state.requestState = { status: 'loading' };
+      })
+      .addCase(searchCustomers.fulfilled, (state, action) => {
+        const data = action.payload?.data.data?.results || [];
+        if (data.length > 0) {
+          data.forEach((item: any) => {
             if (item.indexUid === 'customer') {
               state.searchResult.customers = parseSearchCustomers(item.hits);
             }
@@ -56,11 +85,11 @@ const searchSlice = createSlice({
         }
         state.requestState = { status: 'completed' };
       })
-      .addCase(search.rejected, (state) => {
+      .addCase(searchCustomers.rejected, (state) => {
         state.requestState = { status: 'failed' };
       });
   },
 });
 
-export const { clearActionState, clearSearchResult } = searchSlice.actions;
+export const { clearActionState, clearSearchResult, setCurrentPageOrders, setCurrentPageCustomers } = searchSlice.actions;
 export default searchSlice.reducer;

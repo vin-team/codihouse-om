@@ -25,8 +25,8 @@ export default function SearchCustomerItem({ customer }: { customer: SearchCusto
               </div>
               <div className='flex flex-row justify-between'>
                 <div className='flex flex-row justify-around space-x-4'>
-                  <p className="text-sm text-gray-500 flex flex-row items-center gap-2"><Phone className="w-4 h-4" />{customer.phone}</p>
-                  <p className="text-sm text-gray-500 flex flex-row items-center gap-2"><Mail className="w-4 h-4" />{customer.email}</p>
+                  <p className="text-sm text-gray-500 flex flex-row items-center gap-2"><Phone className="w-4 h-4" />{customer.phone || '-'}</p>
+                  <p className="text-sm text-gray-500 flex flex-row items-center gap-2"><Mail className="w-4 h-4" />{customer.email || '-'}</p>
                   <p className="text-sm text-gray-500 flex flex-row items-center gap-2 pl-8"><strong>Nhóm: </strong>{customer.group_title || '-'}</p>
                 </div>
                 {customer.last_purchase_date && <p className="text-sm text-gray-500 flex flex-row items-center gap-2 pl-8">Mua cuối: {getDateFromISOString(customer.last_purchase_date)}</p>}
@@ -34,7 +34,6 @@ export default function SearchCustomerItem({ customer }: { customer: SearchCusto
               <div className='flex flex-row justify-between'>
                 <div className='flex flex-row justify-around space-x-4'>
                   <p className="text-xs text-gray-500 flex flex-row items-center gap-2">Tổng chi tiêu: {formatCurrency(customer.total_expenditure.toString())} đ</p>
-                  <p className="text-xs text-gray-500 flex flex-row items-center gap-2 pl-8">Điểm tích luỹ: {customer.total_expenditure.toString()}</p>
                 </div>
               </div>
             </div>

@@ -1,21 +1,24 @@
 'use client';
 
-import { useAppSelector } from '@/hooks/redux';
-import React, { useState } from 'react';
+import { useAppDispatch, useAppSelector } from '@/hooks/redux';
+import React, { useEffect, useState } from 'react';
 import SearchCustomerItem from './SearchCustomerItem';
 import Pagination from '../orders/Pagination';
 import DataNotFound from '../DataNotFound';
+import { searchCustomers, setCurrentPageCustomers } from '@/slices/searchSlice';
+import { useRouter } from 'next/router';
 
 export default function SearchCustomer() {
+  const dispatch = useAppDispatch();
+  const router = useRouter();
+  const { keyword } = router.query;
   const customers = useAppSelector((state) => state.search.searchResult.customers);
-  const [currentPage, setCurrentPage] = useState(1);
-  const totalPages = Math.ceil(customers.length / 5);
+  const currentPageCustomers = useAppSelector((state) => state.search.currentPageCustomers);
 
   const handlePageChange = (page: number) => {
-    setCurrentPage(page);
+    dispatch(setCurrentPageCustomers(page - 1));
+    dispatch(searchCustomers({ query: keyword as string, page: currentPageCustomers, limit: 5 }));
   };
-
-  const paginatedCustomers = customers.slice((currentPage - 1) * 5, currentPage * 5);
 
   return (
     <div className="bg-white rounded-lg border border-gray-200">
@@ -25,15 +28,15 @@ export default function SearchCustomer() {
         </h2>
       </div>
       {customers.length > 0 ? <div className="p-6 flex flex-col space-y-4">
-        {paginatedCustomers.map((customer, index) => (
+        {customers.map((customer, index) => (
           <SearchCustomerItem key={index} customer={customer} />
         ))}
       </div> : <DataNotFound />}
 
-      {customers.length > 5 && <div className="p-6">
+      {customers.length > 4 && <div className="p-6">
         <Pagination
-          currentPage={currentPage}
-          totalPages={totalPages}
+          currentPage={currentPageCustomers + 1}
+          totalPages={5}
           onPageChange={handlePageChange}
         />
       </div>}

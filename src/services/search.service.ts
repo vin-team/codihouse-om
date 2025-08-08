@@ -2,16 +2,29 @@ import { HttpService } from "./http/HttpService";
 import { parseCommonHttpResult } from "./http/parseCommonResult";
 
 class SearchService {
-  async search(query: string) {
+  async searchOrders(data: { query: string, page: number, limit: number }) {
     const payload = {
       queries: [
         {
           indexUid: 'order',
-          q: query
+          q: data.query,
+          limit: data.limit,
+          offset: data.page
         },
+      ]
+    }
+    const response = await HttpService.doPostRequest(`/meili/msearch`, payload);
+    return parseCommonHttpResult(response);
+  }
+
+  async searchCustomers(data: { query: string, page: number, limit: number }) {
+    const payload = {
+      queries: [
         {
           indexUid: 'customer',
-          q: query
+          q: data.query,
+          limit: data.limit,
+          offset: data.page
         }
       ]
     }

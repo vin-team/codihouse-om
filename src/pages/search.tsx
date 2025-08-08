@@ -7,7 +7,7 @@ import SearchHeader from '@/components/search/SearchHeader';
 import SearchOrder from '@/components/search/SearchOrder';
 import SearchCustomer from '@/components/search/SearchCustomer';
 import { useAppDispatch, useAppSelector } from '@/hooks/redux';
-import { search } from '@/slices/searchSlice';
+import { searchOrders, searchCustomers } from '@/slices/searchSlice';
 
 export default function SearchPage() {
   const router = useRouter();
@@ -23,8 +23,8 @@ export default function SearchPage() {
 
   useEffect(() => {
     if (keyword) {
-
-      dispatch(search(keyword as string));
+      dispatch(searchOrders({ query: keyword as string, page: 0, limit: 5 }));
+      dispatch(searchCustomers({ query: keyword as string, page: 0, limit: 5 }));
     }
   }, [keyword]);
 

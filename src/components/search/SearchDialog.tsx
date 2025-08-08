@@ -13,7 +13,7 @@ import { formatCurrency } from "@/utils/data.util";
 import { roleService } from "@/services/role.service";
 import { useRouter } from "next/navigation";
 import { useAppDispatch, useAppSelector } from "@/hooks/redux";
-import { clearSearchResult, search as searchSlice } from "@/slices/searchSlice";
+import { clearSearchResult, searchCustomers, searchOrders } from "@/slices/searchSlice";
 import { getOrderStatusColor } from "@/utils/order.util";
 import { getDateFromISOString } from "@/utils/date.util";
 import Link from "next/link";
@@ -57,7 +57,8 @@ export function SearchDialog({ isOpen, onClose }: SearchDialogProps) {
 
   useEffect(() => {
     if (isOpen) {
-      dispatch(searchSlice(search));
+      dispatch(searchOrders({ query: search, page: 0, limit: 3 }));
+      dispatch(searchCustomers({ query: search, page: 0, limit: 3 }));
     }
   }, [search]);
 

@@ -1,21 +1,24 @@
 'use client';
 
-import { useAppSelector } from '@/hooks/redux';
-import React, { useState } from 'react';
+import { useAppDispatch, useAppSelector } from '@/hooks/redux';
+import React, { useEffect, useState } from 'react';
 import SearchOrderItem from './SearchOrderItem';
 import DataNotFound from '../DataNotFound';
 import Pagination from '../orders/Pagination';
+import { searchOrders, setCurrentPageOrders } from '@/slices/searchSlice';
+import { useRouter } from 'next/router';
 
 export default function SearchOrder() {
+  const router = useRouter();
+  const { keyword } = router.query;
+  const dispatch = useAppDispatch();
   const orders = useAppSelector((state) => state.search.searchResult.orders);
-  const [currentPage, setCurrentPage] = useState(1);
-  const totalPages = Math.ceil(orders.length / 5);
+  const currentPageOrders = useAppSelector((state) => state.search.currentPageOrders);
 
   const handlePageChange = (page: number) => {
-    setCurrentPage(page);
+    dispatch(setCurrentPageOrders(page - 1));
+    dispatch(searchOrders({ query: keyword as string, page: currentPageOrders, limit: 5 }));
   };
-
-  const paginatedOrders = orders.slice((currentPage - 1) * 5, currentPage * 5);
 
   return (
     <div className="bg-white rounded-lg border border-gray-200">
@@ -24,15 +27,15 @@ export default function SearchOrder() {
       </div>
 
       {orders.length > 0 ? <div className="p-6 flex flex-col space-y-4">
-        {paginatedOrders.map((order, index) => (
+        {orders.map((order, index) => (
           <SearchOrderItem key={index} order={order} />
         ))}
       </div> : <DataNotFound />}
 
-      {orders.length > 5 && <div className="p-6">
+      {orders.length > 4 && <div className="p-6">
         <Pagination
-          currentPage={currentPage}
-          totalPages={totalPages}
+          currentPage={currentPageOrders + 1}
+          totalPages={5}
           onPageChange={handlePageChange}
         />
       </div>}
