@@ -1,7 +1,6 @@
 'use client';
 
-import { Button } from "@/components/ui/button";
-import Link from "next/link";
+import { BackButton } from "@/components/ui/back-button";
 
 export default function UsersAddHeader() {
 
@@ -12,9 +11,7 @@ export default function UsersAddHeader() {
         <p className="text-gray-600">Tạo tài khoản mới cho nhân viên chi nhánh</p>
       </div>
       <div className='flex flex-row gap-2'>
-        <Link href={'/users'}>
-          <Button variant="outline">Quay lại</Button>
-        </Link>
+        <BackButton fallbackHref="/users" />
       </div>
     </div>
   );

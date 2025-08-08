@@ -1,7 +1,8 @@
+import { BackButton } from "@/components/ui/back-button";
 import { Button } from "@/components/ui/button";
+import { ArrowLeft } from "lucide-react";
 import { useParams } from "next/dist/client/components/navigation";
 import Link from "next/dist/client/link";
-import router from "next/dist/client/router";
 
 export default function UsersEditHeader() {
   const params = useParams();
@@ -14,9 +15,7 @@ export default function UsersEditHeader() {
         <p className="text-gray-600">Cập nhật thông tin người dùng {id}</p>
       </div>
       <div className='flex flex-row gap-2'>
-        <Link href={'/users'}>
-          <Button variant="outline">Quay lại</Button>
-        </Link>
+        <BackButton fallbackHref="/users" />
       </div>
     </div>
   );

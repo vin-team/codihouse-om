@@ -1,5 +1,4 @@
-import { Button } from "@/components/ui/button";
-import Link from "next/dist/client/link";
+import { BackButton } from "@/components/ui/back-button";
 
 export default function BranchAddHeader() {
   return (
@@ -9,9 +8,7 @@ export default function BranchAddHeader() {
         <p className="text-gray-600">Nhập thông tin chi nhánh mới</p>
       </div>
       <div className='flex flex-row gap-2'>
-        <Link href="/branches">
-          <Button variant="outline">Quay lại</Button>
-        </Link>
+        <BackButton fallbackHref="/branches" />
       </div>
     </div>
   );
