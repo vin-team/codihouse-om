@@ -53,9 +53,15 @@ export default function Products({ order }: { order: Order }) {
             <span>Giảm giá:</span>
             <span>{formatCurrency(String(order?.total_discount || 0)) + ' đ'}</span>
           </div>
-          <div className="flex justify-between font-bold text-lg border-t pt-2">
-            <span>Tổng cộng:</span>
-            <span className="text-green-600">{order.total_price ? order.total_price.toLocaleString() : 0}₫</span>
+          <div className="flex flex-col gap-2 border-t pt-2">
+            <div className='flex-1 flex flex-row justify-between'>
+              <span>Số tiền khách đã trả:</span>
+              <span>{order?.paid_amount ? formatCurrency(String(order?.paid_amount)) : 0}₫</span>
+            </div>
+            <div className='flex-1 flex flex-row justify-between font-bold text-lg'>
+              <span>Tổng cộng:</span>
+              <span className="text-green-600">{order?.total_price ? order?.total_price.toLocaleString() : 0}₫</span>
+            </div>
           </div>
         </div>
       </CardContent>

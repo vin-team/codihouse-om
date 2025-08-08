@@ -83,8 +83,8 @@ export default function OrderList() {
                   {visibleColumns.get('amount') && <TableCell>{formatCurrency(order.total_price?.toString() || "0")}₫</TableCell>}
                   {visibleColumns.get('status') && (
                     <TableCell>
-                      <Badge variant='outline' className={getOrderStatusColor(order.status)}>
-                        {order.status}
+                      <Badge variant='outline' className={getOrderStatusColor(order.state || '')}>
+                        {order.state}
                       </Badge>
                     </TableCell>
                   )}

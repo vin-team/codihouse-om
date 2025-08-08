@@ -1,6 +1,7 @@
 export interface Order {
   id: number;
   status: string;
+  state: string | null;
   sort: number | null;
   user_created: number | null;
   date_created: string | null;
@@ -20,6 +21,7 @@ export interface Order {
   payment_status: string | null,
   name: string | null,
   code: string;
+  paid_amount: number | null;
   document_date: string | null;
   approval_date: string | null;
   source: string;
@@ -47,6 +49,7 @@ export const parseOrder = (order: any): Order => {
   return {
     id: order.id,
     status: order.status,
+    state: order.state,
     sort: order.sort,
     user_created: order.user_created,
     date_created: order.date_created,
@@ -63,6 +66,7 @@ export const parseOrder = (order: any): Order => {
     payment_status: order.payment_status,
     name: order.name,
     code: order.code,
+    paid_amount: order.paid_amount,
     document_date: order.document_date,
     approval_date: order.approval_date,
     source: order.source,

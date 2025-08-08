@@ -20,8 +20,8 @@ export default function OrderHeader({ order }: { order: Order }) {
           <Badge variant='outline'>
             <p className='text-xs font-semibold text-black text-center'>{order?.source?.toUpperCase()}</p>
           </Badge>}
-        <Badge variant='outline' className={getOrderStatusColor(order.status)}>
-          <p className='text-xs font-semibold text-center'>{order?.status?.toUpperCase()}</p>
+        <Badge variant='outline' className={getOrderStatusColor(order.state || '')}>
+          <p className='text-xs font-semibold text-center'>{order?.state?.toUpperCase()}</p>
         </Badge>
       </div>
     </div>

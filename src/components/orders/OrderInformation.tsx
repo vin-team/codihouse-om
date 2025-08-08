@@ -6,6 +6,7 @@ import { Badge } from '../ui/badge';
 import { getStatusColor } from '@/utils/data.util';
 import { Order } from '@/model/Order.model';
 import { getOrderStatusColor } from '@/utils/order.util';
+import { getDateFromISOString } from '@/utils/date.util';
 
 export default function OrderInformation({ order }: { order: Order }) {
   return (
@@ -31,11 +32,11 @@ export default function OrderInformation({ order }: { order: Order }) {
           </div>
           <div>
             <p className="text-sm font-medium text-gray-600">Trạng thái</p>
-            <Badge variant='outline' className={getOrderStatusColor(order.status)}>{order?.status}</Badge>
+            <Badge variant='outline' className={getOrderStatusColor(order.state || '')}>{order?.state}</Badge>
           </div>
           <div>
             <p className="text-sm font-medium text-gray-600">Ngày tạo</p>
-            <p className="text-lg">{order?.date_created}</p>
+            <p className="text-lg">{order?.date_created ? getDateFromISOString(order.date_created) : '-'}</p>
           </div>
           <div>
             <p className="text-sm font-medium text-gray-600">Chi nhánh</p>

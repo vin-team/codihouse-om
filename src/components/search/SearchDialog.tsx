@@ -93,7 +93,7 @@ export function SearchDialog({ isOpen, onClose }: SearchDialogProps) {
 
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center space-x-2 mb-1">
-                    <span className="font-medium text-gray-900">{order.id}</span>
+                    <span className="font-medium text-gray-900">{order.code}</span>
                     <Badge variant="secondary" className="text-xs">
                       {order.source}
                     </Badge>
