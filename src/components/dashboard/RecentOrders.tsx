@@ -33,7 +33,7 @@ export default function RecentOrders() {
                   <p className="font-medium">#{order.id}</p>
                   <p className="text-sm text-gray-500">{[order?.customer?.first_name, order?.customer?.last_name].join(' ')} • {order?.branch?.title}</p>
                 </div>
-                <Badge className={`${getStatusColor(order.status)}`} variant="secondary">{order.status}</Badge>
+                <Badge className={`${getStatusColor(order.state || '')}`} variant="secondary">{order.state}</Badge>
               </div>
             </Link>
           ))}
