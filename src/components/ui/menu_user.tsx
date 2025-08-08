@@ -53,7 +53,7 @@ export function MenuUser() {
           <span className="text-sm font-medium text-black">{isAdmin ? 'Quản trị viên' : 'Nhân viên'} </span>
         </button>
       </PopoverTrigger>
-      <PopoverContent className="w-64">
+      <PopoverContent align="end" className="w-64">
         <div className="grid gap-4">
           <div className="flex flex-row items-center gap-2">
             <div className="w-10 h-10 bg-primary-100 rounded-full flex items-center justify-center">
