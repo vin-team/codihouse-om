@@ -1,13 +1,15 @@
 import { useState } from "react";
 import { Button } from "../ui/button";
 import { Combobox } from "../ui/combobox";
-
+import { useAppDispatch, useAppSelector } from "@/hooks/redux";
+import { searchUsers, setFilter } from "@/slices/userSlice";
 export default function UsersFilter() {
-  const [search, setSearch] = useState("");
+  const dispatch = useAppDispatch();
+  const filter = useAppSelector(state => state.user.filter);
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setSearch(e.target.value);
-  };
+  const handleSearch = () => {
+    dispatch(searchUsers({ search: filter.search }));
+  }
 
   return (
     <div className="bg-white rounded-lg p-4 md:p-6 border border-gray-200">
@@ -23,13 +25,13 @@ export default function UsersFilter() {
             </div>
             <input
               type="text"
-              value={search}
+              value={filter.search}
               placeholder={"Tìm kiếm người dùng..."}
-              onChange={handleChange}
+              onChange={(e) => dispatch(setFilter({ ...filter, search: e.target.value }))}
               className="block w-full pl-12 pr-20 h-10 border border-gray-300 rounded-lg text-sm placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
             />
           </div>
-          <Button variant="outline" className='h-10 whitespace-nowrap'>
+          <Button variant="outline" className='h-10 whitespace-nowrap' onClick={handleSearch}>
             <span>Tìm kiếm</span>
           </Button>
         </div>

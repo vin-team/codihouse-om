@@ -1,6 +1,7 @@
 import { HttpService } from "./http/HttpService";
 import { parseCommonHttpResult } from "./http/parseCommonResult";
 import { Pagination } from "@/model/Pagination.mode";
+import { formatDate } from "date-fns";
 
 class OrderService {
   async getOrders(pagination?: Pagination) {
@@ -11,6 +12,7 @@ class OrderService {
       'customer.last_name',
       'customer.email',
       'customer.phone',
+      'branch.id',
       'branch.title',
     ];
     fields.forEach(field => queryParams.append('fields[]', field));
@@ -38,6 +40,7 @@ class OrderService {
       '*',
       'line_items.name',
       'line_items.quantity',
+      'line_items.price',
       'customer.first_name',
       'customer.last_name',
       'customer.email',
@@ -52,6 +55,101 @@ class OrderService {
     fields.forEach(field => queryParams.append('fields[]', field));
 
     const response = await HttpService.doGetRequest(`/items/om_order/${id}?${queryParams}`, "");
+    return parseCommonHttpResult(response);
+  }
+
+  async getRecentOrders() {
+    const queryParams = new URLSearchParams();
+    const fields = [
+      '*',
+      'customer.first_name',
+      'customer.last_name',
+      'customer.email',
+      'customer.phone',
+      'branch.id',
+      'branch.title',
+    ];
+    fields.forEach(field => queryParams.append('fields[]', field));
+
+    queryParams.append('limit', '5');
+    queryParams.append('sort', '-date_created');
+    const response = await HttpService.doGetRequest(`/items/om_order?${queryParams}`, "");
+    return parseCommonHttpResult(response);
+  }
+
+  async searchOrders(filters: any) {
+    const queryParams = new URLSearchParams();
+    const fields = [
+      '*',
+      'customer.first_name',
+      'customer.last_name',
+      'customer.email',
+      'customer.phone',
+      'branch.id',
+      'branch.title',
+    ];
+    fields.forEach(field => queryParams.append('fields[]', field));
+
+    let filter: any = {};
+    let andConditions: any[] = [];
+
+    if (filters.keyword) {
+      filter._or = [
+        {
+          customer: {
+            first_name: { _icontains: filters.keyword }
+          },
+        },
+        {
+          customer: {
+            last_name: { _icontains: filters.keyword }
+          },
+        },
+        {
+          customer: {
+            email: { _icontains: filters.keyword }
+          },
+        },
+        {
+          customer: {
+            phone: { _icontains: filters.keyword }
+          },
+        }
+      ];
+    }
+
+    if (filters.state) {
+      andConditions.push({
+        state: { _eq: filters.state }
+      });
+    }
+
+    if (filters.branch_id) {
+      andConditions.push({
+        branch: { id: { _eq: filters.branch_id } }
+      });
+    }
+
+    if (filters.date_range?.from || filters.date_range?.to) {
+      let dateCondition: any = {};
+      if (filters.date_range?.from) {
+        dateCondition._gte = formatDate(filters.date_range.from, 'yyyy-MM-dd');
+      }
+      if (filters.date_range?.to) {
+        dateCondition._lte = formatDate(filters.date_range.to, 'yyyy-MM-dd');
+      }
+      andConditions.push({
+        date_created: dateCondition
+      });
+    }
+
+    if (andConditions.length > 0) {
+      filter._and = andConditions;
+    }
+
+    queryParams.append('filter', JSON.stringify(filter));
+
+    const response = await HttpService.doGetRequest(`/items/om_order?${queryParams}`, "");
     return parseCommonHttpResult(response);
   }
 

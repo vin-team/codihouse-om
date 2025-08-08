@@ -4,6 +4,7 @@ import { Badge } from '@/components/ui/badge';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import React from 'react';
 import { Customer } from '@/model/Customer.model';
+import { getDateFromISOString } from '@/utils/date.util';
 
 export default function CustomerPersonalInfo({ customer }: { customer: Customer }) {
   return <Card>
@@ -15,11 +16,11 @@ export default function CustomerPersonalInfo({ customer }: { customer: Customer 
     <CardContent className="space-y-4">
       <div>
         <p className="text-sm font-medium text-gray-600">Tên khách hàng</p>
-        <div className="flex items-center space-x-2">
+        <div className="flex items-center space-x-8">
           <p className="text-lg font-semibold">{[customer?.first_name, customer?.last_name].join(' ')}</p>
-          <Badge variant={customer.status === "VIP" ? "default" : "secondary"}>
-            {/* {customer.status} */} VIP
-          </Badge>
+          {customer.group?.code && <Badge variant='outline'>
+            {customer.group?.code}
+          </Badge>}
         </div>
       </div>
       <div>
@@ -36,7 +37,7 @@ export default function CustomerPersonalInfo({ customer }: { customer: Customer 
       </div>
       <div>
         <p className="text-sm font-medium text-gray-600">Ngày tham gia</p>
-        <p className="text-lg">{customer.date_created || '-'}</p>
+        <p className="text-lg">{customer.date_created ? getDateFromISOString(customer.date_created) : '-'}</p>
       </div>
     </CardContent>
   </Card>

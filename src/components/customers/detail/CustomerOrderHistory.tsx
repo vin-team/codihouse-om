@@ -8,6 +8,7 @@ import { Badge } from '@/components/ui/badge';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { Customer } from '@/model/Customer.model';
+import { getDateFromISOString } from '@/utils/date.util';
 
 export default function CustomerOrderHistory({ customer }: { customer: Customer }) {
   return (
@@ -33,7 +34,7 @@ export default function CustomerOrderHistory({ customer }: { customer: Customer 
             {customer.orders.map((order: any) => (
               <TableRow key={order.id}>
                 <TableCell className="font-medium">{order.code}</TableCell>
-                <TableCell>{order.date_created || '-'}</TableCell>
+                <TableCell>{order.date_created ? getDateFromISOString(order.date_created) : '-'}</TableCell>
                 <TableCell>
                   <Badge variant={order.branch === "Online" ? "default" : "secondary"}>
                     {order.branch.title}
@@ -41,7 +42,7 @@ export default function CustomerOrderHistory({ customer }: { customer: Customer 
                 </TableCell>
                 <TableCell>
                   <div className="max-w-[200px]">
-                    {order.line_items.map((item: any) => item.name).join(", ")}
+                    {order?.line_items?.map((item: any) => item.name).join(", ")}
                   </div>
                 </TableCell>
                 <TableCell>{formatCurrency(order.total_price.toString() || '0')}₫</TableCell>

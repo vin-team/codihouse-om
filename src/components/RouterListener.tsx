@@ -1,16 +1,16 @@
-import {useEffect} from 'react';
-import {useRouter} from 'next/router';
-import {useAppDispatch} from '../hooks/redux';
-import {endRouting, startRouting} from '../slices/app';
+import { useEffect } from 'react';
+import { useAppDispatch, useAppSelector } from '../hooks/redux';
+import { endRouting, startRouting } from '../slices/app';
+import { useRouter } from 'next/router';
+import Loading from './Loading';
 
 export default function RouterListener() {
 	const router = useRouter();
+	const isRouteChanging = useAppSelector(state => state.app.isRouteChanging);
 	const dispatch = useAppDispatch();
 
 	useEffect(() => {
-		const handleStart = () => {
-			dispatch(startRouting());
-		};
+		const handleStart = () => dispatch(startRouting());
 		const handleComplete = () => dispatch(endRouting());
 
 		router.events.on('routeChangeStart', handleStart);
@@ -22,7 +22,11 @@ export default function RouterListener() {
 			router.events.off('routeChangeComplete', handleComplete);
 			router.events.off('routeChangeError', handleComplete);
 		};
-	}, [router.events]);//eslint-disable-line
+	}, []);
 
-	return null;
+	if (!isRouteChanging) return null;
+
+	return (
+		<Loading />
+	);
 }

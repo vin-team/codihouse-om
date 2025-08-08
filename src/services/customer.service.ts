@@ -9,6 +9,10 @@ class CustomerService {
     const fields = [
       '*',
       'orders.code',
+      'staff.id',
+      'staff.first_name',
+      'staff.last_name',
+      'staff.branch.title',
       'address_book.address',
     ];
     fields.forEach(field => queryParams.append('fields[]', field));
@@ -35,9 +39,11 @@ class CustomerService {
     const fields = [
       '*',
       'address_book.address',
+      'group.code',
       'orders.id',
       'orders.code',
       'orders.total_price',
+      'orders.date_created',
       'orders.status',
       'orders.branch.title',
       'orders.line_items.name',
@@ -45,6 +51,69 @@ class CustomerService {
     fields.forEach(field => queryParams.append('fields[]', field));
 
     const response = await HttpService.doGetRequest(`/items/om_customer/${id}?${queryParams}`, "");
+    return parseCommonHttpResult(response);
+  }
+
+  async searchCustomers(filters: any) {
+    const queryParams = new URLSearchParams();
+    const fields = [
+      '*',
+      'orders.code',
+      'staff.id',
+      'staff.first_name',
+      'staff.last_name',
+      'staff.branch.title',
+      'address_book.address',
+    ];
+    fields.forEach(field => queryParams.append('fields[]', field));
+
+    let filter: any = {};
+    let andConditions: any[] = [];
+
+    if (filters.search) {
+      filter._or = [
+        {
+          code: { _icontains: filters.search }
+        },
+        {
+          first_name: { _icontains: filters.search }
+        },
+        {
+          last_name: { _icontains: filters.search }
+        },
+        {
+          email: { _icontains: filters.search }
+        },
+        {
+          phone: { _icontains: filters.search }
+        }
+      ];
+    }
+
+    if (filters.state && filters.state !== 'all') {
+      andConditions.push({
+        state: { _eq: filters.state }
+      });
+    }
+
+    if (filters.orderCount) {
+      andConditions.push({
+        orders: { _gte: filters.orderCount }
+      });
+    }
+
+    if (filters.totalExpenditure) {
+      andConditions.push({
+        total_expenditure: { _gte: filters.totalExpenditure }
+      });
+    }
+
+    if (andConditions.length > 0) {
+      filter._and = andConditions;
+    }
+
+    queryParams.append('filter', JSON.stringify(filter));
+    const response = await HttpService.doGetRequest(`/items/om_customer?${queryParams}`, "");
     return parseCommonHttpResult(response);
   }
 }

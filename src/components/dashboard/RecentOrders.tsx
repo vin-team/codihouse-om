@@ -1,37 +1,21 @@
 'use client';
 
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '../ui/card';
 import { Badge } from '../ui/badge';
+import { useAppDispatch, useAppSelector } from '@/hooks/redux';
+import { getRecentOrders } from '@/slices/orderSlice';
+import { getStatusColor } from '@/utils/data.util';
 
 export default function RecentOrders() {
-  const orders = [
-    {
-      id: "DH001234",
-      customer: "Nguyễn Văn A",
-      branch: "Chi nhánh Quận 1",
-      status: "Đang xử lý"
-    },
-    {
-      id: "DH001235",
-      customer: "Trần Thị B",
-      branch: "Chi nhánh Online",
-      status: "Hoàn thành"
-    },
-    {
-      id: "DH001236",
-      customer: "Lê Văn C",
-      branch: "Chi nhánh Quận 7",
-      status: "Đã hủy"
-    },
-  ]
+  const dispatch = useAppDispatch();
+  const orders = useAppSelector(state => state.order.recentOrders);
 
-  const statusColor = (status: string) => {
-    if (status === "Đang xử lý") return "bg-gray-100";
-    if (status === "Hoàn thành") return "bg-black text-white hover:bg-black";
-    if (status === "Đã hủy") return "bg-red-500 text-white hover:bg-red-500";
-    return "bg-gray-100";
-  }
+  useEffect(() => {
+    dispatch(getRecentOrders());
+  }, []);
+
+  const sliceOrders = orders.length > 5 ? orders.slice(0, 5) : orders;
 
   return (
     <Card>
@@ -41,13 +25,13 @@ export default function RecentOrders() {
       </CardHeader>
       <CardContent>
         <div className="space-y-4">
-          {orders.map((order) => (
+          {sliceOrders.map((order) => (
             <div className="flex items-center justify-between">
               <div>
                 <p className="font-medium">#{order.id}</p>
-                <p className="text-sm text-gray-500">{order.customer} • {order.branch}</p>
+                <p className="text-sm text-gray-500">{[order?.customer?.first_name, order?.customer?.last_name].join(' ')} • {order?.branch?.title}</p>
               </div>
-              <Badge className={`${statusColor(order.status)}`} variant="secondary">{order.status}</Badge>
+              <Badge className={`${getStatusColor(order.status)}`} variant="secondary">{order.status}</Badge>
             </div>
           ))}
         </div>

@@ -3,7 +3,6 @@ import { Card, CardContent } from "../ui/card";
 import { useAppDispatch, useAppSelector } from "@/hooks/redux";
 import { getBranches } from "@/slices/branchSlice";
 import { useEffect } from "react";
-import Loading from "../Loading";
 import { LoaderCircle } from "lucide-react";
 
 export default function Branches() {

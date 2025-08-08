@@ -25,7 +25,6 @@ const Login: React.FC<LoginProps> = ({ }) => {
   const { success, error } = useToastContext();
 
   const dispatch = useAppDispatch();
-  const authError = useAppSelector(state => state.auth.error);
   const authActionState = useAppSelector(state => state.auth.actionState);
   const userActionState = useAppSelector(state => state.user.actionState);
   const roleActionState = useAppSelector(state => state.role.actionState);

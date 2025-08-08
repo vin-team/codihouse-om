@@ -30,6 +30,8 @@ const ResetPassword: React.FC<ResetPasswordProps> = ({ }) => {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const router = useRouter();
+  const { token: urlToken } = router.query;
+
   const dispatch = useAppDispatch();
   const { success, error: showError } = useToastContext();
 
@@ -37,7 +39,6 @@ const ResetPassword: React.FC<ResetPasswordProps> = ({ }) => {
   const { step, email, token, isLoading, error } = resetPasswordState;
 
   useEffect(() => {
-    const { token: urlToken } = router.query;
     if (urlToken && typeof urlToken === 'string') {
       dispatch(setResetPasswordToken(urlToken));
       dispatch(setResetPasswordStep(3));

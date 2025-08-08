@@ -9,13 +9,14 @@ import PurchasingStatistics from "@/components/customers/detail/PurchasingStatis
 import CustomerOrderHistory from "@/components/customers/detail/CustomerOrderHistory";
 import { useAppDispatch, useAppSelector } from "@/hooks/redux";
 import { getCustomer } from "@/slices/customerSlice";
-import { roleService } from "@/services/role.service";
+import { useToastContext } from "@/contexts/ToastContext";
 
 export default function CustomerDetailPage() {
   const router = useRouter();
   const { id } = router.query;
   const dispatch = useAppDispatch();
-  const isAdmin = roleService.isAdmin();
+  const { error } = useToastContext();
+
   const requestState = useAppSelector(state => state.customer.requestState);
   const customer = useAppSelector(state => state.customer.customer);
 
@@ -38,11 +39,10 @@ export default function CustomerDetailPage() {
           setLoading(false);
           break;
         case 'failed':
-          if (isAdmin) {
-            router.push('/customers');
-          } else {
+          error(requestState.error || 'Không tìm thấy khách hàng');
+          setTimeout(() => {
             router.push('/dashboard');
-          }
+          }, 3000)
           break;
       }
     }

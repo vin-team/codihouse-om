@@ -1,12 +1,14 @@
-import { useState } from "react";
 import { Button } from "../ui/button";
 import { useAppDispatch, useAppSelector } from "@/hooks/redux";
-import { setFilter as setFilterBranch } from "@/slices/branchSlice";
+import { searchBranches, setFilter as setFilterBranch } from "@/slices/branchSlice";
 
 export default function BranchesFilter() {
   const dispatch = useAppDispatch();
   const filter = useAppSelector(state => state.branch.filter);
 
+  const handleSearch = () => {
+    dispatch(searchBranches({ search: filter.search }));
+  }
 
   return (
     <div className="bg-white rounded-lg p-4 md:p-6 border border-gray-200">
@@ -28,7 +30,7 @@ export default function BranchesFilter() {
               className="block w-full pl-12 pr-20 h-10 border border-gray-300 rounded-lg text-sm placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
             />
           </div>
-          <Button variant="outline" className='h-10 whitespace-nowrap' onClick={() => dispatch(setFilterBranch(filter))}>
+          <Button variant="outline" className='h-10 whitespace-nowrap' onClick={handleSearch}>
             <span>Tìm kiếm</span>
           </Button>
         </div>

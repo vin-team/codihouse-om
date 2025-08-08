@@ -1,34 +1,54 @@
-import React, { useState } from 'react';
+import React, { useEffect } from 'react';
 import { Combobox } from '../ui/combobox';
 import { Button } from '../ui/button';
-import { useAppDispatch } from '@/hooks/redux';
-import { setFilter as setFilterCustomer } from '@/slices/customerSlice';
+import { useAppDispatch, useAppSelector } from '@/hooks/redux';
+import { getCustomers, searchCustomers, setFilter } from '@/slices/customerSlice';
+import { setIsFilter } from '@/slices/orderSlice';
 
 export default function FilterCustomers() {
   const dispatch = useAppDispatch();
+  const filter = useAppSelector(state => state.customer.filter);
+  const isFilter = useAppSelector(state => state.customer.isFilter);
+  const handleSearch = () => {
+    if (filter.search?.trim() === '') {
+      dispatch(setIsFilter(false));
+      dispatch(getCustomers({ page: 1, limit: 25 }));
+      return;
+    }
 
-  const [filter, setFilter] = useState<any>({
-    search: '',
-    status: '',
-    orderCount: '',
-    totalExpenditure: '',
-  });
+    dispatch(setIsFilter(true));
+    dispatch(searchCustomers({
+      search: filter.search,
+      state: '',
+      orderCount: '',
+      totalExpenditure: ''
+    }));
+  }
 
+  const handleFilter = () => {
+    dispatch(setIsFilter(true));
+    dispatch(searchCustomers({
+      search: filter.search,
+      state: filter.state,
+      orderCount: filter.orderCount,
+      totalExpenditure: filter.totalExpenditure
+    }));
+  }
 
   const handleClearSearch = () => {
-    setFilter({
-      search: '',
-      status: '',
-      orderCount: '',
-      totalExpenditure: '',
-    });
-    dispatch(setFilterCustomer({
+    dispatch(setIsFilter(false));
+    dispatch(getCustomers({ page: 1, limit: 25 }));
+    dispatch(setFilter({
       search: '',
       status: '',
       orderCount: '',
       totalExpenditure: '',
     }));
   };
+
+  useEffect(() => {
+    console.log('filter: ', isFilter);
+  }, [isFilter]);
 
   return (
     <div className="bg-white rounded-lg p-4 md:p-6 border border-gray-200">
@@ -46,11 +66,11 @@ export default function FilterCustomers() {
               type="text"
               value={filter.search}
               placeholder={"Tìm theo mã đơn hàng, số điện thoại hoặc email..."}
-              onChange={(e) => setFilter({ ...filter, search: e.target.value })}
+              onChange={(e) => dispatch(setFilter({ ...filter, search: e.target.value }))}
               className="block w-full pl-12 pr-20 h-10 border border-gray-300 rounded-lg text-sm placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
             />
           </div>
-          <Button variant="outline" className='h-10 whitespace-nowrap' onClick={() => dispatch(setFilterCustomer(filter))}>
+          <Button variant="outline" className='h-10 whitespace-nowrap' onClick={handleSearch}>
             <span>Tìm kiếm</span>
           </Button>
         </div>
@@ -61,12 +81,10 @@ export default function FilterCustomers() {
             className='w-full flex-1'
             options={[
               { value: 'all', label: 'Tất cả' },
-              { value: 'vip', label: 'VIP' },
-              { value: 'normal', label: 'Thường' },
-              { value: 'new', label: 'Mới' },
+              { value: 'Đang giao dịch', label: 'Đang giao dịch' }
             ]}
-            value={filter.status}
-            onChange={(value) => setFilter({ ...filter, status: value })}
+            value={filter.state}
+            onChange={(value) => dispatch(setFilter({ ...filter, state: value }))}
             placeholder='Trạng thái'
           />
           <Combobox
@@ -79,7 +97,7 @@ export default function FilterCustomers() {
               { value: '30', label: 'Trên 30 đơn' },
             ]}
             value={filter.orderCount}
-            onChange={(value) => setFilter({ ...filter, orderCount: value })}
+            onChange={(value) => dispatch(setFilter({ ...filter, orderCount: value }))}
             placeholder='Số lượng đơn hàng'
           />
           <Combobox
@@ -92,11 +110,11 @@ export default function FilterCustomers() {
               { value: '5M', label: 'Trên 5M' },
             ]}
             value={filter.totalExpenditure}
-            onChange={(value) => setFilter({ ...filter, totalExpenditure: value })}
+            onChange={(value) => dispatch(setFilter({ ...filter, totalExpenditure: value }))}
             placeholder='Tổng chỉ tiêu'
           />
           <div className='flex flex-row gap-2'>
-            <Button variant="outline" className='h-10 w-full sm:w-24' onClick={() => dispatch(setFilterCustomer(filter))}>
+            <Button variant="outline" className='h-10 w-full sm:w-24' onClick={handleFilter}>
               <span>Lọc</span>
             </Button>
             <Button variant="outline" className='h-10 w-full sm:w-24' onClick={handleClearSearch}>

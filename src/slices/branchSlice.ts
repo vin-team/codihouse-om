@@ -9,7 +9,7 @@ interface BranchState {
   branches: Branch[];
   branch: Branch | null;
   filter: {
-    search?: string;
+    search: string;
   };
   pagination: Pagination;
   requestState: RequestState;
@@ -53,6 +53,11 @@ export const createBranch: any = commonCreateAsyncThunk({
 export const updateBranch: any = commonCreateAsyncThunk({
   type: 'branch/updateBranch',
   action: branchService.updateBranch,
+});
+
+export const searchBranches: any = commonCreateAsyncThunk({
+  type: 'branch/searchBranches',
+  action: branchService.searchBranches,
 });
 
 const branchSlice = createSlice({
@@ -133,6 +138,17 @@ const branchSlice = createSlice({
       })
       .addCase(createBranch.rejected, (state, action) => {
         state.requestState = { status: 'failed', type: 'createBranch', error: action.error.message };
+      })
+
+      .addCase(searchBranches.pending, (state) => {
+        state.requestState = { status: 'loading', type: 'searchBranches' };
+      })
+      .addCase(searchBranches.fulfilled, (state, action) => {
+        state.branches = parseBranches(action.payload.data.data);
+        state.requestState = { status: 'completed', type: 'searchBranches' };
+      })
+      .addCase(searchBranches.rejected, (state, action) => {
+        state.requestState = { status: 'failed', type: 'searchBranches', error: action.error.message };
       });
   },
 });

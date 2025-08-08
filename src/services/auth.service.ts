@@ -52,8 +52,6 @@ class AuthService {
 
   async refreshToken() {
     try {
-      const refreshToken = HttpService.getLocalRefreshToken();
-
       const response = await HttpService.doPostRequest(
         '/auth/refresh',
         {

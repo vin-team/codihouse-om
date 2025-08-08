@@ -8,11 +8,12 @@ import { createSlice } from "@reduxjs/toolkit";
 interface CustomerState {
   customers: Customer[];
   customer: Customer | null;
+  isFilter: boolean;
   filter: {
     search?: string;
-    status?: string;
-    orderCount?: string;
-    totalExpenditure?: string;
+    state: string;
+    orderCount: string;
+    totalExpenditure: string;
   };
   pagination: Pagination;
   requestState: RequestState;
@@ -21,9 +22,10 @@ interface CustomerState {
 const initialState: CustomerState = {
   customers: [],
   customer: null,
+  isFilter: false,
   filter: {
     search: '',
-    status: '',
+    state: '',
     orderCount: '',
     totalExpenditure: '',
   },
@@ -49,6 +51,11 @@ export const getCustomersCount: any = commonCreateAsyncThunk({
 export const getCustomer: any = commonCreateAsyncThunk({
   type: 'customer/getCustomer',
   action: customerService.getCustomer,
+});
+
+export const searchCustomers: any = commonCreateAsyncThunk({
+  type: 'customer/searchCustomers',
+  action: customerService.searchCustomers,
 });
 
 const customerSlice = createSlice({
@@ -109,6 +116,17 @@ const customerSlice = createSlice({
       })
       .addCase(getCustomer.rejected, (state, action) => {
         state.requestState = { status: 'failed', type: 'getCustomer', error: action.error.message };
+      })
+
+      .addCase(searchCustomers.pending, (state) => {
+        state.requestState = { status: 'loading', type: 'searchCustomers' };
+      })
+      .addCase(searchCustomers.fulfilled, (state, action) => {
+        state.customers = parseCustomers(action.payload.data.data);
+        state.requestState = { status: 'completed', type: 'searchCustomers' };
+      })
+      .addCase(searchCustomers.rejected, (state, action) => {
+        state.requestState = { status: 'failed', type: 'searchCustomers', error: action.error.message };
       });
   },
 });

@@ -5,6 +5,7 @@ import { Card, CardHeader, CardTitle, CardContent } from '../ui/card';
 import { Badge } from '../ui/badge';
 import { getStatusColor } from '@/utils/data.util';
 import { Order } from '@/model/Order.model';
+import { getOrderStatusColor } from '@/utils/order.util';
 
 export default function OrderInformation({ order }: { order: Order }) {
   return (
@@ -30,7 +31,7 @@ export default function OrderInformation({ order }: { order: Order }) {
           </div>
           <div>
             <p className="text-sm font-medium text-gray-600">Trạng thái</p>
-            <Badge variant={getStatusColor(order?.status || '')}>{order?.status}</Badge>
+            <Badge variant='outline' className={getOrderStatusColor(order.status)}>{order?.status}</Badge>
           </div>
           <div>
             <p className="text-sm font-medium text-gray-600">Ngày tạo</p>

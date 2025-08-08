@@ -1,11 +1,9 @@
-import { useRouter } from 'next/router';
 import React from 'react';
 import { MenuUser } from './ui/menu_user';
 import { useAppSelector } from '@/hooks/redux';
 import Link from 'next/dist/client/link';
 
 const Header: React.FC = () => {
-  const router = useRouter();
   const isLogined = useAppSelector(state => state.app.isLogined);
 
   if (!isLogined) {

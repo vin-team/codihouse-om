@@ -33,6 +33,30 @@ class BranchService {
     const response = await HttpService.doPatchRequest(`/items/om_branch/${data?.id}`, data);
     return parseCommonHttpResult(response);
   }
+
+  async searchBranches(filters: any) {
+    const queryParams = new URLSearchParams();
+    let filter: any = {};
+
+    if (filters.search) {
+      filter._or = [
+        {
+          title: { _icontains: filters.search }
+        },
+        {
+          address: { _icontains: filters.search }
+        },
+        {
+          phone: { _icontains: filters.search }
+        }
+      ];
+    }
+
+    queryParams.append('fields[]', '*');
+    queryParams.append('filter', JSON.stringify(filter));
+    const response = await HttpService.doGetRequest(`/items/om_branch?${queryParams}`, "");
+    return parseCommonHttpResult(response);
+  }
 }
 
 export default new BranchService();

@@ -19,3 +19,10 @@ export const parseRole = (data: any): RoleModel => {
     users: data.users,
   }
 }
+
+export const parseRoles = (data: any): RoleModel[] => {
+  if (Array.isArray(data)) {
+    return data.map((item: any) => parseRole(item));
+  }
+  return [];
+}

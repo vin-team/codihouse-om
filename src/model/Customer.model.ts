@@ -13,7 +13,9 @@ export interface Customer {
   verified_email: string | null;
   note: string | null;
   code: string;
-  group: string | null;
+  group: {
+    code: string | null;
+  };
   points: number | null;
   sex: string | null;
   total_expenditure: number;
@@ -22,7 +24,15 @@ export interface Customer {
   total_returned_products: number;
   last_purchase_date: string | null;
   address: string | null;
-  staff: number | null;
+  state: string | null;
+  staff: {
+    id: number | null;
+    first_name: string | null;
+    last_name: string | null;
+    branch: {
+      title: string | null;
+    };
+  };
   total_debt: number;
   address_book: {
     address: string;
@@ -31,6 +41,7 @@ export interface Customer {
     id: number;
     code: string;
     total_price: number;
+    date_created: string;
     status: string;
     branch: {
       title: string;
@@ -70,6 +81,7 @@ export const parseCustomer = (customer: any): Customer => {
     total_debt: customer.total_debt,
     address_book: customer.address_book,
     orders: customer.orders,
+    state: customer.state,
   };
 };
 

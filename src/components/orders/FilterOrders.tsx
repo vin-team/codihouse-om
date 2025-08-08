@@ -1,54 +1,63 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { Combobox } from '../ui/combobox';
 import { Button } from '../ui/button';
 import { RangeCalendar } from '../ui/range-calendar';
 import ColumnOptions from './ColumnOptions';
 import { useAppDispatch, useAppSelector } from '@/hooks/redux';
-import { setFilter as setFilterAction, toggleColumn } from '@/slices/orderSlice';
+import { getOrders, searchOrders, setFilter, setIsFilter, toggleColumn } from '@/slices/orderSlice';
 import { getBranches } from '@/slices/branchSlice';
+import { orderService } from '@/services/order.service';
 
 export default function FilterOrders() {
   const dispatch = useAppDispatch();
   const branches = useAppSelector(state => state.branch.branches);
   const columns = useAppSelector(state => state.order.visibleColumns);
-  const [filter, setFilter] = useState<any>({
-    search: '',
-    status: '',
-    branch: '',
-    dateRange: {
-      from: '',
-      to: '',
-    },
-  });
+  const filter = useAppSelector(state => state.order.filter);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setFilter({ ...filter, search: e.target.value });
+    dispatch(setFilter({ ...filter, search: e.target.value }));
   };
 
   const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === 'Enter') {
-      handleFilter();
+      handleSearch();
     }
   };
 
+  const handleSearch = () => {
+    dispatch(setIsFilter(true));
+    dispatch(searchOrders({
+      keyword: filter.search,
+      state: '',
+      branch_id: '',
+      date_range: null
+    }));
+  }
+
   const handleFilter = () => {
-    dispatch(setFilterAction(filter));
+    if (filter.search || filter.state || filter.branch || filter.dateRange) {
+      dispatch(setIsFilter(true));
+      dispatch(searchOrders({
+        keyword: filter.search,
+        state: filter.state,
+        branch_id: filter.branch,
+        date_range: filter.dateRange
+      }));
+    }
   }
 
   const handleClearFilter = () => {
+    dispatch(setIsFilter(false));
     const clearedFilter = {
       search: '',
-      status: '',
+      state: '',
       branch: '',
-      dateRange: {
-        from: '',
-        to: '',
-      },
+      dateRange: null,
     };
-    setFilter(clearedFilter);
-    dispatch(setFilterAction(clearedFilter));
+    dispatch(setFilter(clearedFilter));
+    dispatch(getOrders({ page: 1, limit: 25 }));
   }
 
   useEffect(() => {
@@ -76,7 +85,7 @@ export default function FilterOrders() {
               className="block w-full pl-12 pr-20 h-10 border border-gray-300 rounded-lg text-sm placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
             />
           </div>
-          <Button variant="outline" className='h-10 whitespace-nowrap' onClick={handleFilter}>
+          <Button variant="outline" className='h-10 whitespace-nowrap' onClick={handleSearch}>
             <span>Tìm kiếm</span>
           </Button>
         </div>
@@ -87,14 +96,14 @@ export default function FilterOrders() {
             className='w-full flex-1'
             options={[
               { value: 'all', label: 'Tất cả' },
-              { value: 'processing', label: 'Đang giao dịch' },
-              { value: 'completed', label: 'Hoàn thành' },
-              { value: 'pending', label: 'Chờ thanh toán' },
-              { value: 'cancelled', label: 'Đã hủy' },
+              { value: 'Đang giao dịch', label: 'Đang giao dịch' },
+              { value: 'Hoàn thành', label: 'Hoàn thành' },
+              { value: 'Chờ thanh toán', label: 'Chờ thanh toán' },
+              { value: 'Đã hủy', label: 'Đã hủy' },
             ]}
-            value={filter.status}
+            value={filter.state}
             onChange={(value) => {
-              setFilter({ ...filter, status: value });
+              dispatch(setFilter({ ...filter, state: value }));
             }}
             placeholder='Trạng thái'
           />
@@ -109,19 +118,16 @@ export default function FilterOrders() {
             ]}
             value={filter.branch}
             onChange={(value) => {
-              setFilter({ ...filter, branch: value });
+              dispatch(setFilter({ ...filter, branch: value }));
             }}
             placeholder='Chi nhánh'
           />
           <RangeCalendar className='w-full flex-1'
-            dateRange={filter.dateRange}
+            dateRange={filter.dateRange || undefined}
             onChangeDateRange={(dateRange) => {
-              setFilter({
-                ...filter, dateRange: {
-                  from: dateRange.from ? dateRange.from : '',
-                  to: dateRange.to ? dateRange.to : ''
-                }
-              });
+              dispatch(setFilter({
+                ...filter, dateRange: dateRange
+              }));
             }} />
           <div className='flex flex-row gap-2'>
             <Button variant="outline" className='h-10 w-full sm:w-24' onClick={handleFilter}>

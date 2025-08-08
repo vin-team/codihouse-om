@@ -10,13 +10,13 @@ import DeliveryInformation from '@/components/orders/DeliveryInfor';
 import Products from '@/components/orders/Products';
 import { useAppDispatch, useAppSelector } from '@/hooks/redux';
 import { getOrder } from '@/slices/orderSlice';
-import { roleService } from '@/services/role.service';
+import { useToastContext } from '@/contexts/ToastContext';
 
 export default function OrderDetail() {
   const router = useRouter();
   const { id } = router.query;
   const dispatch = useAppDispatch();
-  const isAdmin = roleService.isAdmin();
+  const { error } = useToastContext();
 
   const order = useAppSelector(state => state.order.order);
   const actionState = useAppSelector(state => state.order.actionState);
@@ -38,11 +38,10 @@ export default function OrderDetail() {
           setLoading(false);
           break;
         case 'failed':
-          if (isAdmin) {
-            router.push('/orders');
-          } else {
+          error(actionState.error || 'Không tìm thấy đơn hàng');
+          setTimeout(() => {
             router.push('/dashboard');
-          }
+          }, 3000)
           break;
       }
     }

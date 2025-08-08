@@ -18,8 +18,7 @@ export function MenuUser() {
   const dispatch = useAppDispatch();
   const actionState = useAppSelector(state => state.auth.actionState);
 
-  const getRole = roleService.getRoleLocal();
-  const isAdmin = getRole.name === 'Admin App';
+  const isAdmin = roleService.isAdmin();
   const user = userService.getUserLocal();
 
   useEffect(() => {

@@ -3,5 +3,5 @@ export const getTypeColor = (type: string) => {
 }
 
 export const getStatusColor = (status: string) => {
-  return status === "active" ? "default" : "destructive"
+  return status === "active" ? "outline" : "destructive"
 }

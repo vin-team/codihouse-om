@@ -1,14 +1,22 @@
 'use client';
 
-import { CustomerResult } from '@/pages/search';
-import React from 'react';
+import { useAppSelector } from '@/hooks/redux';
+import React, { useState } from 'react';
 import SearchCustomerItem from './SearchCustomerItem';
+import Pagination from '../orders/Pagination';
+import DataNotFound from '../DataNotFound';
 
-interface SearchCustomerProps {
-  customers: CustomerResult[];
-}
+export default function SearchCustomer() {
+  const customers = useAppSelector((state) => state.search.searchResult.customers);
+  const [currentPage, setCurrentPage] = useState(1);
+  const totalPages = Math.ceil(customers.length / 5);
 
-const SearchCustomer: React.FC<SearchCustomerProps> = ({ customers }) => {
+  const handlePageChange = (page: number) => {
+    setCurrentPage(page);
+  };
+
+  const paginatedCustomers = customers.slice((currentPage - 1) * 5, currentPage * 5);
+
   return (
     <div className="bg-white rounded-lg border border-gray-200">
       <div className="p-6 pb-0">
@@ -16,13 +24,19 @@ const SearchCustomer: React.FC<SearchCustomerProps> = ({ customers }) => {
           Danh sách khách hàng ({customers.length})
         </h2>
       </div>
-      <div className="p-6 space-y-4">
-        {customers.map((customer, index) => (
+      {customers.length > 0 ? <div className="p-6 flex flex-col space-y-4">
+        {paginatedCustomers.map((customer, index) => (
           <SearchCustomerItem key={index} customer={customer} />
         ))}
-      </div>
+      </div> : <DataNotFound />}
+
+      {customers.length > 5 && <div className="p-6">
+        <Pagination
+          currentPage={currentPage}
+          totalPages={totalPages}
+          onPageChange={handlePageChange}
+        />
+      </div>}
     </div>
   );
-};
-
-export default SearchCustomer;
+}

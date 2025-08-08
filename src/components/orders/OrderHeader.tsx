@@ -5,6 +5,7 @@ import { Badge } from '../ui/badge';
 import { Button } from '../ui/button';
 import Link from 'next/dist/client/link';
 import { Order } from '@/model/Order.model';
+import { getOrderStatusColor } from '@/utils/order.util';
 
 export default function OrderHeader({ order }: { order: Order }) {
 
@@ -21,10 +22,10 @@ export default function OrderHeader({ order }: { order: Order }) {
       </div>
       <div className='flex flex-row gap-2 items-end'>
         {order?.source !== '-' &&
-          <Badge className="bg-gray-300 rounded-full text-white hover:bg-gray-300 h-fit text-xs font-semibold">
+          <Badge variant='outline'>
             <p className='text-xs font-semibold text-black text-center'>{order?.source?.toUpperCase()}</p>
           </Badge>}
-        <Badge className="bg-green-500 rounded-full text-white hover:bg-green-500 h-fit text-xs font-semibold">
+        <Badge variant='outline' className={getOrderStatusColor(order.status)}>
           <p className='text-xs font-semibold text-center'>{order?.status?.toUpperCase()}</p>
         </Badge>
       </div>

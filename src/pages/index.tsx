@@ -1,6 +1,6 @@
 import { useAppSelector } from '@/hooks/redux';
 import { LoaderCircle } from 'lucide-react';
-import router from 'next/dist/client/router';
+import router from 'next/router';
 import { useEffect } from 'react';
 
 const Home: React.FC = () => {

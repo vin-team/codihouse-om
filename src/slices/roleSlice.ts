@@ -1,5 +1,5 @@
 import { RequestState } from "@/app/state";
-import { parseRole, RoleModel } from "@/model/Role.mode";
+import { parseRole, parseRoles, RoleModel } from "@/model/Role.mode";
 import { createSlice } from "@reduxjs/toolkit";
 import { RootState } from "@/app/store";
 import { roleService } from "@/services/role.service";
@@ -7,11 +7,13 @@ import { commonCreateAsyncThunk } from "@/app/thunk";
 
 interface RoleState {
   role: RoleModel;
+  roles: RoleModel[];
   actionState: RequestState;
 }
 
 const initialState: RoleState = {
   role: {} as RoleModel,
+  roles: [],
   actionState: { status: 'idle' },
 };
 

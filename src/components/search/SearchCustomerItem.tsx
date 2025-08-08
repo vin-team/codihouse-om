@@ -1,18 +1,14 @@
 'use client';
 
-import { CustomerResult } from '@/pages/search';
 import React from 'react';
 import { Button } from '../ui/button';
 import { Eye, Mail, Phone } from 'lucide-react';
 import { formatCurrency } from '@/utils/data.util';
 import Link from 'next/dist/client/link';
+import { SearchCustomer } from '@/model/Search.model';
+import { getDateFromISOString } from '@/utils/date.util';
 
-interface SearchCustomerItemProps {
-  customer: CustomerResult;
-}
-
-const SearchCustomerItem: React.FC<SearchCustomerItemProps> = ({ customer }) => {
-
+export default function SearchCustomerItem({ customer }: { customer: SearchCustomer }) {
   return (
     <Link href={`/customers/${customer.code}`}>
       <div className="flex items-center justify-between p-4 border border-gray-200 rounded-lg cursor-pointer hover:bg-gray-50 transition-colors">
@@ -21,7 +17,7 @@ const SearchCustomerItem: React.FC<SearchCustomerItemProps> = ({ customer }) => 
             <div className='flex-1 flex flex-col gap-1'>
               <div className='flex flex-row'>
                 <div className="flex items-center space-x-2 mb-1">
-                  <span className="font-medium text-gray-900">{customer.name}</span>
+                  <span className="font-medium text-gray-900">{customer.first_name}</span>
                   <span className={`px-2 py-1 border border-gray-200 text-xs font-semibold rounded-full`}>
                     {customer.code}
                   </span>
@@ -31,21 +27,20 @@ const SearchCustomerItem: React.FC<SearchCustomerItemProps> = ({ customer }) => 
                 <div className='flex flex-row justify-around space-x-4'>
                   <p className="text-sm text-gray-500 flex flex-row items-center gap-2"><Phone className="w-4 h-4" />{customer.phone}</p>
                   <p className="text-sm text-gray-500 flex flex-row items-center gap-2"><Mail className="w-4 h-4" />{customer.email}</p>
-                  <p className="text-sm text-gray-500 flex flex-row items-center gap-2 pl-8"><strong>Nhóm: </strong>{customer.group}</p>
+                  <p className="text-sm text-gray-500 flex flex-row items-center gap-2 pl-8"><strong>Nhóm: </strong>{customer.group_title || '-'}</p>
                 </div>
-                {customer.lastPurchase && <p className="text-sm text-gray-500 flex flex-row items-center gap-2 pl-8">Mua cuối: {customer.lastPurchase}</p>}
+                {customer.last_purchase_date && <p className="text-sm text-gray-500 flex flex-row items-center gap-2 pl-8">Mua cuối: {getDateFromISOString(customer.last_purchase_date)}</p>}
               </div>
               <div className='flex flex-row justify-between'>
                 <div className='flex flex-row justify-around space-x-4'>
-                  <p className="text-xs text-gray-500 flex flex-row items-center gap-2">Tổng chi tiêu: {formatCurrency(customer.totalSpending)} đ</p>
-                  <p className="text-xs text-gray-500 flex flex-row items-center gap-2">Đơn hàng: {customer.orders}</p>
-                  <p className="text-xs text-gray-500 flex flex-row items-center gap-2 pl-8">Điểm tích luỹ: {customer.points}</p>
+                  <p className="text-xs text-gray-500 flex flex-row items-center gap-2">Tổng chi tiêu: {formatCurrency(customer.total_expenditure.toString())} đ</p>
+                  <p className="text-xs text-gray-500 flex flex-row items-center gap-2 pl-8">Điểm tích luỹ: {customer.total_expenditure.toString()}</p>
                 </div>
               </div>
             </div>
           </div>
         </div>
-        <Link href={`/customers/${customer.code}`}>
+        <Link href={`/customers/${customer.id}`}>
           <Button
             variant="outline"
             size="sm"
@@ -57,6 +52,4 @@ const SearchCustomerItem: React.FC<SearchCustomerItemProps> = ({ customer }) => 
       </div>
     </Link>
   );
-};
-
-export default SearchCustomerItem;
+}

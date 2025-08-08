@@ -1,5 +1,5 @@
 'use client'
-import { ReactNode } from 'react';
+import { ReactNode, useEffect, useState } from 'react';
 import Head from 'next/head';
 import Header from './Header';
 import { SearchDialog } from './search/SearchDialog';
@@ -7,6 +7,7 @@ import { useAppDispatch, useAppSelector } from '@/hooks/redux';
 import { setIsOpenSearchDialog } from '@/slices/app';
 import { SidebarInset, SidebarProvider } from './ui/sidebar';
 import { AppSidebar } from './app-sidebar';
+import Loading from './Loading';
 interface IMainLayoutProps {
 	children: ReactNode | ReactNode[];
 	title?: string;

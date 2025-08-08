@@ -4,18 +4,18 @@ import { Order, parseOrder, parseOrders } from "@/model/Order.model";
 import { Pagination } from "@/model/Pagination.mode";
 import { orderService } from "@/services/order.service";
 import { createSlice } from "@reduxjs/toolkit";
+import { DateRange } from "react-day-picker";
 
 interface OrderState {
   orders: Order[];
+  recentOrders: Order[];
   order: Order | null;
+  isFilter: boolean;
   filter: {
     search?: string;
-    status: string;
+    state: string;
     branch: string;
-    dateRange?: {
-      from?: string;
-      to?: string;
-    };
+    dateRange?: DateRange | null;
   };
   pagination: Pagination;
   visibleColumns: Map<string, boolean>;
@@ -24,15 +24,14 @@ interface OrderState {
 
 const initialState: OrderState = {
   orders: [],
+  recentOrders: [],
   order: null,
+  isFilter: false,
   filter: {
     search: '',
-    status: '',
+    state: '',
     branch: '',
-    dateRange: {
-      from: '',
-      to: '',
-    },
+    dateRange: null,
   },
   pagination: {
     page: 1,
@@ -70,6 +69,16 @@ export const getOrder: any = commonCreateAsyncThunk({
   action: orderService.getOrder,
 });
 
+export const searchOrders: any = commonCreateAsyncThunk({
+  type: 'order/searchOrders',
+  action: orderService.searchOrders,
+});
+
+export const getRecentOrders: any = commonCreateAsyncThunk({
+  type: 'order/getRecentOrders',
+  action: orderService.getRecentOrders,
+});
+
 const orderSlice = createSlice({
   name: 'order',
   initialState,
@@ -89,6 +98,9 @@ const orderSlice = createSlice({
     },
     setFilter: (state, action) => {
       state.filter = action.payload;
+    },
+    setIsFilter: (state, action) => {
+      state.isFilter = action.payload;
     },
     setOrder: (state, action) => {
       state.order = action.payload;
@@ -118,6 +130,7 @@ const orderSlice = createSlice({
         }
         state.actionState = { status: 'completed', type: 'getOrdersCount' };
       })
+
       .addCase(getOrdersCount.rejected, (state, action) => {
         state.actionState = { status: 'failed', type: 'getOrdersCount', error: action.error.message };
       })
@@ -130,9 +143,31 @@ const orderSlice = createSlice({
       })
       .addCase(getOrder.rejected, (state, action) => {
         state.actionState = { status: 'failed', type: 'getOrder', error: action.error.message };
+      })
+
+      .addCase(searchOrders.pending, (state) => {
+        state.actionState = { status: 'loading', type: 'searchOrders' };
+      })
+      .addCase(searchOrders.fulfilled, (state, action) => {
+        state.orders = parseOrders(action.payload.data.data);
+        state.actionState = { status: 'completed', type: 'searchOrders' };
+      })
+      .addCase(searchOrders.rejected, (state, action) => {
+        state.actionState = { status: 'failed', type: 'searchOrders', error: action.error.message };
+      })
+
+      .addCase(getRecentOrders.pending, (state) => {
+        state.actionState = { status: 'loading', type: 'getRecentOrders' };
+      })
+      .addCase(getRecentOrders.fulfilled, (state, action) => {
+        state.recentOrders = parseOrders(action.payload.data.data);
+        state.actionState = { status: 'completed', type: 'getRecentOrders' };
+      })
+      .addCase(getRecentOrders.rejected, (state, action) => {
+        state.actionState = { status: 'failed', type: 'getRecentOrders', error: action.error.message };
       });
   }
 })
 
-export const { clearActionState, toggleColumn, setPage, setLimit, setFilter, setOrder } = orderSlice.actions;
-export default orderSlice.reducer;
+export const { clearActionState, toggleColumn, setPage, setLimit, setFilter, setIsFilter, setOrder } = orderSlice.actions;
+export default orderSlice.reducer;  

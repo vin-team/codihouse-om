@@ -1,8 +1,10 @@
 export interface UserModel {
   id: string;
+  code: string | null;
   first_name: string | null;
   last_name: string | null;
   email: string;
+  phone: string | null;
   location: string | null;
   title: string | null;
   description: string | null;
@@ -24,14 +26,20 @@ export interface UserModel {
   theme_light_overrides: string | null;
   theme_dark_overrides: string | null;
   text_direction: string;
+  branch: {
+    id: string | null;
+    title: string | null;
+  };
 }
 
 export const parseUser = (data: any): UserModel => {
   return {
     id: data.id,
+    code: data.code,
     first_name: data.first_name,
     last_name: data.last_name,
     email: data.email,
+    phone: data.phone,
     location: data.location,
     title: data.title,
     description: data.description,
@@ -53,5 +61,16 @@ export const parseUser = (data: any): UserModel => {
     theme_light_overrides: data.theme_light_overrides,
     theme_dark_overrides: data.theme_dark_overrides,
     text_direction: data.text_direction,
+    branch: {
+      id: data.branch?.id,
+      title: data.branch?.title,
+    }
   }
+}
+
+export const parseUsers = (data: any): UserModel[] => {
+  if (Array.isArray(data)) {
+    return data.map((item: any) => parseUser(item));
+  }
+  return [];
 } 

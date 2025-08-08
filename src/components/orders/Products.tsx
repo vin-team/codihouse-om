@@ -29,12 +29,12 @@ export default function Products({ order }: { order: Order }) {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {order.line_items.map((product: any, index: number) => (
+            {order?.line_items?.map((product: any, index: number) => (
               <TableRow key={index}>
                 <TableCell className="font-medium">{product.name}</TableCell>
-                <TableCell>{product?.price ? product.price.toLocaleString() : 0}₫</TableCell>
-                <TableCell>{product.quantity}</TableCell>
-                <TableCell>{product?.total ? product.total.toLocaleString() : 0}₫</TableCell>
+                <TableCell>{formatCurrency(product?.price?.toString() || '0') + ' đ'}</TableCell>
+                <TableCell>{product?.quantity}</TableCell>
+                <TableCell>{formatCurrency(String((product?.price || 0) * (product?.quantity || 0))) + ' đ'}</TableCell>
               </TableRow>
             ))}
           </TableBody>
@@ -43,11 +43,11 @@ export default function Products({ order }: { order: Order }) {
         <div className="mt-6 space-y-2 border-t pt-4">
           <div className="flex justify-between">
             <span>Tạm tính:</span>
-            <span>{order.subtotal_price ? order.subtotal_price.toLocaleString() : 0} ₫</span>
+            <span>{formatCurrency(String(order?.line_items?.reduce((acc: number, product: any) => acc + (product.price || 0) * (product.quantity || 0), 0))) + ' đ'}</span>
           </div>
           <div className="flex justify-between text-red-600">
             <span>Giảm giá:</span>
-            <span>{order.total_discount ? order.total_discount.toLocaleString() : 0}₫</span>
+            <span>{formatCurrency(String(order?.total_discount || 0)) + ' đ'}</span>
           </div>
           <div className="flex justify-between font-bold text-lg border-t pt-2">
             <span>Tổng cộng:</span>
