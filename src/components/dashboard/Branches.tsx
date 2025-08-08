@@ -12,10 +12,8 @@ export default function Branches() {
   const requestState = useAppSelector(state => state.branch.requestState);
 
   useEffect(() => {
-    if (branches.length === 0 && requestState.status !== 'loading') {
-      dispatch(getBranches());
-    }
-  }, [dispatch, branches.length, requestState.status]);
+    dispatch(getBranches());
+  }, []);
 
   return (
     <Card className="py-4">
