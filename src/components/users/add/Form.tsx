@@ -10,6 +10,7 @@ import { useAppDispatch, useAppSelector } from "@/hooks/redux";
 import { getBranches } from "@/slices/branchSlice";
 import { addUser } from "@/slices/userSlice";
 import { EyeIcon, EyeOffIcon } from "lucide-react";
+import router from "next/dist/client/router";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 
@@ -62,6 +63,7 @@ export default function UsersAddForm() {
           break;
         case 'completed':
           success('Tạo người dùng thành công');
+          router.push('/users');
           break;
         case 'failed':
           const message = requestState?.error || "Có lỗi xảy ra. Vui lòng thử lại.";
