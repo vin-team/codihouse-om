@@ -198,7 +198,7 @@ export function SearchDialog({ isOpen, onClose }: SearchDialogProps) {
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <form>
-        <DialogContent className="sm:max-w-[750px]">
+        <DialogContent className="sm:max-w-[750px] ">
           <DialogHeader>
             <DialogTitle className="flex flex-row items-center space-x-2">
               <Search className="w-6 h-6" />
@@ -219,14 +219,10 @@ export function SearchDialog({ isOpen, onClose }: SearchDialogProps) {
             <DialogDescription hidden></DialogDescription>
           </DialogHeader>
           {search ? (
-            <div className="border-t border-gray-300">
+            <div className="border-t border-gray-300 max-h-[calc(100vh-200px)] overflow-x-hidden overflow-y-auto">
               {renderSearchOrder()}
               {renderSearchCustomer()}
-              {/* Footer */}
-              <div className="border-t border-gray-200 pt-3 px-4 flex justify-between items-center text-sm text-gray-600">
-                <span>Tìm thấy {searchResult.orders.length} đơn hàng, {searchResult.customers.length} khách hàng</span>
-                <span>Nhấn Enter để xem chi tiết</span>
-              </div>
+              
             </div>) : (
             <div className="border-t border-gray-300">
               <div className="py-4 flex flex-col items-center space-y-2">
@@ -236,6 +232,14 @@ export function SearchDialog({ isOpen, onClose }: SearchDialogProps) {
               </div>
             </div>
           )}
+          {search &&
+            
+              <div className="border-t border-gray-200 pt-3 px-4 flex justify-between items-center text-sm text-gray-600">
+                <span>Tìm thấy {searchResult.orders.length} đơn hàng, {searchResult.customers.length} khách hàng</span>
+                <span>Nhấn Enter để xem chi tiết</span>
+              </div>
+
+            }
           <DialogFooter hidden></DialogFooter>
         </DialogContent>
       </form>
