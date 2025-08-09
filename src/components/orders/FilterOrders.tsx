@@ -27,6 +27,12 @@ export default function FilterOrders() {
   };
 
   const handleSearch = () => {
+    if (filter.search?.length === 0) {
+      dispatch(setIsFilter(false));
+      dispatch(getOrders({ page: 1, limit: 25 }));
+      return;
+    }
+    
     dispatch(setIsFilter(true));
     dispatch(searchOrders({
       keyword: filter.search,

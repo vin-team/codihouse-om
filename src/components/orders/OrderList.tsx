@@ -56,7 +56,7 @@ export default function OrderList() {
               <TableRow>
                 <TableHead>Mã đơn hàng</TableHead>
                 {Array.from(visibleColumns.keys()).map((column) => (
-                  <TableHead key={column}>{orderService.translateColumn(column)}</TableHead>
+                  <TableHead hidden={!visibleColumns.get(column)} key={column}>{orderService.translateColumn(column)}</TableHead>
                 ))}
                 <TableHead>Thao tác</TableHead>
               </TableRow>
@@ -68,7 +68,7 @@ export default function OrderList() {
                   {visibleColumns.get('customer') && <TableCell>{[order.customer?.first_name, order.customer?.last_name].filter(Boolean).join(' ')}</TableCell>}
                   {visibleColumns.get('customerPhone') && <TableCell>{order.customer?.phone ?? '-'}</TableCell>}
                   {visibleColumns.get('customerEmail') && <TableCell>{order.customer?.email ?? '-'}</TableCell>}
-                  {visibleColumns.get('branch') && <TableCell>{order.branch?.title}</TableCell>}
+                  {visibleColumns.get('branch') && <TableCell>{order.branch?.title ?? '-'}</TableCell>}
                   {visibleColumns.get('source') && (
                     <TableCell>
                       {order.source !== "-" ? (

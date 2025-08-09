@@ -117,14 +117,13 @@ class OrderService {
         }
       ];
     }
-
-    if (filters.state) {
+    if (filters.state && filters.state !== 'all') {
       andConditions.push({
         state: { _eq: filters.state }
       });
     }
 
-    if (filters.branch_id) {
+    if (filters.branch_id && filters.branch_id !== 'all') {
       andConditions.push({
         branch: { id: { _eq: filters.branch_id } }
       });
