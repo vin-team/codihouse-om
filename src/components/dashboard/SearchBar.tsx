@@ -1,8 +1,8 @@
 'use client';
 
 import { useAppDispatch } from '@/hooks/redux';
-import { roleService } from '@/services/role.service';
 import { setIsOpenSearchDialog } from '@/slices/app';
+import { authService } from '@/services/auth.service';
 import React from 'react';
 
 interface SearchBarProps {
@@ -13,7 +13,7 @@ const SearchBar: React.FC<SearchBarProps> = ({
   placeholder = "Nhấn để tìm kiếm đơn hàng... (⌘K)",
 }) => {
   const dispatch = useAppDispatch();
-  const isAdmin = roleService.isAdmin();
+  const isAdmin = authService.isAdmin();
 
   if (isAdmin) {
     return (

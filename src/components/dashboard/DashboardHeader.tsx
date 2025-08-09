@@ -1,6 +1,5 @@
-import { useAppSelector } from '@/hooks/redux';
-import { roleService } from '@/services/role.service';
 import React from 'react';
+import { authService } from '@/services/auth.service';
 
 interface DashboardHeaderProps {
   title?: string;
@@ -11,7 +10,7 @@ const DashboardHeader: React.FC<DashboardHeaderProps> = ({
   title = "Tổng quan hệ thống",
   subtitle = "Quản lý toàn bộ hệ thống khách hàng và đơn hàng"
 }) => {
-  const isAdmin = roleService.isAdmin();
+  const isAdmin = authService.isAdmin();
 
   if (isAdmin) {
     return (

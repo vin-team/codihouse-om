@@ -29,6 +29,11 @@ export const getUser: any = commonCreateAsyncThunk({
   action: userService.getUser
 });
 
+export const getUserById: any = commonCreateAsyncThunk({
+  type: 'user/getUserById',
+  action: userService.getUserById
+});
+
 export const getUsers: any = commonCreateAsyncThunk({
   type: 'user/getUsers',
   action: userService.getUsers
@@ -37,6 +42,16 @@ export const getUsers: any = commonCreateAsyncThunk({
 export const searchUsers: any = commonCreateAsyncThunk({
   type: 'user/searchUsers',
   action: userService.searchUsers
+});
+
+export const updateUser: any = commonCreateAsyncThunk({
+  type: 'user/updateUser',
+  action: userService.updateUser
+});
+
+export const addUser: any = commonCreateAsyncThunk({
+  type: 'user/addUser',
+  action: userService.addUser
 });
 
 const userSlice = createSlice({
@@ -61,7 +76,31 @@ const userSlice = createSlice({
         state.actionState = { status: 'completed', type: 'getUser' }
       })
       .addCase(getUser.rejected, (state, action) => {
-        state.actionState = { status: 'failed', error: action.payload as string, type: 'getUser' }
+        const payload = action.payload as any;
+        let message = "Có lỗi xảy ra. Vui lòng thử lại.";
+        if (payload.errors.length > 0) {
+          const error = payload.errors[0];
+          message = error.message;
+        }
+        state.actionState = { status: 'failed', error: message, type: 'getUser' }
+      })
+
+      // Get User By Id
+      .addCase(getUserById.pending, (state) => {
+        state.actionState = { status: 'loading', type: 'getUserById' }
+      })
+      .addCase(getUserById.fulfilled, (state, action) => {
+        state.user = parseUser(action.payload.data.data)
+        state.actionState = { status: 'completed', type: 'getUserById' }
+      })
+      .addCase(getUserById.rejected, (state, action) => {
+        const payload = action.payload as any;
+        let message = "Có lỗi xảy ra. Vui lòng thử lại.";
+        if (payload.errors.length > 0) {
+          const error = payload.errors[0];
+          message = error.message;
+        }
+        state.actionState = { status: 'failed', error: message, type: 'getUserById' }
       })
 
       // Get Users
@@ -73,7 +112,13 @@ const userSlice = createSlice({
         state.actionState = { status: 'completed', type: 'getUsers' }
       })
       .addCase(getUsers.rejected, (state, action) => {
-        state.actionState = { status: 'failed', error: action.payload as string, type: 'getUsers' }
+        const payload = action.payload as any;
+        let message = "Có lỗi xảy ra. Vui lòng thử lại.";
+        if (payload.errors.length > 0) {
+          const error = payload.errors[0];
+          message = error.message;
+        }
+        state.actionState = { status: 'failed', error: message, type: 'getUsers' }
       })
 
       // Search Users
@@ -85,8 +130,48 @@ const userSlice = createSlice({
         state.actionState = { status: 'completed', type: 'searchUsers' }
       })
       .addCase(searchUsers.rejected, (state, action) => {
-        state.actionState = { status: 'failed', error: action.payload as string, type: 'searchUsers' }
-      });
+        const payload = action.payload as any;
+        let message = "Có lỗi xảy ra. Vui lòng thử lại.";
+        if (payload.errors.length > 0) {
+          const error = payload.errors[0];
+          message = error.message;
+        }
+        state.actionState = { status: 'failed', error: message, type: 'searchUsers' }
+      })
+
+      // Add User
+      .addCase(addUser.pending, (state) => {
+        state.actionState = { status: 'loading', type: 'addUser' }
+      })
+      .addCase(addUser.fulfilled, (state) => {
+        state.actionState = { status: 'completed', type: 'addUser' }
+      })
+      .addCase(addUser.rejected, (state, action) => {
+        const payload = action.payload as any;
+        let message = "Có lỗi xảy ra. Vui lòng thử lại.";
+        if (payload.errors.length > 0) {
+          const error = payload.errors[0];
+          message = error.message;
+        }
+        state.actionState = { status: 'failed', error: message, type: 'addUser' }
+      })
+
+      // Update User
+      .addCase(updateUser.pending, (state) => {
+        state.actionState = { status: 'loading', type: 'updateUser' }
+      })
+      .addCase(updateUser.fulfilled, (state) => {
+        state.actionState = { status: 'completed', type: 'updateUser' }
+      })
+      .addCase(updateUser.rejected, (state, action) => {
+        const payload = action.payload as any;
+        let message = "Có lỗi xảy ra. Vui lòng thử lại.";
+        if (payload.errors.length > 0) {
+          const error = payload.errors[0];
+          message = error.message;
+        }
+        state.actionState = { status: 'failed', error: message, type: 'updateUser' }
+      })
   }
 });
 

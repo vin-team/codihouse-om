@@ -118,7 +118,13 @@ const authSlice = createSlice({
         state.actionState = { status: 'completed', type: 'logout' }
       })
       .addCase(logout.rejected, (state, action) => {
-        state.actionState = { status: 'failed', error: action.payload as string, type: 'logout' }
+        const payload = action.payload as any;
+        let message = "Có lỗi xảy ra. Vui lòng thử lại.";
+        if (payload.errors.length > 0) {
+          const error = payload.errors[0];
+          message = error.message;
+        }
+        state.actionState = { status: 'failed', error: message, type: 'logout' }
       })
 
       .addCase(requestResetPassword.pending, (state) => {
@@ -128,7 +134,13 @@ const authSlice = createSlice({
         state.actionState = { status: 'completed', type: 'requestResetPassword' }
       })
       .addCase(requestResetPassword.rejected, (state, action) => {
-        state.actionState = { status: 'failed', error: action.payload as string, type: 'requestResetPassword' }
+        const payload = action.payload as any;
+        let message = "Có lỗi xảy ra. Vui lòng thử lại.";
+        if (payload.errors.length > 0) {
+          const error = payload.errors[0];
+          message = error.message;
+        }
+        state.actionState = { status: 'failed', error: message, type: 'requestResetPassword' }
       })
 
       .addCase(resetPassword.pending, (state) => {
@@ -138,7 +150,13 @@ const authSlice = createSlice({
         state.actionState = { status: 'completed', type: 'resetPassword' }
       })
       .addCase(resetPassword.rejected, (state, action) => {
-        state.actionState = { status: 'failed', error: action.payload as string, type: 'resetPassword' }
+        const payload = action.payload as any;
+        let message = "Có lỗi xảy ra. Vui lòng thử lại.";
+        if (payload.errors.length > 0) {
+          const error = payload.errors[0];
+          message = error.message;
+        }
+        state.actionState = { status: 'failed', error: message, type: 'resetPassword' }
       })
 
       .addCase(refreshToken.pending, (state) => {
@@ -148,7 +166,7 @@ const authSlice = createSlice({
         const payload = action.payload as any;
         const accessToken = payload.data?.data?.access_token;
         const refreshToken = payload.data?.data?.refresh_token;
-        
+
         if (accessToken && refreshToken) {
           HttpService.setToken(accessToken);
           HttpService.setLocalRefToken(refreshToken);

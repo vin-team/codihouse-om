@@ -3,14 +3,13 @@ import { useEffect } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import { useAppSelector } from "@/hooks/redux";
 import { authService } from "@/services/auth.service";
-import { roleService } from "@/services/role.service";
 
 export default function AuthGuard({ children }: { children: React.ReactNode }) {
   const router = useRouter();
   const pathname = usePathname() || '';
 
   const isLogined = useAppSelector(state => state.app.isLogined);
-  const isAdmin = roleService.isAdmin();
+  const isAdmin = authService.isAdmin();
 
   const pathAuth = ['/login', '/reset-password', '/dashboard'];
   const pathUser = ['/orders', '/customers', '/branches', '/users'];

@@ -13,7 +13,11 @@ export interface UserModel {
   language: string | null;
   tfa_secret: string | null;
   status: string;
-  role: string;
+  role: {
+    id: string;
+    name: string;
+    app_role: string;
+  };
   last_access: string;
   last_page: string;
   provider: string;

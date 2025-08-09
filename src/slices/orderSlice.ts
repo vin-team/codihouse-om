@@ -116,7 +116,13 @@ const orderSlice = createSlice({
         state.actionState = { status: 'completed', type: 'getOrders' };
       })
       .addCase(getOrders.rejected, (state, action) => {
-        state.actionState = { status: 'failed', type: 'getOrders', error: action.error.message };
+        const payload = action.payload as any;
+        let message = "Có lỗi xảy ra. Vui lòng thử lại.";
+        if (payload.errors.length > 0) {
+          const error = payload.errors[0];
+          message = error.message;
+        }
+        state.actionState = { status: 'failed', type: 'getOrders', error: message };
       })
 
       .addCase(getOrdersCount.pending, (state) => {
@@ -132,7 +138,13 @@ const orderSlice = createSlice({
       })
 
       .addCase(getOrdersCount.rejected, (state, action) => {
-        state.actionState = { status: 'failed', type: 'getOrdersCount', error: action.error.message };
+        const payload = action.payload as any;
+        let message = "Có lỗi xảy ra. Vui lòng thử lại.";
+        if (payload.errors.length > 0) {
+          const error = payload.errors[0];
+          message = error.message;
+        }
+        state.actionState = { status: 'failed', type: 'getOrdersCount', error: message };
       })
       .addCase(getOrder.pending, (state) => {
         state.actionState = { status: 'loading', type: 'getOrder' };
@@ -142,7 +154,13 @@ const orderSlice = createSlice({
         state.actionState = { status: 'completed', type: 'getOrder' };
       })
       .addCase(getOrder.rejected, (state, action) => {
-        state.actionState = { status: 'failed', type: 'getOrder', error: action.error.message };
+        const payload = action.payload as any;
+        let message = "Có lỗi xảy ra. Vui lòng thử lại.";
+        if (payload.errors.length > 0) {
+          const error = payload.errors[0];
+          message = error.message;
+        }
+        state.actionState = { status: 'failed', type: 'getOrder', error: message };
       })
 
       .addCase(searchOrders.pending, (state) => {
@@ -153,7 +171,13 @@ const orderSlice = createSlice({
         state.actionState = { status: 'completed', type: 'searchOrders' };
       })
       .addCase(searchOrders.rejected, (state, action) => {
-        state.actionState = { status: 'failed', type: 'searchOrders', error: action.error.message };
+        const payload = action.payload as any;
+        let message = "Có lỗi xảy ra. Vui lòng thử lại.";
+        if (payload.errors.length > 0) {
+          const error = payload.errors[0];
+          message = error.message;
+        }
+        state.actionState = { status: 'failed', type: 'searchOrders', error: message };
       })
 
       .addCase(getRecentOrders.pending, (state) => {
@@ -164,7 +188,13 @@ const orderSlice = createSlice({
         state.actionState = { status: 'completed', type: 'getRecentOrders' };
       })
       .addCase(getRecentOrders.rejected, (state, action) => {
-        state.actionState = { status: 'failed', type: 'getRecentOrders', error: action.error.message };
+        const payload = action.payload as any;
+        let message = "Có lỗi xảy ra. Vui lòng thử lại.";
+        if (payload.errors.length > 0) {
+          const error = payload.errors[0];
+          message = error.message;
+        }
+        state.actionState = { status: 'failed', type: 'getRecentOrders', error: message };
       });
   }
 })

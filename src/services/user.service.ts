@@ -6,7 +6,16 @@ import { parseCommonHttpResult } from "./http/parseCommonResult";
 class UserService {
   async getUser() {
     const queryParams = new URLSearchParams({ 'fields[]': '*' });
+    queryParams.append('fields[]', 'role.app_role');
     const response = await HttpService.doGetRequest(`/users/me?${queryParams.toString()}`, '');
+    return parseCommonHttpResult(response);
+  }
+
+  async getUserById(id: string) {
+    const queryParams = new URLSearchParams({ 'fields[]': '*' });
+    queryParams.append('fields[]', 'branch.id');
+    queryParams.append('fields[]', 'branch.title');
+    const response = await HttpService.doGetRequest(`/users/${id}?${queryParams.toString()}`, '');
     return parseCommonHttpResult(response);
   }
 
@@ -52,6 +61,16 @@ class UserService {
     queryParams.append('fields[]', '*');
     queryParams.append('filter', JSON.stringify(filter));
     const response = await HttpService.doGetRequest(`/users?${queryParams}`, '');
+    return parseCommonHttpResult(response);
+  }
+
+  async addUser(user: any) {
+    const response = await HttpService.doPostRequest(`/users`, user);
+    return parseCommonHttpResult(response);
+  }
+
+  async updateUser(data: { id: string, data: any }) {
+    const response = await HttpService.doPatchRequest(`/users/${data.id}`, data.data);
     return parseCommonHttpResult(response);
   }
 

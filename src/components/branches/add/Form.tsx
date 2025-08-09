@@ -27,6 +27,11 @@ export default function BranchAddForm() {
   });
 
   const handleCreateBranch = () => {
+    if (form.title === '' || form.type === '' || form.address === '' || form.phone === '' || form.manager === '') {
+      error('Vui lòng điền đầy đủ thông tin');
+      return;
+    }
+
     dispatch(createBranch(form));
   }
 
@@ -40,7 +45,8 @@ export default function BranchAddForm() {
           router.push(`/branches`);
           break;
         case 'failed':
-          error("Tạo chi nhánh thất bại", requestState?.error || "Có lỗi xảy ra. Vui lòng thử lại.");
+          const message = requestState?.error || "Có lỗi xảy ra. Vui lòng thử lại.";
+          error("Tạo chi nhánh thất bại", message);
           break;
       }
     }

@@ -4,7 +4,6 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover"
 import { userService } from "@/services/user.service";
-import { roleService } from "@/services/role.service";
 import { Button } from "./button";
 import { LogOut, User } from "lucide-react";
 import { clearActionState, logout } from "@/slices/authSlice";
@@ -12,13 +11,14 @@ import { useAppDispatch, useAppSelector } from "@/hooks/redux";
 import { useEffect } from "react";
 import { useRouter } from "next/router";
 import { setLogined } from "@/slices/app";
+import { authService } from "@/services/auth.service";
 
 export function MenuUser() {
   const router = useRouter();
   const dispatch = useAppDispatch();
   const actionState = useAppSelector(state => state.auth.actionState);
 
-  const isAdmin = roleService.isAdmin();
+  const isAdmin = authService.isAdmin();
   const user = userService.getUserLocal();
 
   useEffect(() => {

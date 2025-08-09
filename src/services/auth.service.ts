@@ -2,6 +2,7 @@ import { HttpService } from './http/HttpService';
 import { parseExecuteResult } from './http/parse.service';
 import { storage } from '../utils/storage.util';
 import { parseCommonHttpResult } from './http/parseCommonResult';
+import { UserModel } from '@/model/User.model';
 
 export interface LoginRequest {
   email: string;
@@ -73,11 +74,15 @@ class AuthService {
     storage.removeItem(process.env.NEXT_PUBLIC_storageRefreshTokenKey!);
     storage.removeItem(process.env.NEXT_PUBLIC_storageAccessTokenKey!);
     storage.removeItem(process.env.NEXT_PUBLIC_storageUserKey!);
-    storage.removeItem(process.env.NEXT_PUBLIC_storageRoleKey!);
   }
 
   isAuthenticated(): boolean {
     return !!HttpService.getLocalToken();
+  }
+
+  isAdmin() {
+    const user = this.getCurrentUser();
+    return user?.role?.app_role === 'admin';
   }
 
   getCurrentUser() {
@@ -85,7 +90,7 @@ class AuthService {
     if (user) {
       try {
         const payload = JSON.parse(user);
-        return payload;
+        return payload as UserModel;
       } catch (error) {
         return null;
       }

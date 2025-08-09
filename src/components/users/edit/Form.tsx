@@ -3,18 +3,63 @@ import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/com
 import { Combobox } from "@/components/ui/combobox";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { useToastContext } from "@/contexts/ToastContext";
+import { useAppDispatch, useAppSelector } from "@/hooks/redux";
+import { UserModel } from "@/model/User.model";
+import { getBranches } from "@/slices/branchSlice";
+import { clearActionState, updateUser } from "@/slices/userSlice";
 import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
-export default function UsersEditForm() {
-  const [user, setUser] = useState({
-    name: "Nguyễn Văn A",
-    email: "nguyenvana@company.com",
-    phone: "0901234567",
-    role: "branch",
-    branch: "branch1",
-    status: "active",
+export default function UsersEditForm({ user }: { user: UserModel }) {
+  const dispatch = useAppDispatch();
+  const { success, error } = useToastContext();
+
+  const branches = useAppSelector(state => state.branch.branches);
+  const requestState = useAppSelector(state => state.user.actionState);
+
+  const [form, setForm] = useState({
+    first_name: user.first_name ?? '',
+    last_name: user.last_name ?? '',
+    email: user.email ?? '',
+    phone: user.phone ?? '',
+    branch: user.branch?.id ?? '',
+    status: user.status ?? '',
   });
+
+  const handleUpdateUser = () => {
+    if (form.first_name === '' || form.last_name === '' || form.email === '' || form.phone === '' || form.branch === '') {
+      error('Vui lòng điền đầy đủ thông tin');
+      return;
+    }
+
+    dispatch(updateUser({
+      id: user.id,
+      data: form
+    }));
+  }
+
+  useEffect(() => {
+    dispatch(getBranches());
+  }, [])
+
+  useEffect(() => {
+    if (requestState.type === 'updateUser') {
+      switch (requestState.status) {
+        case 'loading':
+          break;
+        case 'completed':
+          success('Cập nhật người dùng thành công');
+          dispatch(clearActionState())
+          break;
+        case 'failed':
+          const message = requestState?.error || "Có lỗi xảy ra. Vui lòng thử lại.";
+          error("Cập nhật người dùng thất bại", message);
+          dispatch(clearActionState())
+          break;
+      }
+    }
+  }, [requestState])
 
   return (
     <Card>
@@ -27,32 +72,23 @@ export default function UsersEditForm() {
       <CardContent className="space-y-6">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div className="space-y-2">
-            <Label htmlFor="name">Tên đầy đủ <span className="text-red-500">*</span></Label>
-            <Input id="name" defaultValue="Nguyễn Văn A" value={user.name} onChange={(e) => setUser({ ...user, name: e.target.value })} />
+            <Label htmlFor="first_name">Họ <span className="text-red-500">*</span></Label>
+            <Input id="first_name" defaultValue="Nguyễn" value={form.first_name ?? ""} onChange={(e) => setForm({ ...form, first_name: e.target.value })} />
           </div>
           <div className="space-y-2">
-            <Label htmlFor="email">Email <span className="text-red-500">*</span></Label>
-            <Input id="email" type="email" defaultValue="nguyenvana@company.com" value={user.email} onChange={(e) => setUser({ ...user, email: e.target.value })} />
+            <Label htmlFor="last_name">Tên <span className="text-red-500">*</span></Label>
+            <Input id="last_name" defaultValue="Văn A" value={form.last_name ?? ""} onChange={(e) => setForm({ ...form, last_name: e.target.value })} />
           </div>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div className="space-y-2">
-            <Label htmlFor="phone">Số điện thoại <span className="text-red-500">*</span></Label>
-            <Input type="number" id="phone" defaultValue="0901234567" value={user.phone} onChange={(e) => setUser({ ...user, phone: e.target.value })} />
+            <Label htmlFor="email">Email <span className="text-red-500">*</span></Label>
+            <Input id="email" type="email" defaultValue="nguyenvana@company.com" value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} />
           </div>
           <div className="space-y-2">
-            <Label htmlFor="role">Vai trò <span className="text-red-500">*</span></Label>
-            <Combobox
-              className="w-full flex-1"
-              options={[
-                { value: 'admin', label: 'Quản trị viên' },
-                { value: 'branch', label: 'Chi nhánh' },
-              ]}
-              value={user.role}
-              onChange={(value) => setUser({ ...user, role: value })}
-              placeholder="Chọn vai trò"
-            />
+            <Label htmlFor="phone">Số điện thoại <span className="text-red-500">*</span></Label>
+            <Input type="number" id="phone" defaultValue="0901234567" value={form.phone} onChange={(e) => setForm({ ...form, phone: e.target.value })} />
           </div>
         </div>
 
@@ -61,14 +97,12 @@ export default function UsersEditForm() {
             <Label htmlFor="branch">Chi nhánh <span className="text-red-500">*</span></Label>
             <Combobox
               className="w-full flex-1"
-              options={[
-                { value: 'branch1', label: 'Chi nhánh Quận 1' },
-                { value: 'branch7', label: 'Chi nhánh Quận 7' },
-                { value: 'online', label: 'Chi nhánh Online' },
-                { value: 'thuduc', label: 'Chi nhánh Thủ Đức' },
-              ]}
-              value={user.branch}
-              onChange={(value) => setUser({ ...user, branch: value })}
+              options={branches.length > 0 ? branches.map(branch => ({
+                value: branch.id.toString(),
+                label: branch.title
+              })) : []}
+              value={form.branch.toString()}
+              onChange={(value) => setForm({ ...form, branch: value })}
               placeholder="Chọn chi nhánh"
             />
           </div>
@@ -81,8 +115,8 @@ export default function UsersEditForm() {
                   { value: 'active', label: 'Hoạt động' },
                   { value: 'inactive', label: 'Tạm khóa' },
                 ]}
-                value={user.status}
-                onChange={(value) => setUser({ ...user, status: value })}
+                value={form.status}
+                onChange={(value) => setForm({ ...form, status: value })}
                 placeholder="Chọn trạng thái"
               />
             </div>
@@ -90,7 +124,7 @@ export default function UsersEditForm() {
         </div>
 
         <div className="flex space-x-4">
-          <Button>Cập nhật người dùng</Button>
+          <Button onClick={handleUpdateUser}>Cập nhật người dùng</Button>
           <Link href="/users">
             <Button variant="outline">Hủy</Button>
           </Link>

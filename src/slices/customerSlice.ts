@@ -88,7 +88,13 @@ const customerSlice = createSlice({
         state.requestState = { status: 'completed', type: 'getCustomers' };
       })
       .addCase(getCustomers.rejected, (state, action) => {
-        state.requestState = { status: 'failed', type: 'getCustomers', error: action.error.message };
+        const payload = action.payload as any;
+        let message = "Có lỗi xảy ra. Vui lòng thử lại.";
+        if (payload.errors.length > 0) {
+          const error = payload.errors[0];
+          message = error.message;
+        }
+        state.requestState = { status: 'failed', type: 'getCustomers', error: message };
       })
 
       .addCase(getCustomersCount.pending, (state) => {
@@ -104,7 +110,13 @@ const customerSlice = createSlice({
         state.requestState = { status: 'completed', type: 'getCustomersCount' };
       })
       .addCase(getCustomersCount.rejected, (state, action) => {
-        state.requestState = { status: 'failed', type: 'getCustomersCount', error: action.error.message };
+        const payload = action.payload as any;
+        let message = "Có lỗi xảy ra. Vui lòng thử lại.";
+        if (payload.errors.length > 0) {
+          const error = payload.errors[0];
+          message = error.message;
+        }
+        state.requestState = { status: 'failed', type: 'getCustomersCount', error: message };
       })
 
       .addCase(getCustomer.pending, (state) => {
@@ -115,7 +127,13 @@ const customerSlice = createSlice({
         state.requestState = { status: 'completed', type: 'getCustomer' };
       })
       .addCase(getCustomer.rejected, (state, action) => {
-        state.requestState = { status: 'failed', type: 'getCustomer', error: action.error.message };
+        const payload = action.payload as any;
+        let message = "Có lỗi xảy ra. Vui lòng thử lại.";
+        if (payload.errors.length > 0) {
+          const error = payload.errors[0];
+          message = error.message;
+        }
+        state.requestState = { status: 'failed', type: 'getCustomer', error: message };
       })
 
       .addCase(searchCustomers.pending, (state) => {
@@ -126,7 +144,13 @@ const customerSlice = createSlice({
         state.requestState = { status: 'completed', type: 'searchCustomers' };
       })
       .addCase(searchCustomers.rejected, (state, action) => {
-        state.requestState = { status: 'failed', type: 'searchCustomers', error: action.error.message };
+        const payload = action.payload as any;
+        let message = "Có lỗi xảy ra. Vui lòng thử lại.";
+        if (payload.errors.length > 0) {
+          const error = payload.errors[0];
+          message = error.message;
+        }
+        state.requestState = { status: 'failed', type: 'searchCustomers', error: message };
       });
   },
 });

@@ -5,13 +5,72 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Combobox } from "@/components/ui/combobox";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { useToastContext } from "@/contexts/ToastContext";
+import { useAppDispatch, useAppSelector } from "@/hooks/redux";
+import { getBranches } from "@/slices/branchSlice";
+import { addUser } from "@/slices/userSlice";
+import { EyeIcon, EyeOffIcon } from "lucide-react";
 import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 export default function UsersAddForm() {
-  const [status, setStatus] = useState("");
-  const [role, setRole] = useState("");
-  const [branch, setBranch] = useState("");
+  const branches = useAppSelector(state => state.branch.branches);
+  const dispatch = useAppDispatch();
+  const { success, error } = useToastContext();
+  const [visiblePassword, setVisiblePassword] = useState<any>({
+    password: false,
+    confirm_password: false,
+  });
+  const [password, setPassword] = useState<any>({
+    password: "",
+    confirm_password: "",
+  })
+  const requestState = useAppSelector(state => state.user.actionState);
+
+  const [form, setForm] = useState({
+    first_name: "",
+    last_name: "",
+    email: "",
+    phone: "",
+    role: process.env.NEXT_PUBLIC_storageUserRoleId!,
+    branch: "",
+    status: "active",
+  });
+
+  const handleAddUser = () => {
+    if (form.first_name === "" || form.last_name === "" || form.email === "" || form.phone === "" || form.branch === "" || password.password === "" || password.confirm_password === "") {
+      error('Vui lòng điền đầy đủ thông tin');
+      return;
+    }
+
+    if (password.password !== password.confirm_password) {
+      error('Mật khẩu không khớp');
+      return;
+    }
+
+    dispatch(addUser({ ...form, password: password.password }));
+  }
+
+  useEffect(() => {
+    dispatch(getBranches());
+  }, [])
+
+  useEffect(() => {
+    if (requestState.type === 'addUser') {
+      switch (requestState.status) {
+        case 'loading':
+          break;
+        case 'completed':
+          success('Tạo người dùng thành công');
+          break;
+        case 'failed':
+          const message = requestState?.error || "Có lỗi xảy ra. Vui lòng thử lại.";
+          error('Tạo người dùng thất bại', message);
+          break;
+      }
+    }
+  }, [requestState])
+
 
   return (
     <Card>
@@ -22,32 +81,24 @@ export default function UsersAddForm() {
       <CardContent className="space-y-6">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div className="space-y-2">
-            <Label htmlFor="name">Tên đầy đủ <span className="text-red-500">*</span></Label>
-            <Input id="name" placeholder="Nhập tên đầy đủ" />
+            <Label htmlFor="first_name">Họ <span className="text-red-500">*</span></Label>
+            <Input id="first_name" placeholder="Nhập họ" value={form.first_name} onChange={(e) => setForm({ ...form, first_name: e.target.value })} />
           </div>
           <div className="space-y-2">
-            <Label htmlFor="email">Email <span className="text-red-500">*</span></Label>
-            <Input id="email" type="email" placeholder="Nhập email" />
+            <Label htmlFor="last_name">Tên <span className="text-red-500">*</span></Label>
+            <Input id="last_name" placeholder="Nhập tên" value={form.last_name} onChange={(e) => setForm({ ...form, last_name: e.target.value })} />
           </div>
         </div>
 
+
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div className="space-y-2">
-            <Label htmlFor="phone">Số điện thoại <span className="text-red-500">*</span></Label>
-            <Input id="phone" placeholder="Nhập số điện thoại" />
+            <Label htmlFor="email">Email <span className="text-red-500">*</span></Label>
+            <Input id="email" type="email" placeholder="Nhập email" value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} />
           </div>
           <div className="space-y-2">
-            <Label htmlFor="role">Vai trò <span className="text-red-500">*</span></Label>
-            <Combobox
-              className='w-full flex-1'
-              options={[
-                { value: 'admin', label: 'Quản trị viên' },
-                { value: 'branch', label: 'Chi nhánh' },
-              ]}
-              value={role}
-              onChange={setRole}
-              placeholder='Chọn vai trò'
-            />
+            <Label htmlFor="phone">Số điện thoại <span className="text-red-500">*</span></Label>
+            <Input id="phone" placeholder="Nhập số điện thoại" value={form.phone} onChange={(e) => setForm({ ...form, phone: e.target.value })} />
           </div>
         </div>
 
@@ -55,12 +106,12 @@ export default function UsersAddForm() {
           <Label htmlFor="branch">Chi nhánh <span className="text-red-500">*</span></Label>
           <Combobox
             className='w-full flex-1'
-            options={[
-              { value: 'branch1', label: 'Chi nhánh Quận 1' },
-              { value: 'branch7', label: 'Chi nhánh Quận 7' },
-            ]}
-            value={branch}
-            onChange={setBranch}
+            options={branches.length > 0 ? branches.map(branch => ({
+              value: branch.id.toString(),
+              label: branch.title
+            })) : []}
+            value={form.branch}
+            onChange={(value) => setForm({ ...form, branch: value })}
             placeholder='Chọn chi nhánh'
           />
         </div>
@@ -68,31 +119,28 @@ export default function UsersAddForm() {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div className="space-y-2">
             <Label htmlFor="password">Mật khẩu <span className="text-red-500">*</span></Label>
-            <Input id="password" type="password" placeholder="Nhập mật khẩu" />
+            <div className="relative">
+              <Input id="password" type={visiblePassword.password ? "text" : "password"} placeholder="Nhập mật khẩu" value={password.password} onChange={(e) => setPassword({ ...password, password: e.target.value })} />
+              <button className="absolute right-2 top-1/2 -translate-y-1/2" onClick={() => setVisiblePassword({ ...visiblePassword, password: !visiblePassword.password })}>
+                {visiblePassword.password ? <EyeOffIcon className="w-4 h-4" /> : <EyeIcon className="w-4 h-4" />}
+              </button>
+            </div>
+
           </div>
           <div className="space-y-2">
             <Label htmlFor="confirm-password">Xác nhận mật khẩu <span className="text-red-500">*</span></Label>
-            <Input id="confirm-password" type="password" placeholder="Xác nhận mật khẩu" />
+            <div className="relative">
+              <Input id="confirm-password" type={visiblePassword.confirm_password ? "text" : "password"} placeholder="Xác nhận mật khẩu" value={password.confirm_password} onChange={(e) => setPassword({ ...password, confirm_password: e.target.value })} />
+              <button className="absolute right-2 top-1/2 -translate-y-1/2" onClick={() => setVisiblePassword({ ...visiblePassword, confirm_password: !visiblePassword.confirm_password })}>
+                {visiblePassword.confirm_password ? <EyeOffIcon className="w-4 h-4" /> : <EyeIcon className="w-4 h-4" />}
+              </button>
+            </div>
           </div>
         </div>
 
-        <div className="space-y-2">
-          <Label htmlFor="status">Trạng thái</Label>
-          <Combobox
-            className='w-full flex-1'
-            options={[
-              { value: 'active', label: 'Hoạt động' },
-              { value: 'inactive', label: 'Tạm dừng' },
-            ]}
-            value={status}
-            onChange={setStatus}
-            placeholder='Chọn trạng thái'
-          />
-
-        </div>
 
         <div className="flex space-x-4">
-          <Button>Tạo người dùng</Button>
+          <Button onClick={handleAddUser}>Tạo người dùng</Button>
           <Link href="/users">
             <Button variant="outline">Hủy</Button>
           </Link>

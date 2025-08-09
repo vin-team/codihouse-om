@@ -88,7 +88,13 @@ const branchSlice = createSlice({
         state.requestState = { status: 'completed', type: 'getBranches' };
       })
       .addCase(getBranches.rejected, (state, action) => {
-        state.requestState = { status: 'failed', type: 'getBranches', error: action.error.message };
+        const payload = action.payload as any;
+        let message = "Có lỗi xảy ra. Vui lòng thử lại.";
+        if (payload.errors.length > 0) {
+          const error = payload.errors[0];
+          message = error.message;
+        }
+        state.requestState = { status: 'failed', type: 'getBranches', error: message };
       })
 
       .addCase(getBranchesCount.pending, (state) => {
@@ -104,7 +110,13 @@ const branchSlice = createSlice({
         state.requestState = { status: 'completed', type: 'getBranchesCount' };
       })
       .addCase(getBranchesCount.rejected, (state, action) => {
-        state.requestState = { status: 'failed', type: 'getBranchesCount', error: action.error.message };
+        const payload = action.payload as any;
+        let message = "Có lỗi xảy ra. Vui lòng thử lại.";
+        if (payload.errors.length > 0) {
+          const error = payload.errors[0];
+          message = error.message;
+        }
+        state.requestState = { status: 'failed', type: 'getBranchesCount', error: message };
       })
 
       .addCase(getBranch.pending, (state) => {
@@ -115,7 +127,13 @@ const branchSlice = createSlice({
         state.requestState = { status: 'completed', type: 'getBranch' };
       })
       .addCase(getBranch.rejected, (state, action) => {
-        state.requestState = { status: 'failed', type: 'getBranch', error: action.error.message };
+        const payload = action.payload as any;
+        let message = "Có lỗi xảy ra. Vui lòng thử lại.";
+        if (payload.errors.length > 0) {
+          const error = payload.errors[0];
+          message = error.message;
+        }
+        state.requestState = { status: 'failed', type: 'getBranch', error: message };
       })
 
       .addCase(updateBranch.pending, (state) => {
@@ -126,7 +144,13 @@ const branchSlice = createSlice({
         state.requestState = { status: 'completed', type: 'updateBranch' };
       })
       .addCase(updateBranch.rejected, (state, action) => {
-        state.requestState = { status: 'failed', type: 'updateBranch', error: action.error.message };
+        const payload = action.payload as any;
+        let message = "Có lỗi xảy ra. Vui lòng thử lại.";
+        if (payload.errors.length > 0) {
+          const error = payload.errors[0];
+          message = error.message;
+        }
+        state.requestState = { status: 'failed', type: 'updateBranch', error: message };
       })
 
       .addCase(createBranch.pending, (state) => {
@@ -137,7 +161,13 @@ const branchSlice = createSlice({
         state.requestState = { status: 'completed', type: 'createBranch' };
       })
       .addCase(createBranch.rejected, (state, action) => {
-        state.requestState = { status: 'failed', type: 'createBranch', error: action.error.message };
+        const payload = action.payload as any;
+        let message = "Có lỗi xảy ra. Vui lòng thử lại.";
+        if (payload.errors.length > 0) {
+          const error = payload.errors[0];
+          message = error.message;
+        }
+        state.requestState = { status: 'failed', type: 'createBranch', error: message };
       })
 
       .addCase(searchBranches.pending, (state) => {
@@ -148,7 +178,13 @@ const branchSlice = createSlice({
         state.requestState = { status: 'completed', type: 'searchBranches' };
       })
       .addCase(searchBranches.rejected, (state, action) => {
-        state.requestState = { status: 'failed', type: 'searchBranches', error: action.error.message };
+        const payload = action.payload as any;
+        let message = "Có lỗi xảy ra. Vui lòng thử lại.";
+        if (payload.errors.length > 0) {
+          const error = payload.errors[0];
+          message = error.message;
+        }
+        state.requestState = { status: 'failed', type: 'searchBranches', error: message };
       });
   },
 });

@@ -18,11 +18,11 @@ import {
   SidebarRail,
 } from "@/components/ui/sidebar"
 import router from "next/dist/client/router"
-import { roleService } from "@/services/role.service"
 import Link from "next/link"
+import { authService } from "@/services/auth.service"
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
-  const isAdmin = roleService.isAdmin();
+  const isAdmin = authService.isAdmin();
   const data = {
     navMain: isAdmin ? [
       {

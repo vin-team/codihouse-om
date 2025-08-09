@@ -7,12 +7,12 @@ import React from 'react';
 import { useAppDispatch } from '@/hooks/redux';
 import { useKeyboardShortcut } from '@/hooks/useKeyboardShortcut';
 import { setIsOpenSearchDialog } from '@/slices/app';
-import { roleService } from '@/services/role.service';
 import Branches from '@/components/dashboard/Branches';
+import { authService } from '@/services/auth.service';
 
 const dashboard: React.FC = () => {
   const dispatch = useAppDispatch();
-  const isAdmin = roleService.isAdmin();
+  const isAdmin = authService.isAdmin();
 
   useKeyboardShortcut({
     key: 'k',
@@ -26,7 +26,7 @@ const dashboard: React.FC = () => {
       <SearchBar />
       {isAdmin && <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 'w-full">
         <Branches />
-        <RecentOrders />  
+        <RecentOrders />
       </div>}
     </div>
   );

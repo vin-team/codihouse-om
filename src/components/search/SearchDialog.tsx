@@ -10,7 +10,7 @@ import { Search, X, Package, User, Phone, Mail } from "lucide-react";
 import { useEffect, useState } from "react";
 import { Badge } from "@/components/ui/badge";
 import { formatCurrency } from "@/utils/data.util";
-import { roleService } from "@/services/role.service";
+import { authService } from "@/services/auth.service";
 import { useRouter } from "next/navigation";
 import { useAppDispatch, useAppSelector } from "@/hooks/redux";
 import { clearSearchResult, searchCustomers, searchOrders } from "@/slices/searchSlice";
@@ -33,7 +33,7 @@ export function SearchDialog({ isOpen, onClose }: SearchDialogProps) {
   const searchResult = useAppSelector((state) => state.search.searchResult);
 
   const [search, setSearch] = useState("");
-  const isAdmin = roleService.isAdmin();
+  const isAdmin = authService.isAdmin();
   const isLogined = useAppSelector(state => state.app.isLogined);
 
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
