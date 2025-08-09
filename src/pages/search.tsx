@@ -2,59 +2,23 @@
 
 import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
-import { LoaderCircle, Search } from 'lucide-react';
+import { Search } from 'lucide-react';
 import SearchHeader from '@/components/search/SearchHeader';
 import SearchOrder from '@/components/search/SearchOrder';
 import SearchCustomer from '@/components/search/SearchCustomer';
-import { useAppDispatch, useAppSelector } from '@/hooks/redux';
-import { searchOrders, searchCustomers } from '@/slices/searchSlice';
+import { useAppSelector } from '@/hooks/redux';
 
 export default function SearchPage() {
   const router = useRouter();
-  const dispatch = useAppDispatch();
   const { keyword } = router.query;
   const orders = useAppSelector((state) => state.search.searchResult.orders);
   const customers = useAppSelector((state) => state.search.searchResult.customers);
-
-  const requestState = useAppSelector((state) => state.search.requestState);
   const totalResults = orders.length + customers.length;
-
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    if (keyword) {
-      dispatch(searchOrders({ query: keyword as string, page: 0, limit: 5 }));
-      dispatch(searchCustomers({ query: keyword as string, page: 0, limit: 5 }));
-    }
-  }, [keyword]);
-
-  useEffect(() => {
-    switch (requestState?.status) {
-      case 'loading':
-        setLoading(true);
-        break;
-      case 'completed':
-        setLoading(false);
-        break;
-      case 'failed':
-        setLoading(false);
-        break;
-    }
-  }, [requestState]);
-
-  if (loading) {
-    return (
-      <div className="min-h-full flex flex-col gap-4 items-center justify-center">
-        <LoaderCircle className='w-16 h-16 text-blue-400 animate-spin' />
-      </div>
-    );
-  }
-
   return (
     <div className="min-h-full flex flex-col gap-4">
       <SearchHeader keyword={keyword as string} totalResults={totalResults} />
-      {orders.length > 0 && <SearchOrder />}
-      {customers.length > 0 && <SearchCustomer />}
+      <SearchOrder />
+     <SearchCustomer />
 
       {totalResults === 0 && (
         <div className="text-center py-12">
