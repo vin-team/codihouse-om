@@ -16,10 +16,6 @@ export default function BranchAddForm() {
   const { success, error } = useToastContext();
   const requestState = useAppSelector(state => state.branch.requestState);
   const users = useAppSelector(state => state.user.users);
-  const [sapoKey, setSapoKey] = useState({
-    apiKey: "1234567890",
-    apiSecret: "1234567890",
-  });
 
   const [form, setForm] = useState({
     title: "",
@@ -29,6 +25,8 @@ export default function BranchAddForm() {
     phone: "",
     manager: "",
     note: "",
+    api_key: "",
+    api_secret: "",
   });
 
   const handleCreateBranch = () => {
@@ -141,11 +139,11 @@ export default function BranchAddForm() {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div className="space-y-2">
                 <Label htmlFor="apiKey">API Key</Label>
-                <Input id="apiKey" placeholder="Nhập API Key từ Sapo.vn" value={sapoKey.apiKey} onChange={(e) => setSapoKey({ ...sapoKey, apiKey: e.target.value })} />
+                <Input id="apiKey" placeholder="Nhập API Key từ Sapo.vn" value={form.api_key} onChange={(e) => setForm({ ...form, api_key: e.target.value })} />
               </div>
               <div className="space-y-2">
                 <Label htmlFor="apiSecret">API Secret</Label>
-                <Input id="apiSecret" type="password" placeholder="Nhập API Secret từ Sapo.vn" value={sapoKey.apiSecret} onChange={(e) => setSapoKey({ ...sapoKey, apiSecret: e.target.value })} />
+                <Input id="apiSecret" type="password" placeholder="Nhập API Secret từ Sapo.vn" value={form.api_secret} onChange={(e) => setForm({ ...form, api_secret: e.target.value })} />
               </div>
             </div>
           </div>
