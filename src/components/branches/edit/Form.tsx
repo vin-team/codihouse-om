@@ -25,11 +25,8 @@ export default function BranchEditForm({ branch }: { branch: Branch }) {
     phone: branch.phone,
     manager: branch.manager?.id || '',
     note: branch.note ?? '',
-  });
-
-  const [sapoKey, setSapoKey] = useState({
-    apiKey: "1234567890",
-    apiSecret: "1234567890",
+    api_key: branch.api_key ?? '',
+    api_secret: branch.api_secret ?? '',
   });
 
   const handleUpdateBranch = () => {
@@ -135,11 +132,11 @@ export default function BranchEditForm({ branch }: { branch: Branch }) {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div className="space-y-2">
                 <Label htmlFor="apiKey">API Key</Label>
-                <Input id="apiKey" placeholder="Nhập API Key từ Sapo.vn" value={sapoKey.apiKey} onChange={(e) => setSapoKey({ ...sapoKey, apiKey: e.target.value })} />
+                <Input id="apiKey" placeholder="Nhập API Key từ Sapo.vn" value={form.api_key} onChange={(e) => setForm({ ...form, api_key: e.target.value })} />
               </div>
               <div className="space-y-2">
                 <Label htmlFor="apiSecret">API Secret</Label>
-                <Input id="apiSecret" type="password" placeholder="Nhập API Secret từ Sapo.vn" value={sapoKey.apiSecret} onChange={(e) => setSapoKey({ ...sapoKey, apiSecret: e.target.value })} />
+                <Input id="apiSecret" type="password" placeholder="Nhập API Secret từ Sapo.vn" value={form.api_secret} onChange={(e) => setForm({ ...form, api_secret: e.target.value })} />
               </div>
             </div>
           </div>

@@ -1,4 +1,4 @@
-import { EyeOffIcon, EyeIcon, Folder } from "lucide-react";
+import { Folder } from "lucide-react";
 import { Button } from "../ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "../ui/card";
 import { Combobox } from "../ui/combobox";
@@ -41,7 +41,6 @@ export default function ImportForm() {
       error('Vui lòng chọn file');
       return;
     }
-    
     console.log('Import');
   }
 

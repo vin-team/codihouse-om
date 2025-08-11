@@ -21,6 +21,8 @@ export interface Branch {
   today_order_count: number;
   today_revenue: number | null;
   total_customers: number | null;
+  api_key: string | null;
+  api_secret: string | null;
 }
 
 export const parseBranch = (branch: any): Branch => {
@@ -43,6 +45,8 @@ export const parseBranch = (branch: any): Branch => {
     today_order_count: branch.today_order_count,
     today_revenue: branch.today_revenue,
     total_customers: branch.total_customers,
+    api_key: branch.api_key,
+    api_secret: branch.api_secret,
   };
 };
 
