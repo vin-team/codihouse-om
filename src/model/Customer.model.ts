@@ -89,3 +89,52 @@ export const parseCustomers = (customers: any[]): Customer[] => {
   if (!Array.isArray(customers)) return [];
   return customers.map(parseCustomer);
 };
+
+export enum OrderCountFilter {
+  ALL = 'all',
+  RANGE_1_5 = '1_5',
+  RANGE_6_15 = '6_15',
+  RANGE_16_30 = '16_30',
+  OVER_30 = '30',
+}
+
+export enum TotalExpenditureFilter {
+  ALL = 'all',
+  UNDER_1M = '1M',
+  RANGE_1_3M = '1_3M',
+  RANGE_3_5M = '3_5M',
+  OVER_5M = '5M',
+}
+
+export const getOrderCountFilter = (orderCount: string) => {
+  if (orderCount && orderCount !== OrderCountFilter.ALL) {
+    switch (orderCount) {
+      case OrderCountFilter.RANGE_1_5:
+        return { total_order: { _gte: 1, _lte: 5 } };
+      case OrderCountFilter.RANGE_6_15:
+        return { total_order: { _gte: 6, _lte: 15 } };
+      case OrderCountFilter.RANGE_16_30:
+        return { total_order: { _gte: 16, _lte: 30 } };
+      case OrderCountFilter.OVER_30:
+        return { total_order: { _gt: 30 } };
+    }
+  }
+  return {};
+}
+
+export const getTotalExpenditureFilter = (totalExpenditure: string) => {
+  if (totalExpenditure && totalExpenditure !== TotalExpenditureFilter.ALL) {
+    switch (totalExpenditure) {
+      case TotalExpenditureFilter.UNDER_1M:
+        return { total_expenditure: { _lt: 1_000_000 } };
+      case TotalExpenditureFilter.RANGE_1_3M:
+        return { total_expenditure: { _gte: 1_000_000, _lte: 3_000_000 } };
+      case TotalExpenditureFilter.RANGE_3_5M:
+        return { total_expenditure: { _gte: 3_000_000, _lte: 5_000_000 } };
+      case TotalExpenditureFilter.OVER_5M:
+        return { total_expenditure: { _gt: 5_000_000 } };
+    }
+  }
+
+  return {};
+}

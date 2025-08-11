@@ -5,6 +5,7 @@ import {
   Building2,
   House,
   Package,
+  Upload,
   User,
   Users,
 } from "lucide-react"
@@ -50,6 +51,11 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         url: "/users",
         icon: <User />,
       },
+      {
+        title: "Import",
+        url: "/import",
+        icon: <Upload />,
+      }
     ] : [
       {
         title: "Tổng quan",

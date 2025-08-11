@@ -1,7 +1,6 @@
 import { Action, Dispatch } from "@reduxjs/toolkit";
 import { setLogined } from "@/slices/app";
 import { refreshToken } from "@/slices/authSlice";
-import { HttpService } from "@/services/http/HttpService";
 
 export const authMiddleware =
   ({ dispatch }: { dispatch: Dispatch<Action> }) =>

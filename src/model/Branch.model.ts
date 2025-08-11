@@ -1,6 +1,7 @@
 export interface Branch {
   id: number;
   status: string;
+  state: string;
   sort: number | null;
   user_created: number | null;
   date_created: string | null;
@@ -11,7 +12,11 @@ export interface Branch {
   address: string | null;
   phone: string | null;
   type: string | null;
-  manager: string | null;
+  manager: {
+    id: number;
+    first_name: string;
+    last_name: string;
+  } | null;
   note: string | null;
   today_order_count: number;
   today_revenue: number | null;
@@ -22,6 +27,7 @@ export const parseBranch = (branch: any): Branch => {
   return {
     id: branch.id,
     status: branch.status,
+    state: branch.state,
     sort: branch.sort,
     user_created: branch.user_created,
     date_created: branch.date_created,

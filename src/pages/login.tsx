@@ -48,6 +48,7 @@ const Login: React.FC<LoginProps> = ({ }) => {
   useEffect(() => {
     dispatch(changeError(""));
     dispatch(clearActionState());
+    dispatch(userClearActionState());
   }, [dispatch]);
 
   useEffect(() => {
@@ -69,16 +70,18 @@ const Login: React.FC<LoginProps> = ({ }) => {
   }, [authActionState, userActionState.status])
 
   useEffect(() => {
-    switch (userActionState.status) {
-      case 'loading':
-        break;
-      case 'completed':
-        dispatch(clearActionState());
-        dispatch(userClearActionState());
-        dispatch(setLogined(true))
-        success('Đăng nhập thành công!')
-        router.push('/dashboard');
-        break;
+    if (userActionState?.type === 'getUser') {
+      switch (userActionState?.status) {
+        case 'loading':
+          break;
+        case 'completed':
+          dispatch(clearActionState());
+          dispatch(userClearActionState());
+          dispatch(setLogined(true))
+          success('Đăng nhập thành công!')
+          router.push('/dashboard');
+          break;
+      }
     }
   }, [userActionState])
 
@@ -169,18 +172,7 @@ const Login: React.FC<LoginProps> = ({ }) => {
                     </div>
 
                     {/* Remember Me and Forgot Password */}
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center">
-                        <Field
-                          id="rememberMe"
-                          name="rememberMe"
-                          type="checkbox"
-                          className="h-4 w-4 text-primary-600 focus:ring-primary-500 border-gray-300 rounded"
-                        />
-                        <label htmlFor="rememberMe" className="ml-2 block text-sm text-gray-900">
-                          Nhớ tôi
-                        </label>
-                      </div>
+                    <div className="flex items-end justify-end">
                       <div className="text-sm">
                         <Link href="/reset-password" className="font-medium text-primary-600 hover:text-primary-500">
                           Quên mật khẩu

@@ -23,8 +23,8 @@ export default function UsersEdit() {
   }, [id])
 
   useEffect(() => {
-    if (requestState.type === 'getUserById') {
-      switch (requestState.status) {
+    if (requestState?.type === 'getUserById') {
+      switch (requestState?.status) {
         case 'loading':
           setLoading(true);
           break;

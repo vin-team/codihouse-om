@@ -12,6 +12,5 @@ export default function CustomerListPage() {
       <FilterCustomers />
       <CustomerList />
     </div>
-
   )
 }

@@ -4,6 +4,7 @@ import { Button } from '../ui/button';
 import { useAppDispatch, useAppSelector } from '@/hooks/redux';
 import { getCustomers, searchCustomers, setFilter } from '@/slices/customerSlice';
 import { setIsFilter } from '@/slices/orderSlice';
+import { OrderCountFilter, TotalExpenditureFilter } from '@/model/Customer.model';
 
 export default function FilterCustomers() {
   const dispatch = useAppDispatch();
@@ -46,10 +47,6 @@ export default function FilterCustomers() {
     }));
   };
 
-  useEffect(() => {
-    console.log('filter: ', isFilter);
-  }, [isFilter]);
-
   return (
     <div className="bg-white rounded-lg p-4 md:p-6 border border-gray-200">
       <div className='flex flex-col space-y-4'>
@@ -90,11 +87,11 @@ export default function FilterCustomers() {
           <Combobox
             className='w-full flex-1'
             options={[
-              { value: 'all', label: 'Tất cả' },
-              { value: '1_5', label: '1-5 đơn' },
-              { value: '6_15', label: '6-15 đơn' },
-              { value: '16_30', label: '16-30 đơn' },
-              { value: '30', label: 'Trên 30 đơn' },
+              { value: OrderCountFilter.ALL, label: 'Tất cả' },
+              { value: OrderCountFilter.RANGE_1_5, label: '1-5 đơn' },
+              { value: OrderCountFilter.RANGE_6_15, label: '6-15 đơn' },
+              { value: OrderCountFilter.RANGE_16_30, label: '16-30 đơn' },
+              { value: OrderCountFilter.OVER_30, label: 'Trên 30 đơn' },
             ]}
             value={filter.orderCount}
             onChange={(value) => dispatch(setFilter({ ...filter, orderCount: value }))}
@@ -103,11 +100,11 @@ export default function FilterCustomers() {
           <Combobox
             className='w-full flex-1'
             options={[
-              { value: 'all', label: 'Tất cả' },
-              { value: '1M', label: 'Dưới 1M' },
-              { value: '1_3M', label: '1M-3M' },
-              { value: '3_5M', label: '3M-5M' },
-              { value: '5M', label: 'Trên 5M' },
+              { value: TotalExpenditureFilter.ALL, label: 'Tất cả' },
+              { value: TotalExpenditureFilter.UNDER_1M, label: 'Dưới 1M' },
+              { value: TotalExpenditureFilter.RANGE_1_3M, label: '1M-3M' },
+              { value: TotalExpenditureFilter.RANGE_3_5M, label: '3M-5M' },
+              { value: TotalExpenditureFilter.OVER_5M, label: 'Trên 5M' },
             ]}
             value={filter.totalExpenditure}
             onChange={(value) => dispatch(setFilter({ ...filter, totalExpenditure: value }))}

@@ -44,8 +44,8 @@ export default function UsersEditForm({ user }: { user: UserModel }) {
   }, [])
 
   useEffect(() => {
-    if (requestState.type === 'updateUser') {
-      switch (requestState.status) {
+    if (requestState?.type === 'updateUser') {
+      switch (requestState?.status) {
         case 'loading':
           break;
         case 'completed':

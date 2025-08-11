@@ -14,16 +14,17 @@ export default function BranchEditForm({ branch }: { branch: Branch }) {
   const dispatch = useAppDispatch();
   const { success, error } = useToastContext();
 
+  const users = useAppSelector(state => state.user.users);
   const requestState = useAppSelector(state => state.branch.requestState);
 
   const [form, setForm] = useState({
     title: branch.title,
     type: branch.type,
     address: branch.address,
-    status: branch.status,
+    state: branch.state,
     phone: branch.phone,
-    manager: branch.manager,
-    note: branch.note,
+    manager: branch.manager?.id || '',
+    note: branch.note ?? '',
   });
 
   const [sapoKey, setSapoKey] = useState({
@@ -32,7 +33,7 @@ export default function BranchEditForm({ branch }: { branch: Branch }) {
   });
 
   const handleUpdateBranch = () => {
-    dispatch(updateBranch({ ...form, id: branch.id }));
+    dispatch(updateBranch({ id: branch.id, data: form }));
   }
 
   useEffect(() => {
@@ -92,8 +93,8 @@ export default function BranchEditForm({ branch }: { branch: Branch }) {
                 { value: 'active', label: 'Hoạt động' },
                 { value: 'inactive', label: 'Tạm dừng' },
               ]}
-              value={form.status}
-              onChange={(value) => setForm({ ...form, status: value })}
+              value={form.state}
+              onChange={(value) => setForm({ ...form, state: value })}
               placeholder='Chọn trạng thái'
             />
           </div>
@@ -106,7 +107,13 @@ export default function BranchEditForm({ branch }: { branch: Branch }) {
           </div>
           <div className="space-y-2">
             <Label htmlFor="manager">Người quản lý <span className="text-red-500">*</span></Label>
-            <Input id="manager" placeholder="Nhập tên người quản lý" value={form.manager || ''} onChange={(e) => setForm({ ...form, manager: e.target.value })} />
+            <Combobox
+              className='w-full flex-1'
+              options={users.map(user => ({ value: user.id.toString(), label: `${[user?.first_name, user?.last_name].join(' ')}` }))}
+              value={form?.manager?.toString() || ''}
+              onChange={(value) => setForm({ ...form, manager: value })}
+              placeholder='Chọn người quản lý'
+            />
           </div>
         </div>
 

@@ -2,6 +2,7 @@
 import { Pagination } from "@/model/Pagination.mode";
 import { parseCommonHttpResult } from "./http/parseCommonResult";
 import { HttpService } from "./http/HttpService";
+import { getOrderCountFilter, getTotalExpenditureFilter, OrderCountFilter, TotalExpenditureFilter } from "@/model/Customer.model";
 
 class CustomerService {
   async getCustomers(pagination?: Pagination) {
@@ -96,16 +97,12 @@ class CustomerService {
       });
     }
 
-    if (filters.orderCount) {
-      andConditions.push({
-        orders: { _gte: filters.orderCount }
-      });
+    if (filters.orderCount && filters.orderCount !== OrderCountFilter.ALL) {
+      andConditions.push(getOrderCountFilter(filters.orderCount));
     }
 
-    if (filters.totalExpenditure) {
-      andConditions.push({
-        total_expenditure: { _gte: filters.totalExpenditure }
-      });
+    if (filters.totalExpenditure && filters.totalExpenditure !== TotalExpenditureFilter.ALL) {
+      andConditions.push(getTotalExpenditureFilter(filters.totalExpenditure));
     }
 
     if (andConditions.length > 0) {

@@ -2,9 +2,8 @@ import Link from "next/link";
 import { Badge } from "../ui/badge";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "../ui/table";
 import { Button } from "../ui/button";
-import { getStatusColor, getTypeColor } from "@/utils/branches.util";
+import { getStatusColor } from "@/utils/branches.util";
 import { useAppDispatch, useAppSelector } from "@/hooks/redux";
-import { Branch } from "@/model/Branch.model";
 import { useEffect, useState } from "react";
 import { getBranches, getBranchesCount, setPage } from "@/slices/branchSlice";
 import Pagination from "../orders/Pagination";
@@ -60,17 +59,14 @@ export default function BranchesList() {
                   <TableCell> {branch.type || '-'}</TableCell>
                   <TableCell className="max-w-[200px] truncate"> {branch.address || '-'}</TableCell>
                   <TableCell>{branch.phone || '-'}</TableCell>
-                  <TableCell>{branch.manager || '-'}</TableCell>
+                  <TableCell>{[branch?.manager?.first_name, branch?.manager?.last_name].join(' ')}</TableCell>
                   <TableCell>{branch.today_order_count || '-'}</TableCell>
                   <TableCell>{branch.today_revenue ? formatCurrency(branch.today_revenue) : '-'}</TableCell>
-                  <TableCell><Badge variant={getStatusColor(branch.status)}> {branch.status}</Badge></TableCell>
+                  <TableCell>{branch.state ? <Badge variant={getStatusColor(branch.state)}> {branch.state}</Badge> : '-'}</TableCell>
                   <TableCell>
-                    <div className="flex space-x-2">
-                      <Link href={`/branches/edit/${branch.id}`}>
-                        <Button variant="outline" size="sm">Sửa</Button>
-                      </Link>
-                      <Button variant="outline" size="sm">Xóa</Button>
-                    </div>
+                    <Link href={`/branches/edit/${branch.id}`}>
+                      <Button variant="outline" size="sm">Sửa</Button>
+                    </Link>
                   </TableCell>
                 </TableRow>
               ))}

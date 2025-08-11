@@ -11,7 +11,6 @@ import DataNotFound from "../DataNotFound";
 export default function UsersList() {
   const dispatch = useAppDispatch();
   const users = useAppSelector(state => state.user.users);
-  const requestState = useAppSelector(state => state.user.actionState);
 
   useEffect(() => {
     dispatch(getUsers());
@@ -55,12 +54,9 @@ export default function UsersList() {
                   </TableCell>
                   <TableCell>{user.last_access ? new Date(user.last_access).toLocaleString() : '-'}</TableCell>
                   <TableCell>
-                    <div className="flex space-x-2">
-                      <Link href={`/users/edit/${user.id}`}>
-                        <Button variant="outline" size="sm">Sửa</Button>
-                      </Link>
-                      <Button variant="outline" size="sm">Xóa</Button>
-                    </div>
+                    <Link href={`/users/edit/${user.id}`}>
+                      <Button variant="outline" size="sm">Sửa</Button>
+                    </Link>
                   </TableCell>
                 </TableRow>
               ))}

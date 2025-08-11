@@ -6,6 +6,7 @@ import BranchEditStatistics from "@/components/branches/edit/Statistics";
 import Loading from "@/components/Loading";
 import { useAppDispatch, useAppSelector } from "@/hooks/redux";
 import { getBranch } from "@/slices/branchSlice";
+import { getUsers } from "@/slices/userSlice";
 import { useParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
@@ -23,6 +24,7 @@ export default function BranchEdit() {
   useEffect(() => {
     if (id) {
       dispatch(getBranch(id as string));
+      dispatch(getUsers());
     }
   }, [id])
 

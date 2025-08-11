@@ -11,25 +11,29 @@ export default function AuthGuard({ children }: { children: React.ReactNode }) {
   const isLogined = useAppSelector(state => state.app.isLogined);
   const isAdmin = authService.isAdmin();
 
-  const pathAuth = ['/login', '/reset-password', '/dashboard'];
-  const pathUser = ['/orders', '/customers', '/branches', '/users'];
+  const pathAuth = ['/login', '/reset-password'];
+  const pathUser = ['/orders', '/customers', '/branches', '/users', '/branches/add', '/branches/edit', '/users/add', '/users/edit'];
 
   useEffect(() => {
-    if (pathAuth.includes(pathname)) {
+    if (!isLogined) {
+      router.replace("/login");
       return;
     }
 
-    if (!isLogined) {
-      router.replace("/login");
-    } else {
-      const isExactListPage = pathUser.some(path => pathname === path);
-
-      if (!isAdmin && isExactListPage) {
+    if (pathAuth.includes(pathname)) {
+      if (isLogined) {
         router.replace("/dashboard");
-        return;
+        return
       }
+      return;
     }
 
+    const isExactListPage = pathUser.some(path => pathname === path);
+
+    if (!isAdmin && isExactListPage) {
+      router.replace("/dashboard");
+      return;
+    }
   }, [isLogined, router, pathname]);
 
   return <>{children}</>;

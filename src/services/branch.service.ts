@@ -4,7 +4,12 @@ import { parseCommonHttpResult } from "./http/parseCommonResult";
 class BranchService {
   async getBranches() {
     const queryParams = new URLSearchParams();
-    const fields = ['*'];
+    const fields = [
+      '*',
+      'manager.id',
+      'manager.first_name',
+      'manager.last_name',
+    ];
     fields.forEach(field => queryParams.append('fields[]', field));
     const response = await HttpService.doGetRequest(`/items/om_branch?${queryParams}`, "");
     return parseCommonHttpResult(response);
@@ -19,7 +24,13 @@ class BranchService {
 
   async getBranch(id: string) {
     const queryParams = new URLSearchParams();
-    queryParams.append('fields[]', '*');
+    const fields = [
+      '*',
+      'manager.id',
+      'manager.first_name',
+      'manager.last_name',
+    ];
+    fields.forEach(field => queryParams.append('fields[]', field));
     const response = await HttpService.doGetRequest(`/items/om_branch/${id}?${queryParams}`, "");
     return parseCommonHttpResult(response);
   }
@@ -29,8 +40,8 @@ class BranchService {
     return parseCommonHttpResult(response);
   }
 
-  async updateBranch(data: any) {
-    const response = await HttpService.doPatchRequest(`/items/om_branch/${data?.id}`, data);
+  async updateBranch(payload: { id: number, data: any }) {
+    const response = await HttpService.doPatchRequest(`/items/om_branch/${payload?.id}`, payload?.data);
     return parseCommonHttpResult(response);
   }
 
