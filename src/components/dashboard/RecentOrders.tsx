@@ -11,12 +11,12 @@ import Link from 'next/link';
 export default function RecentOrders() {
   const dispatch = useAppDispatch();
   const orders = useAppSelector(state => state.order.recentOrders);
+  const sliceOrders = orders.length > 5 ? orders.slice(0, 5) : orders;
 
   useEffect(() => {
     dispatch(getRecentOrders());
   }, []);
 
-  const sliceOrders = orders.length > 5 ? orders.slice(0, 5) : orders;
 
   return (
     <Card>
@@ -30,7 +30,7 @@ export default function RecentOrders() {
             <Link href={`/orders/${order.id}`} key={order.id}>
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="font-medium">#{order.id}</p>
+                  <p className="font-medium">{order.code}</p>
                   <p className="text-sm text-gray-500">{[order?.customer?.first_name, order?.customer?.last_name].join(' ')} • {order?.branch?.title}</p>
                 </div>
                 <Badge className={`${getStatusColor(order.state || '')}`} variant="secondary">{order.state}</Badge>

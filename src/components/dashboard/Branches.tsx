@@ -9,10 +9,12 @@ export default function Branches() {
   const dispatch = useAppDispatch();
   const branches = useAppSelector(state => state.branch.branches);
   const requestState = useAppSelector(state => state.branch.requestState);
+  const sliceBranches = branches.length > 5 ? branches.slice(0, 5) : branches;
 
   useEffect(() => {
     dispatch(getBranches());
   }, []);
+
 
   return (
     <Card className="py-4">
@@ -23,13 +25,18 @@ export default function Branches() {
           </div>
         )}
         <div className="space-y-4">
-          {branches.length > 0 && requestState.status !== 'loading' && branches.map((branch) => (
+          {sliceBranches.length > 0 && requestState.status !== 'loading' && sliceBranches.map((branch) => (
             <div key={branch.id} className="flex items-center justify-between">
               <div>
                 <p className="font-medium">{branch.title}</p>
-                <p className="text-sm text-gray-500">{branch.status} • {branch.today_order_count} đơn hôm nay</p>
+                <p className="text-sm text-gray-500">
+                  {branch?.type ? `${branch.type.toUpperCase()} • ` : ""}
+                  {branch?.today_order_count || 0} đơn hôm nay
+                </p>
               </div>
-              <Badge className={`${branch.status === "Offline" ? "bg-gray-100" : "bg-black text-white hover:bg-black"}`} variant="secondary">{branch.status}</Badge>
+              {branch?.state && <Badge
+                className={`${branch.state === "active" ? "bg-green-500 text-white hover:bg-green-500" : "bg-red-500 text-white hover:bg-red-500"}`}
+                variant="secondary">{branch?.state?.toUpperCase()}</Badge>}
             </div>
           ))}
         </div>
