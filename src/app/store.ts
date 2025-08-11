@@ -7,7 +7,7 @@ import rootReducer from "../slices";
 import { authMiddleware } from "../middleware/authMiddleware";
 
 const persistConfig = {
-	key: "codihouse",
+	key: "lnc",
 	storage,
 	whitelist: ["app"],
 };

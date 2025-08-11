@@ -7,7 +7,7 @@ import { TableHeader, TableRow, TableHead, TableBody, TableCell, Table } from '.
 import { Order } from '@/model/Order.model';
 
 export default function Products({ order }: { order: Order }) {
-
+  
   return (
     <Card>
       <CardHeader>

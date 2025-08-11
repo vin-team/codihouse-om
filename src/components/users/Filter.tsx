@@ -7,6 +7,12 @@ export default function UsersFilter() {
   const dispatch = useAppDispatch();
   const filter = useAppSelector(state => state.user.filter);
 
+  const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Enter') {
+      handleSearch();
+    }
+  };
+
   const handleSearch = () => {
     dispatch(searchUsers({ search: filter.search }));
   }
@@ -28,6 +34,7 @@ export default function UsersFilter() {
               value={filter.search}
               placeholder={"Tìm kiếm người dùng..."}
               onChange={(e) => dispatch(setFilter({ ...filter, search: e.target.value }))}
+              onKeyPress={handleKeyPress}
               className="block w-full pl-12 pr-20 h-10 border border-gray-300 rounded-lg text-sm placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
             />
           </div>

@@ -9,7 +9,13 @@ import { OrderCountFilter, TotalExpenditureFilter } from '@/model/Customer.model
 export default function FilterCustomers() {
   const dispatch = useAppDispatch();
   const filter = useAppSelector(state => state.customer.filter);
-  const isFilter = useAppSelector(state => state.customer.isFilter);
+
+  const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Enter') {
+      handleSearch();
+    }
+  };
+
   const handleSearch = () => {
     if (filter.search?.trim() === '') {
       dispatch(setIsFilter(false));
@@ -64,6 +70,7 @@ export default function FilterCustomers() {
               value={filter.search}
               placeholder={"Tìm theo mã đơn hàng, số điện thoại hoặc email..."}
               onChange={(e) => dispatch(setFilter({ ...filter, search: e.target.value }))}
+              onKeyPress={handleKeyPress}
               className="block w-full pl-12 pr-20 h-10 border border-gray-300 rounded-lg text-sm placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
             />
           </div>
