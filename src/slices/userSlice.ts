@@ -78,7 +78,7 @@ const userSlice = createSlice({
       .addCase(getUser.rejected, (state, action) => {
         const payload = action.payload as any;
         let message = "Có lỗi xảy ra. Vui lòng thử lại.";
-        if (payload.errors.length > 0) {
+        if (payload?.errors?.length > 0) {
           const error = payload.errors[0];
           message = error.message;
         }
@@ -96,7 +96,7 @@ const userSlice = createSlice({
       .addCase(getUserById.rejected, (state, action) => {
         const payload = action.payload as any;
         let message = "Có lỗi xảy ra. Vui lòng thử lại.";
-        if (payload.errors.length > 0) {
+        if (payload?.errors?.length > 0) {
           const error = payload.errors[0];
           message = error.message;
         }
@@ -114,7 +114,7 @@ const userSlice = createSlice({
       .addCase(getUsers.rejected, (state, action) => {
         const payload = action.payload as any;
         let message = "Có lỗi xảy ra. Vui lòng thử lại.";
-        if (payload.errors.length > 0) {
+        if (payload?.errors?.length > 0) {
           const error = payload.errors[0];
           message = error.message;
         }
@@ -132,7 +132,7 @@ const userSlice = createSlice({
       .addCase(searchUsers.rejected, (state, action) => {
         const payload = action.payload as any;
         let message = "Có lỗi xảy ra. Vui lòng thử lại.";
-        if (payload.errors.length > 0) {
+        if (payload?.errors?.length > 0) {
           const error = payload.errors[0];
           message = error.message;
         }
@@ -149,7 +149,7 @@ const userSlice = createSlice({
       .addCase(addUser.rejected, (state, action) => {
         const payload = action.payload as any;
         let message = "Có lỗi xảy ra. Vui lòng thử lại.";
-        if (payload.errors.length > 0) {
+        if (payload?.errors?.length > 0) {
           const error = payload.errors[0];
           message = error.message;
         }
@@ -166,7 +166,7 @@ const userSlice = createSlice({
       .addCase(updateUser.rejected, (state, action) => {
         const payload = action.payload as any;
         let message = "Có lỗi xảy ra. Vui lòng thử lại.";
-        if (payload.errors.length > 0) {
+        if (payload?.errors?.length > 0) {
           const error = payload.errors[0];
           message = error.message;
         }

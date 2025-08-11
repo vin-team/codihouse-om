@@ -99,7 +99,7 @@ const authSlice = createSlice({
       .addCase(login.rejected, (state, action) => {
         const payload = action.payload as any;
         let message = ''
-        if (payload.errors.length > 0) {
+        if (payload?.errors?.length > 0) {
           const extensions = payload.errors[0].extensions;
           if (extensions.code === 'INVALID_CREDENTIALS') {
             message = 'Email hoặc mật khẩu không chính xác';
@@ -120,7 +120,7 @@ const authSlice = createSlice({
       .addCase(logout.rejected, (state, action) => {
         const payload = action.payload as any;
         let message = "Có lỗi xảy ra. Vui lòng thử lại.";
-        if (payload.errors.length > 0) {
+        if (payload?.errors?.length > 0) {
           const error = payload.errors[0];
           message = error.message;
         }
@@ -136,7 +136,7 @@ const authSlice = createSlice({
       .addCase(requestResetPassword.rejected, (state, action) => {
         const payload = action.payload as any;
         let message = "Có lỗi xảy ra. Vui lòng thử lại.";
-        if (payload.errors.length > 0) {
+        if (payload?.errors?.length > 0) {
           const error = payload.errors[0];
           message = error.message;
         }
@@ -152,7 +152,7 @@ const authSlice = createSlice({
       .addCase(resetPassword.rejected, (state, action) => {
         const payload = action.payload as any;
         let message = "Có lỗi xảy ra. Vui lòng thử lại.";
-        if (payload.errors.length > 0) {
+        if (payload?.errors?.length > 0) {
           const error = payload.errors[0];
           message = error.message;
         }

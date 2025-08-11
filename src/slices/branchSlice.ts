@@ -90,7 +90,7 @@ const branchSlice = createSlice({
       .addCase(getBranches.rejected, (state, action) => {
         const payload = action.payload as any;
         let message = "Có lỗi xảy ra. Vui lòng thử lại.";
-        if (payload.errors.length > 0) {
+        if (payload?.errors?.length > 0) {
           const error = payload.errors[0];
           message = error.message;
         }
@@ -112,7 +112,7 @@ const branchSlice = createSlice({
       .addCase(getBranchesCount.rejected, (state, action) => {
         const payload = action.payload as any;
         let message = "Có lỗi xảy ra. Vui lòng thử lại.";
-        if (payload.errors.length > 0) {
+        if (payload?.errors?.length > 0) {
           const error = payload.errors[0];
           message = error.message;
         }
@@ -129,7 +129,7 @@ const branchSlice = createSlice({
       .addCase(getBranch.rejected, (state, action) => {
         const payload = action.payload as any;
         let message = "Có lỗi xảy ra. Vui lòng thử lại.";
-        if (payload.errors.length > 0) {
+        if (payload?.errors?.length > 0) {
           const error = payload.errors[0];
           message = error.message;
         }
@@ -146,7 +146,7 @@ const branchSlice = createSlice({
       .addCase(updateBranch.rejected, (state, action) => {
         const payload = action.payload as any;
         let message = "Có lỗi xảy ra. Vui lòng thử lại.";
-        if (payload.errors.length > 0) {
+        if (payload?.errors?.length > 0) {
           const error = payload.errors[0];
           message = error.message;
         }
@@ -163,7 +163,7 @@ const branchSlice = createSlice({
       .addCase(createBranch.rejected, (state, action) => {
         const payload = action.payload as any;
         let message = "Có lỗi xảy ra. Vui lòng thử lại.";
-        if (payload.errors.length > 0) {
+        if (payload?.errors?.length > 0) {
           const error = payload.errors[0];
           message = error.message;
         }
@@ -180,7 +180,7 @@ const branchSlice = createSlice({
       .addCase(searchBranches.rejected, (state, action) => {
         const payload = action.payload as any;
         let message = "Có lỗi xảy ra. Vui lòng thử lại.";
-        if (payload.errors.length > 0) {
+        if (payload?.errors?.length > 0) {
           const error = payload.errors[0];
           message = error.message;
         }

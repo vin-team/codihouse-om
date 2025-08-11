@@ -118,7 +118,7 @@ const orderSlice = createSlice({
       .addCase(getOrders.rejected, (state, action) => {
         const payload = action.payload as any;
         let message = "Có lỗi xảy ra. Vui lòng thử lại.";
-        if (payload.errors.length > 0) {
+        if (payload?.errors?.length > 0) {
           const error = payload.errors[0];
           message = error.message;
         }
@@ -140,7 +140,7 @@ const orderSlice = createSlice({
       .addCase(getOrdersCount.rejected, (state, action) => {
         const payload = action.payload as any;
         let message = "Có lỗi xảy ra. Vui lòng thử lại.";
-        if (payload.errors.length > 0) {
+        if (payload?.errors?.length > 0) {
           const error = payload.errors[0];
           message = error.message;
         }
@@ -156,7 +156,7 @@ const orderSlice = createSlice({
       .addCase(getOrder.rejected, (state, action) => {
         const payload = action.payload as any;
         let message = "Có lỗi xảy ra. Vui lòng thử lại.";
-        if (payload.errors.length > 0) {
+        if (payload?.errors?.length > 0) {
           const error = payload.errors[0];
           message = error.message;
         }
@@ -173,7 +173,7 @@ const orderSlice = createSlice({
       .addCase(searchOrders.rejected, (state, action) => {
         const payload = action.payload as any;
         let message = "Có lỗi xảy ra. Vui lòng thử lại.";
-        if (payload.errors.length > 0) {
+        if (payload?.errors?.length > 0) {
           const error = payload.errors[0];
           message = error.message;
         }
@@ -190,7 +190,7 @@ const orderSlice = createSlice({
       .addCase(getRecentOrders.rejected, (state, action) => {
         const payload = action.payload as any;
         let message = "Có lỗi xảy ra. Vui lòng thử lại.";
-        if (payload.errors.length > 0) {
+        if (payload?.errors?.length > 0) {
           const error = payload.errors[0];
           message = error.message;
         }
