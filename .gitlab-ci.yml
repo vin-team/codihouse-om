@@ -1,4 +1,6 @@
 stages:
+    - tag-release
+    - docker-build
     - docker-image
 variables:
     VARIABLE_DATA: Gitlab-CI-YAML
@@ -37,3 +39,46 @@ docker-image:
         
         - curl -X GET $AUTO_DEPLOY_URL
         - send_to_mattermost "[FE] $CI_COMMIT_BRANCH deployment triggered"
+
+tag-release:
+    stage: tag-release
+    rules:
+        -   if: '$CI_COMMIT_TAG'
+    environment:
+        name: release
+    script:
+        - |
+            {
+              echo "NODE_ENV=production"
+              echo "IMAGE_TAG=$CI_COMMIT_TAG"
+              echo "NEXT_PUBLIC_baseApiURL=$NEXT_PUBLIC_baseApiURL"
+            } > build.env
+    artifacts:
+        reports:
+            dotenv: build.env  
+
+docker-build:
+    stage: docker-image
+    rules:
+        -   if: '$CI_COMMIT_TAG'
+    image: docker:20-git
+    services:
+        - docker:20-dind
+    script:
+        - apk update && apk add jq && apk add curl
+        - eval "$SEND_MM_FUNCS"
+        - send_to_mattermost "[FE] $IMAGE_TAG build start"
+        - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY
+        - >
+            docker build
+            --build-arg="NEXT_PUBLIC_baseApiURL=$NEXT_PUBLIC_baseApiURL"
+            --build-arg="NEXT_PUBLIC_storageAccessTokenKey=$NEXT_PUBLIC_storageAccessTokenKey"
+            --build-arg="NEXT_PUBLIC_storageRefreshTokenKey=$NEXT_PUBLIC_storageRefreshTokenKey"
+            --build-arg="NEXT_PUBLIC_storageIsRefreshingTokenKey=$NEXT_PUBLIC_storageIsRefreshingTokenKey"
+            --build-arg="NEXT_PUBLIC_storageDeviceIdKey=$NEXT_PUBLIC_storageDeviceIdKey"
+            --build-arg="NEXT_PUBLIC_storageUserKey=$NEXT_PUBLIC_storageUserKey"
+            --build-arg="NEXT_PUBLIC_storageRoleKey=$NEXT_PUBLIC_storageRoleKey"
+            . -t $CI_REGISTRY_IMAGE:$IMAGE_TAG
+        - docker push $CI_REGISTRY_IMAGE:$IMAGE_TAG
+        - send_to_mattermost "[FE] $IMAGE_TAG build completed, check $APP_URL"
+        - if [ -n "$AUTO_DEPLOY_URL" ]; then curl -X GET "$AUTO_DEPLOY_URL" && send_to_mattermost "[FE] $IMAGE_TAG deployment triggered"; fi
