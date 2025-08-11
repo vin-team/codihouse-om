@@ -1,14 +1,14 @@
 stages:
-    - docker-image
     - tag-release
     - docker-build
+    - docker-image
 variables:
     VARIABLE_DATA: Gitlab-CI-YAML
 
 docker-image:
     stage: docker-image
     rules:
-        -   if: '$CI_COMMIT_BRANCH == "staging" || $CI_COMMIT_TAG'
+        -   if: '$CI_COMMIT_BRANCH == "staging"'
     image: docker:20-git
     services:
         - docker:20-dind
