@@ -152,6 +152,41 @@ class OrderService {
     return parseCommonHttpResult(response);
   }
 
+  async getStatisticsByBranchAndDate(payload: any) {
+    const queryParams = new URLSearchParams();
+    queryParams.append('filter', JSON.stringify({
+      _and: [
+        { state: { _eq: 'Hoàn thành' } },
+        { branch: { id: { _eq: payload.branch_id } } },
+        { 'year(complete_date)': { _eq: payload.year } },
+        { 'month(complete_date)': { _eq: payload.month } },
+        { 'day(complete_date)': { _eq: payload.day } },
+      ]
+    }));
+    queryParams.append('aggregate[countDistinct][0]', 'id');
+    queryParams.append('aggregate[countDistinct][1]', 'customer');
+    queryParams.append('aggregate[sum][0]', 'total_price');
+
+    const response = await HttpService.doGetRequest(`/items/om_order?${queryParams}`, "");
+    return parseCommonHttpResult(response);
+  }
+
+  async getOrderCountByBranches(payload: any) {
+    const queryParams = new URLSearchParams();
+    queryParams.append('filter[_and][0][state][_eq]', 'Hoàn thành');
+    payload.branch_ids.forEach((branch_id: number) => {
+      queryParams.append('filter[_and][1][branch][id][_in][]', branch_id.toString());
+    });
+    queryParams.append('filter[_and][2][year(complete_date)][_eq]', payload.year.toString());
+    queryParams.append('filter[_and][3][month(complete_date)][_eq]', payload.month.toString());
+    queryParams.append('filter[_and][4][day(complete_date)][_eq]', payload.day.toString());
+    queryParams.append('aggregate[countDistinct][0]', 'id');
+    queryParams.append('groupBy[]', 'branch');
+
+    const response = await HttpService.doGetRequest(`/items/om_order?${queryParams}`, "");
+    return parseCommonHttpResult(response);
+  }
+
   translateColumn = (column: string) => {
     switch (column) {
       case "customer": return "Khách hàng"

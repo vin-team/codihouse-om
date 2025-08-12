@@ -17,6 +17,15 @@ interface OrderState {
     branch: string;
     dateRange?: DateRange | null;
   };
+  statistics: {
+    totalOrders: number;
+    totalRevenue: number;
+    totalCustomers: number;
+  };
+  orderCountByBranches: {
+    branch_id: number;
+    count: number;
+  }[];
   pagination: Pagination;
   visibleColumns: Map<string, boolean>;
   actionState: RequestState;
@@ -39,6 +48,12 @@ const initialState: OrderState = {
     totalRecords: 0,
     totalPages: 1,
   },
+  statistics: {
+    totalOrders: 0,
+    totalRevenue: 0,
+    totalCustomers: 0,
+  },
+  orderCountByBranches: [],
   visibleColumns: new Map([
     'customer',
     'customerPhone',
@@ -77,6 +92,16 @@ export const searchOrders: any = commonCreateAsyncThunk({
 export const getRecentOrders: any = commonCreateAsyncThunk({
   type: 'order/getRecentOrders',
   action: orderService.getRecentOrders,
+});
+
+export const getStatisticsByBranchAndDate: any = commonCreateAsyncThunk({
+  type: 'order/getStatisticsByBranchAndDate',
+  action: orderService.getStatisticsByBranchAndDate,
+});
+
+export const getOrderCountByBranches: any = commonCreateAsyncThunk({
+  type: 'order/getOrderCountByBranches',
+  action: orderService.getOrderCountByBranches,
 });
 
 const orderSlice = createSlice({
@@ -195,6 +220,53 @@ const orderSlice = createSlice({
           message = error.message;
         }
         state.actionState = { status: 'failed', type: 'getRecentOrders', error: message };
+      })
+
+      .addCase(getStatisticsByBranchAndDate.pending, (state) => {
+        state.actionState = { status: 'loading', type: 'getStatisticsByBranchAndDate' };
+      })
+      .addCase(getStatisticsByBranchAndDate.fulfilled, (state, action) => {
+        console.log(action.payload);
+        const data = action.payload.data.data;
+        if (data.length > 0) {
+          state.statistics.totalOrders = data[0]?.countDistinct?.id || 0;
+          state.statistics.totalCustomers = data[0]?.countDistinct?.customer || 0;
+          state.statistics.totalRevenue = data[0]?.sum?.total_price || 0;
+        }
+        state.actionState = { status: 'completed', type: 'getStatisticsByBranchAndDate' };
+      })
+      .addCase(getStatisticsByBranchAndDate.rejected, (state, action) => {
+        const payload = action.payload as any;
+        let message = "Có lỗi xảy ra. Vui lòng thử lại.";
+        if (payload?.errors?.length > 0) {
+          const error = payload.errors[0];
+          message = error.message;
+        }
+        state.actionState = { status: 'failed', type: 'getStatisticsByBranchAndDate', error: message };
+      })
+
+      .addCase(getOrderCountByBranches.pending, (state) => {
+        state.actionState = { status: 'loading', type: 'getOrderCountByBranches' };
+      })
+      .addCase(getOrderCountByBranches.fulfilled, (state, action) => {
+        console.log(action.payload);
+        const data = action.payload.data.data;
+        if (data.length > 0) {
+          state.orderCountByBranches = data.map((item: any) => ({
+            branch_id: item.branch,
+            count: item.countDistinct?.id || 0
+          }));
+        }
+        state.actionState = { status: 'completed', type: 'getOrderCountByBranches' };
+      })
+      .addCase(getOrderCountByBranches.rejected, (state, action) => {
+        const payload = action.payload as any;
+        let message = "Có lỗi xảy ra. Vui lòng thử lại.";
+        if (payload?.errors?.length > 0) {
+          const error = payload.errors[0];
+          message = error.message;
+        }
+        state.actionState = { status: 'failed', type: 'getOrderCountByBranches', error: message };
       });
   }
 })

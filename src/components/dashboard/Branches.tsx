@@ -4,17 +4,29 @@ import { useAppDispatch, useAppSelector } from "@/hooks/redux";
 import { getBranches } from "@/slices/branchSlice";
 import { useEffect } from "react";
 import { LoaderCircle } from "lucide-react";
+import { getOrderCountByBranches } from "@/slices/orderSlice";
 
 export default function Branches() {
   const dispatch = useAppDispatch();
   const branches = useAppSelector(state => state.branch.branches);
   const requestState = useAppSelector(state => state.branch.requestState);
   const sliceBranches = branches.length > 5 ? branches.slice(0, 5) : branches;
+  const orderCountByBranches = useAppSelector(state => state.order.orderCountByBranches);
 
   useEffect(() => {
     dispatch(getBranches());
   }, []);
 
+  useEffect(() => {
+    const today = new Date();
+    const year = today.getFullYear();
+    const month = today.getMonth() + 1;
+    const day = today.getDate();
+
+    if (branches.length > 0) {
+      dispatch(getOrderCountByBranches({ branch_ids: branches.map(branch => branch.id), year: year, month: month, day: day }));
+    }
+  }, [branches])
 
   return (
     <Card className="py-4">
@@ -31,7 +43,7 @@ export default function Branches() {
                 <p className="font-medium">{branch.title}</p>
                 <p className="text-sm text-gray-500">
                   {branch?.type ? `${branch.type.toUpperCase()} • ` : ""}
-                  {branch?.today_order_count || 0} đơn hôm nay
+                  {orderCountByBranches.find(item => item.branch_id === branch.id)?.count || 0} đơn hôm nay
                 </p>
               </div>
               {branch?.state && <Badge

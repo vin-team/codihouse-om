@@ -30,10 +30,13 @@ export default function RecentOrders() {
             <Link href={`/orders/${order.id}`} key={order.id}>
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="font-medium">{order.code}</p>
-                  <p className="text-sm text-gray-500">{[order?.customer?.first_name, order?.customer?.last_name].join(' ')} • {order?.branch?.title}</p>
+                  <p className="font-medium">{order?.code || '-'}</p>
+                  <div className='flex flex-row gap-2'>
+                    <p className="text-sm text-gray-500">{[order?.customer?.first_name, order?.customer?.last_name].join(' ')}</p>
+                    {order?.branch?.title && <p className="text-sm text-gray-500">• {order?.branch?.title || '-'}</p>}
+                  </div>
                 </div>
-                <Badge className={`${getStatusColor(order.state || '')}`} variant="secondary">{order.state}</Badge>
+                {order?.state && <Badge className={`${getStatusColor(order.state || '')}`} variant="secondary">{order.state}</Badge>}
               </div>
             </Link>
           ))}

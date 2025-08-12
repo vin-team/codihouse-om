@@ -10,7 +10,7 @@ export const formatDateToFormatString = (datetime: string, format: string) => {
 
 export const getDateFromISOString = (isoString: string) => {
     const dateObj = new Date(isoString);
-    return dateObj.toISOString().split('T')[0];
+    return dateObj.toLocaleDateString('vi-VN');
 }
 
 export const getTimeFromISOString = (isoString: string) => {
