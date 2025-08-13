@@ -10,7 +10,7 @@ import { getDateFromISOString } from '@/utils/date.util';
 
 export default function SearchCustomerItem({ customer }: { customer: SearchCustomer }) {
   return (
-    <Link href={`/customers/${customer.code}`}>
+    <Link href={`/customers/${customer.id}`}>
       <div className="flex items-center justify-between p-4 border border-gray-200 rounded-lg cursor-pointer hover:bg-gray-50 transition-colors">
         <div className='flex flex-row justify-between w-full'>
           <div className='flex flex-row items-center gap-4 flex-1'>
