@@ -47,9 +47,9 @@ export default function CustomerOrderHistory({ customer }: { customer: Customer 
                 </TableCell>
                 <TableCell>{formatCurrency(order.total_price.toString() || '0')}₫</TableCell>
                 <TableCell>
-                  <Badge variant={getStatusColor(order.status)}>
-                    {order.status}
-                  </Badge>
+                  {order.state ? <Badge variant={getStatusColor(order.state)}>
+                    {order.state}
+                  </Badge> : '-'}
                 </TableCell>
                 <TableCell>
                   <Link href={`/orders/${order.id}`}>
