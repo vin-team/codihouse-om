@@ -16,6 +16,11 @@ export default function FilterCustomers() {
   };
 
   const handleSearch = () => {
+    if (filter.search?.trim() === '') {
+      handleSelectAll();
+      return;
+    }
+
     dispatch(searchCustomers({
       search: filter.search,
       state: filter.state,

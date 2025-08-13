@@ -26,6 +26,11 @@ export default function FilterOrders() {
   };
 
   const handleSearch = () => {
+    if (filter.search?.trim() === '') {
+      handleSelectAll();
+      return;
+    }
+
     dispatch(searchOrders({
       keyword: filter.search,
       state: filter.state,
