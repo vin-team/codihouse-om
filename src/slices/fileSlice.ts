@@ -2,8 +2,8 @@ import { RequestState } from "@/app/state";
 import { createSlice } from "@reduxjs/toolkit";
 import { File, parseFile } from "@/model/File.model";
 import { commonCreateAsyncThunk } from "@/app/thunk";
-import { fileService } from "@/services/File.service";
-
+import { fileService } from "@/services/file.service";
+  
 interface FileState {
   requestState: RequestState;
 }
