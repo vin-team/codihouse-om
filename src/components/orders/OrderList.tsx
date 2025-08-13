@@ -54,9 +54,9 @@ export default function OrderList() {
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead>Mã đơn hàng</TableHead>
+                <TableHead className='w-fit text-nowrap'>Mã đơn hàng</TableHead>
                 {Array.from(visibleColumns.keys()).map((column) => (
-                  <TableHead hidden={!visibleColumns.get(column)} key={column}>{orderService.translateColumn(column)}</TableHead>
+                  <TableHead className='w-fit text-nowrap' hidden={!visibleColumns.get(column)} key={column}>{orderService.translateColumn(column)}</TableHead>
                 ))}
                 <TableHead>Thao tác</TableHead>
               </TableRow>
@@ -84,7 +84,7 @@ export default function OrderList() {
                   {visibleColumns.get('status') && (
                     <TableCell>
                       <Badge variant='outline' className={getOrderStatusColor(order.state || '')}>
-                        {order.state}
+                        <span className='w-fit text-nowrap'>{order.state}</span>
                       </Badge>
                     </TableCell>
                   )}
