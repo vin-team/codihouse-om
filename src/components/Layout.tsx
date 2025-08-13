@@ -35,16 +35,15 @@ export default function MainLayout({ children }: IMainLayoutProps) {
 			</Head>
 			{isLogined ? <div>
 				<Header />
-				<SidebarProvider className="pt-16 min-h-screen flex flex-row">
+				<SidebarProvider className="pt-16 min-h-screen flex flex-row overflow-x-hidden">
 					<AppSidebar />
 					<SidebarInset>
-						<div className="flex flex-1 flex-col gap-4 p-4">
+						<div className="flex flex-1 min-w-0 flex-col gap-4 p-4 overflow-x-hidden">
 							<div className="min-h-[100vh] flex-1 rounded-xl md:min-h-min">
 								{children}
 							</div>
 						</div>
 					</SidebarInset>
-
 				</SidebarProvider>
 			</div> :
 				<div>
