@@ -9,6 +9,7 @@ import { createBranch } from "@/slices/branchSlice";
 import Link from "next/dist/client/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
+import { isValidVietnamPhone } from "@/utils/data.util";
 
 export default function BranchAddForm() {
   const router = useRouter();
@@ -32,6 +33,10 @@ export default function BranchAddForm() {
   const handleCreateBranch = () => {
     if (form.title === '' || form.type === '' || form.address === '' || form.phone === '' || form.manager === '') {
       error('Vui lòng điền đầy đủ thông tin');
+      return;
+    }
+    if (!isValidVietnamPhone(form.phone)) {
+      error('Vui lòng nhập số điện thoại hợp lệ.');
       return;
     }
 
@@ -107,7 +112,7 @@ export default function BranchAddForm() {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div className="space-y-2">
             <Label htmlFor="phone">Số điện thoại <span className="text-red-500">*</span></Label>
-            <Input type="number" id="phone" placeholder="Nhập số điện thoại" value={form.phone || ''} onChange={(e) => setForm({ ...form, phone: e.target.value })} />
+            <Input type="tel" inputMode="tel" id="phone" placeholder="VD: 0912345678 hoặc +84912345678" value={form.phone || ''} onChange={(e) => setForm({ ...form, phone: e.target.value })} />
           </div>
           <div className="space-y-2">
             <Label htmlFor="manager">Người quản lý <span className="text-red-500">*</span></Label>

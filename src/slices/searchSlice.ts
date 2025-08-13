@@ -7,8 +7,16 @@ import { parseSearchCustomers, parseSearchOrders, SearchResult } from "@/model/S
 interface SearchState {
   searchResult: SearchResult;
   requestState: RequestState;
-  currentPageOrders: number;
-  currentPageCustomers: number;
+  pagination: {
+    orders: {
+      estimatedTotalHits: number;
+      currentPage: number;
+    },
+    customers: {
+      estimatedTotalHits: number;
+      currentPage: number;
+    }
+  };
 }
 
 const initialState: SearchState = {
@@ -16,8 +24,16 @@ const initialState: SearchState = {
     orders: [],
     customers: [],
   },
-  currentPageOrders: 0,
-  currentPageCustomers: 0,
+  pagination: {
+    orders: {
+      estimatedTotalHits: 0,
+      currentPage: 0,
+    },
+    customers: {
+      estimatedTotalHits: 0,
+      currentPage: 0,
+    }
+  },
   requestState: { status: 'idle' },
 }
 
@@ -45,10 +61,10 @@ const searchSlice = createSlice({
       };
     },
     setCurrentPageOrders: (state, action) => {
-      state.currentPageOrders = action.payload;
+      state.pagination.orders.currentPage = action.payload;
     },
     setCurrentPageCustomers: (state, action) => {
-      state.currentPageCustomers = action.payload;
+      state.pagination.customers.currentPage = action.payload;
     },
   },
   extraReducers: (builder) => {
@@ -62,6 +78,7 @@ const searchSlice = createSlice({
           data.forEach((item: any) => {
             if (item.indexUid === 'order') {
               state.searchResult.orders = parseSearchOrders(item.hits);
+              state.pagination.orders.estimatedTotalHits = item.estimatedTotalHits || 0;
             }
           });
         }
@@ -80,6 +97,7 @@ const searchSlice = createSlice({
           data.forEach((item: any) => {
             if (item.indexUid === 'customer') {
               state.searchResult.customers = parseSearchCustomers(item.hits);
+              state.pagination.customers.estimatedTotalHits = item.estimatedTotalHits || 0;
             }
           });
         }

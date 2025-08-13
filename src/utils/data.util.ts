@@ -17,3 +17,17 @@ export const getStatusColor = (status: string) => {
     default: return "outline"
   }
 }
+
+export const isValidVietnamPhone = (rawPhone: string): boolean => {
+  if (!rawPhone) return false;
+  const phone = rawPhone.toString().trim().replace(/[\s.-]/g, "");
+  const regex = /^(?:\+?84|0)(?:3|5|7|8|9)\d{8}$/;
+  return regex.test(phone);
+}
+
+export const isValidEmail = (rawEmail: string): boolean => {
+  if (!rawEmail) return false;
+  const email = rawEmail.toString().trim();
+  const regex = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/i;
+  return regex.test(email);
+}

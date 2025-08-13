@@ -13,6 +13,7 @@ import { EyeIcon, EyeOffIcon } from "lucide-react";
 import router from "next/dist/client/router";
 import Link from "next/link";
 import { useEffect, useState } from "react";
+import { isValidVietnamPhone, isValidEmail } from "@/utils/data.util";
 
 export default function UsersAddForm() {
   const branches = useAppSelector(state => state.branch.branches);
@@ -41,6 +42,16 @@ export default function UsersAddForm() {
   const handleAddUser = () => {
     if (form.first_name === "" || form.last_name === "" || form.email === "" || form.phone === "" || form.branch === "" || password.password === "" || password.confirm_password === "") {
       error('Vui lòng điền đầy đủ thông tin');
+      return;
+    }
+
+    if (!isValidEmail(form.email)) {
+      error('Vui lòng nhập email hợp lệ.');
+      return;
+    }
+
+    if (!isValidVietnamPhone(form.phone)) {
+      error('Vui lòng nhập số điện thoại hợp lệ.');
       return;
     }
 
@@ -100,7 +111,7 @@ export default function UsersAddForm() {
           </div>
           <div className="space-y-2">
             <Label htmlFor="phone">Số điện thoại <span className="text-red-500">*</span></Label>
-            <Input id="phone" placeholder="Nhập số điện thoại" value={form.phone} onChange={(e) => setForm({ ...form, phone: e.target.value })} />
+            <Input id="phone" type="tel" inputMode="tel" placeholder="VD: 0912345678 hoặc +84912345678" value={form.phone} onChange={(e) => setForm({ ...form, phone: e.target.value })} />
           </div>
         </div>
 

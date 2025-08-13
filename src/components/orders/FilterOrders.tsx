@@ -6,9 +6,8 @@ import { Button } from '../ui/button';
 import { RangeCalendar } from '../ui/range-calendar';
 import ColumnOptions from './ColumnOptions';
 import { useAppDispatch, useAppSelector } from '@/hooks/redux';
-import { getOrders, searchOrders, setFilter, setIsFilter, toggleColumn } from '@/slices/orderSlice';
+import { getOrders, getOrdersCount, searchOrders, setFilter, toggleColumn } from '@/slices/orderSlice';
 import { getBranches } from '@/slices/branchSlice';
-import { orderService } from '@/services/order.service';
 
 export default function FilterOrders() {
   const dispatch = useAppDispatch();
@@ -27,35 +26,15 @@ export default function FilterOrders() {
   };
 
   const handleSearch = () => {
-    if (filter.search?.length === 0) {
-      dispatch(setIsFilter(false));
-      dispatch(getOrders({ page: 1, limit: 25 }));
-      return;
-    }
-    
-    dispatch(setIsFilter(true));
     dispatch(searchOrders({
       keyword: filter.search,
-      state: '',
-      branch_id: '',
-      date_range: null
+      state: filter.state,
+      branch_id: filter.branch,
+      date_range: filter.dateRange
     }));
   }
 
-  const handleFilter = () => {
-    if (filter.search || filter.state || filter.branch || filter.dateRange) {
-      dispatch(setIsFilter(true));
-      dispatch(searchOrders({
-        keyword: filter.search,
-        state: filter.state,
-        branch_id: filter.branch,
-        date_range: filter.dateRange
-      }));
-    }
-  }
-
   const handleClearFilter = () => {
-    dispatch(setIsFilter(false));
     const clearedFilter = {
       search: '',
       state: '',
@@ -63,6 +42,11 @@ export default function FilterOrders() {
       dateRange: null,
     };
     dispatch(setFilter(clearedFilter));
+    handleSelectAll();
+  }
+
+  const handleSelectAll = () => {
+    dispatch(getOrdersCount());
     dispatch(getOrders({ page: 1, limit: 25 }));
   }
 
@@ -110,6 +94,16 @@ export default function FilterOrders() {
             value={filter.state}
             onChange={(value) => {
               dispatch(setFilter({ ...filter, state: value }));
+              if (value === 'all') {
+                handleSelectAll();
+              } else {
+                dispatch(searchOrders({
+                  keyword: filter.search,
+                  state: value,
+                  branch_id: filter.branch,
+                  date_range: filter.dateRange
+                }));
+              }
             }}
             placeholder='Trạng thái'
           />
@@ -125,6 +119,16 @@ export default function FilterOrders() {
             value={filter.branch}
             onChange={(value) => {
               dispatch(setFilter({ ...filter, branch: value }));
+              if (value === 'all') {
+                handleSelectAll();
+              } else {
+                dispatch(searchOrders({
+                  keyword: filter.search,
+                  state: filter.state,
+                  branch_id: value,
+                  date_range: filter.dateRange
+                }));
+              }
             }}
             placeholder='Chi nhánh'
           />
@@ -134,11 +138,14 @@ export default function FilterOrders() {
               dispatch(setFilter({
                 ...filter, dateRange: dateRange
               }));
+              dispatch(searchOrders({
+                keyword: filter.search,
+                state: filter.state,
+                branch_id: filter.branch,
+                date_range: dateRange
+              }));
             }} />
           <div className='flex flex-row gap-2'>
-            <Button variant="outline" className='h-10 w-full sm:w-24' onClick={handleFilter}>
-              <span>Lọc</span>
-            </Button>
             <Button variant="outline" className='h-10 w-full sm:w-24' onClick={handleClearFilter}>
               <span>Xóa lọc</span>
             </Button>

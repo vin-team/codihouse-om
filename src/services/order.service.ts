@@ -143,10 +143,10 @@ class OrderService {
     if (filters.date_range?.from || filters.date_range?.to) {
       let dateCondition: any = {};
       if (filters.date_range?.from) {
-        dateCondition._gte = formatDate(filters.date_range.from, 'yyyy-MM-dd');
+        dateCondition._gte = filters.date_range.from;
       }
       if (filters.date_range?.to) {
-        dateCondition._lte = formatDate(filters.date_range.to, 'yyyy-MM-dd');
+        dateCondition._lte = filters.date_range.to;
       }
       andConditions.push({
         date_created: dateCondition

@@ -10,7 +10,6 @@ interface OrderState {
   orders: Order[];
   recentOrders: Order[];
   order: Order | null;
-  isFilter: boolean;
   filter: {
     search?: string;
     state: string;
@@ -35,7 +34,6 @@ const initialState: OrderState = {
   orders: [],
   recentOrders: [],
   order: null,
-  isFilter: false,
   filter: {
     search: '',
     state: '',
@@ -124,9 +122,6 @@ const orderSlice = createSlice({
     setFilter: (state, action) => {
       state.filter = action.payload;
     },
-    setIsFilter: (state, action) => {
-      state.isFilter = action.payload;
-    },
     setOrder: (state, action) => {
       state.order = action.payload;
     },
@@ -192,7 +187,12 @@ const orderSlice = createSlice({
         state.actionState = { status: 'loading', type: 'searchOrders' };
       })
       .addCase(searchOrders.fulfilled, (state, action) => {
-        state.orders = parseOrders(action.payload.data.data);
+        const data = action.payload.data.data;
+        state.orders = parseOrders(data);
+        if (data.length > 0) {
+          state.pagination.totalRecords = data.length || 0;
+          state.pagination.totalPages = 1;
+        }
         state.actionState = { status: 'completed', type: 'searchOrders' };
       })
       .addCase(searchOrders.rejected, (state, action) => {
@@ -249,7 +249,6 @@ const orderSlice = createSlice({
         state.actionState = { status: 'loading', type: 'getOrderCountByBranches' };
       })
       .addCase(getOrderCountByBranches.fulfilled, (state, action) => {
-        console.log(action.payload);
         const data = action.payload.data.data;
         if (data.length > 0) {
           state.orderCountByBranches = data.map((item: any) => ({
@@ -271,5 +270,5 @@ const orderSlice = createSlice({
   }
 })
 
-export const { clearActionState, toggleColumn, setPage, setLimit, setFilter, setIsFilter, setOrder } = orderSlice.actions;
+export const { clearActionState, toggleColumn, setPage, setLimit, setFilter, setOrder } = orderSlice.actions;
 export default orderSlice.reducer;  

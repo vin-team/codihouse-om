@@ -8,7 +8,6 @@ import { createSlice } from "@reduxjs/toolkit";
 interface CustomerState {
   customers: Customer[];
   customer: Customer | null;
-  isFilter: boolean;
   filter: {
     search?: string;
     state: string;
@@ -22,7 +21,6 @@ interface CustomerState {
 const initialState: CustomerState = {
   customers: [],
   customer: null,
-  isFilter: false,
   filter: {
     search: '',
     state: '',
@@ -140,7 +138,12 @@ const customerSlice = createSlice({
         state.requestState = { status: 'loading', type: 'searchCustomers' };
       })
       .addCase(searchCustomers.fulfilled, (state, action) => {
-        state.customers = parseCustomers(action.payload.data.data);
+        const data = action.payload.data.data;
+        state.customers = parseCustomers(data);
+        if (data.length > 0) {
+          state.pagination.totalRecords = data.length || 0;
+          state.pagination.totalPages = 1;
+        }
         state.requestState = { status: 'completed', type: 'searchCustomers' };
       })
       .addCase(searchCustomers.rejected, (state, action) => {

@@ -127,8 +127,8 @@ export function SearchDialog({ isOpen, onClose }: SearchDialogProps) {
                   </div>}
                 </div>
                 <div className="flex flex-col items-end">
-                  <span className="font-semibold text-gray-900">{formatCurrency(order.total_price.toString())} đ</span>
-                  <span className="text-sm text-gray-500">{order.date_created ? getDateFromISOString(order.date_created) : '-'}</span>
+                  <span className="font-semibold text-gray-900">{formatCurrency(order?.total_price?.toString() || "0")} đ</span>
+                  <span className="text-sm text-gray-500">{order?.date_created ? getDateFromISOString(order.date_created) : '-'}</span>
                 </div>
               </div>
             </Link>
@@ -222,7 +222,7 @@ export function SearchDialog({ isOpen, onClose }: SearchDialogProps) {
             <div className="border-t border-gray-300 max-h-[calc(100vh-200px)] overflow-x-hidden overflow-y-auto">
               {renderSearchOrder()}
               {renderSearchCustomer()}
-              
+
             </div>) : (
             <div className="border-t border-gray-300">
               <div className="py-4 flex flex-col items-center space-y-2">
@@ -233,13 +233,13 @@ export function SearchDialog({ isOpen, onClose }: SearchDialogProps) {
             </div>
           )}
           {search &&
-            
-              <div className="border-t border-gray-200 pt-3 px-4 flex justify-between items-center text-sm text-gray-600">
-                <span>Tìm thấy {searchResult.orders.length} đơn hàng, {searchResult.customers.length} khách hàng</span>
-                <span>Nhấn Enter để xem chi tiết</span>
-              </div>
 
-            }
+            <div className="border-t border-gray-200 pt-3 px-4 flex justify-between items-center text-sm text-gray-600">
+              <span>Tìm thấy {searchResult.orders.length} đơn hàng, {searchResult.customers.length} khách hàng</span>
+              <span>Nhấn Enter để xem chi tiết</span>
+            </div>
+
+          }
           <DialogFooter hidden></DialogFooter>
         </DialogContent>
       </form>

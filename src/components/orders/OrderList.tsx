@@ -19,7 +19,6 @@ export default function OrderList() {
   const visibleColumns = useAppSelector(state => state.order.visibleColumns);
   const orders = useAppSelector(state => state.order.orders);
   const pagination = useAppSelector(state => state.order.pagination);
-  const isFilter = useAppSelector(state => state.order.isFilter);
 
   const getSalesChannelColor = (channel: string) => {
     switch (channel) {
@@ -105,7 +104,7 @@ export default function OrderList() {
             </TableBody>
           </Table>}
       </div>
-      {!isFilter && orders.length > 0 &&
+      {orders.length > 0 &&
         <div className="pb-6 flex justify-center">
           <Pagination
             currentPage={pagination.page}

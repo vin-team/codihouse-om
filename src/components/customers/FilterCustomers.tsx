@@ -2,8 +2,7 @@ import React, { useEffect } from 'react';
 import { Combobox } from '../ui/combobox';
 import { Button } from '../ui/button';
 import { useAppDispatch, useAppSelector } from '@/hooks/redux';
-import { getCustomers, searchCustomers, setFilter } from '@/slices/customerSlice';
-import { setIsFilter } from '@/slices/orderSlice';
+import { getCustomers, getCustomersCount, searchCustomers, setFilter } from '@/slices/customerSlice';
 import { OrderCountFilter, TotalExpenditureFilter } from '@/model/Customer.model';
 
 export default function FilterCustomers() {
@@ -17,23 +16,6 @@ export default function FilterCustomers() {
   };
 
   const handleSearch = () => {
-    if (filter.search?.trim() === '') {
-      dispatch(setIsFilter(false));
-      dispatch(getCustomers({ page: 1, limit: 25 }));
-      return;
-    }
-
-    dispatch(setIsFilter(true));
-    dispatch(searchCustomers({
-      search: filter.search,
-      state: '',
-      orderCount: '',
-      totalExpenditure: ''
-    }));
-  }
-
-  const handleFilter = () => {
-    dispatch(setIsFilter(true));
     dispatch(searchCustomers({
       search: filter.search,
       state: filter.state,
@@ -43,15 +25,19 @@ export default function FilterCustomers() {
   }
 
   const handleClearSearch = () => {
-    dispatch(setIsFilter(false));
-    dispatch(getCustomers({ page: 1, limit: 25 }));
     dispatch(setFilter({
       search: '',
       status: '',
       orderCount: '',
       totalExpenditure: '',
     }));
+    handleSelectAll();
   };
+
+  const handleSelectAll = () => {
+    dispatch(getCustomersCount());
+    dispatch(getCustomers({ page: 1, limit: 25 }));
+  }
 
   return (
     <div className="bg-white rounded-lg p-4 md:p-6 border border-gray-200">
@@ -88,7 +74,19 @@ export default function FilterCustomers() {
               { value: 'Đang giao dịch', label: 'Đang giao dịch' }
             ]}
             value={filter.state}
-            onChange={(value) => dispatch(setFilter({ ...filter, state: value }))}
+            onChange={(value) => {
+              dispatch(setFilter({ ...filter, state: value }));
+              if (value === 'all') {
+                handleSelectAll();
+              } else {
+                dispatch(searchCustomers({
+                  search: filter.search,
+                  state: value,
+                  orderCount: filter.orderCount,
+                  totalExpenditure: filter.totalExpenditure
+                }));
+              }
+            }}
             placeholder='Trạng thái'
           />
           <Combobox
@@ -101,7 +99,19 @@ export default function FilterCustomers() {
               { value: OrderCountFilter.OVER_30, label: 'Trên 30 đơn' },
             ]}
             value={filter.orderCount}
-            onChange={(value) => dispatch(setFilter({ ...filter, orderCount: value }))}
+            onChange={(value) => {
+              dispatch(setFilter({ ...filter, orderCount: value }));
+              if (value === 'all') {
+                handleSelectAll();
+              } else {
+                dispatch(searchCustomers({
+                  search: filter.search,
+                  state: filter.state,
+                  orderCount: value,
+                  totalExpenditure: filter.totalExpenditure
+                }));
+              }
+            }}
             placeholder='Số lượng đơn hàng'
           />
           <Combobox
@@ -114,13 +124,22 @@ export default function FilterCustomers() {
               { value: TotalExpenditureFilter.OVER_5M, label: 'Trên 5M' },
             ]}
             value={filter.totalExpenditure}
-            onChange={(value) => dispatch(setFilter({ ...filter, totalExpenditure: value }))}
+            onChange={(value) => {
+              dispatch(setFilter({ ...filter, totalExpenditure: value }));
+              if (value === 'all') {
+                handleSelectAll();
+              } else {
+                dispatch(searchCustomers({
+                  search: filter.search,
+                  state: filter.state,
+                  orderCount: filter.orderCount,
+                  totalExpenditure: value
+                }));
+              }
+            }}
             placeholder='Tổng chỉ tiêu'
           />
           <div className='flex flex-row gap-2'>
-            <Button variant="outline" className='h-10 w-full sm:w-24' onClick={handleFilter}>
-              <span>Lọc</span>
-            </Button>
             <Button variant="outline" className='h-10 w-full sm:w-24' onClick={handleClearSearch}>
               <span>Xóa lọc</span>
             </Button>

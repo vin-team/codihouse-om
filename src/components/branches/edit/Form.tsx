@@ -9,6 +9,7 @@ import { Branch } from "@/model/Branch.model";
 import { updateBranch } from "@/slices/branchSlice";
 import Link from "next/link";
 import { useEffect, useState } from "react";
+import { isValidVietnamPhone } from "@/utils/data.util";
 
 export default function BranchEditForm({ branch }: { branch: Branch }) {
   const dispatch = useAppDispatch();
@@ -22,7 +23,7 @@ export default function BranchEditForm({ branch }: { branch: Branch }) {
     type: branch.type,
     address: branch.address,
     state: branch.state,
-    phone: branch.phone,
+    phone: branch.phone || '',
     manager: branch.manager?.id || '',
     note: branch.note ?? '',
     api_key: branch.api_key ?? '',
@@ -30,7 +31,37 @@ export default function BranchEditForm({ branch }: { branch: Branch }) {
   });
 
   const handleUpdateBranch = () => {
-    dispatch(updateBranch({ id: branch.id, data: form }));
+    if (form.phone && !isValidVietnamPhone(form.phone)) {
+      error('Vui lòng nhập số điện thoại hợp lệ.');
+      return;
+    }
+
+    const original = {
+      title: branch.title ?? '',
+      type: branch.type ?? '',
+      address: branch.address ?? '',
+      state: branch.state ?? '',
+      phone: branch.phone ?? '',
+      manager: branch.manager?.id?.toString() ?? '',
+      note: branch.note ?? '',
+      api_key: branch.api_key ?? '',
+      api_secret: branch.api_secret ?? '',
+    } as const;
+
+    const changedData: Record<string, any> = {};
+    (Object.keys(form) as Array<keyof typeof form>).forEach((key) => {
+      const newValue = (form as any)[key] ?? '';
+      const oldValue = (original as any)[key] ?? '';
+      if (newValue !== oldValue) {
+        (changedData as any)[key] = newValue;
+      }
+    });
+
+    if (Object.keys(changedData).length === 0) {
+      return;
+    }
+
+    dispatch(updateBranch({ id: branch.id, data: changedData }));
   }
 
   useEffect(() => {
@@ -63,7 +94,7 @@ export default function BranchEditForm({ branch }: { branch: Branch }) {
             <Input id="name" placeholder="Nhập tên chi nhánh" value={form.title} onChange={(e) => setForm({ ...form, title: e.target.value })} />
           </div>
           <div className="space-y-2">
-            <Label htmlFor="type">Loại chi nhánh <span className="text-red-500">*</span></Label>
+            <Label htmlFor="type">Loại chi nhánh</Label>
             <Combobox
               className='w-full flex-1'
               options={[
@@ -79,7 +110,7 @@ export default function BranchEditForm({ branch }: { branch: Branch }) {
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div className="space-y-2">
-            <Label htmlFor="address">Địa chỉ <span className="text-red-500">*</span></Label>
+            <Label htmlFor="address">Địa chỉ</Label>
             <Input id="address" placeholder="Nhập địa chỉ chi nhánh" value={form.address || ''} onChange={(e) => setForm({ ...form, address: e.target.value })} />
           </div>
           <div className="space-y-2">
@@ -99,11 +130,11 @@ export default function BranchEditForm({ branch }: { branch: Branch }) {
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div className="space-y-2">
-            <Label htmlFor="phone">Số điện thoại <span className="text-red-500">*</span></Label>
-            <Input type="number" id="phone" placeholder="Nhập số điện thoại" value={form.phone || ''} onChange={(e) => setForm({ ...form, phone: e.target.value })} />
+            <Label htmlFor="phone">Số điện thoại</Label>
+            <Input type="tel" inputMode="tel" id="phone" placeholder="Nhập số điện thoại" value={form.phone || ''} onChange={(e) => setForm({ ...form, phone: e.target.value })} />
           </div>
           <div className="space-y-2">
-            <Label htmlFor="manager">Người quản lý <span className="text-red-500">*</span></Label>
+            <Label htmlFor="manager">Người quản lý</Label>
             <Combobox
               className='w-full flex-1'
               options={users.map(user => ({ value: user.id.toString(), label: `${[user?.first_name, user?.last_name].join(' ')}` }))}

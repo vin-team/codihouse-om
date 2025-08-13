@@ -13,7 +13,6 @@ export default function CustomerList() {
   const dispatch = useAppDispatch();
   const pagination = useAppSelector(state => state.customer.pagination);
   const customers = useAppSelector(state => state.customer.customers);
-  const isFilter = useAppSelector(state => state.customer.isFilter);
 
   const handlePageChange = (page: number) => {
     dispatch(setPage(page));
@@ -22,10 +21,6 @@ export default function CustomerList() {
   useEffect(() => {
     dispatch(getCustomersCount());
   }, []);
-
-  useEffect(() => {
-    console.log('isFilter: ', isFilter);
-  }, [isFilter]);
 
   useEffect(() => {
     dispatch(getCustomers({ page: pagination.page, limit: pagination.limit }));
@@ -42,16 +37,16 @@ export default function CustomerList() {
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead>Mã KH</TableHead>
-                <TableHead>Tên khách hàng</TableHead>
-                <TableHead>Email</TableHead>
-                <TableHead>Điện thoại</TableHead>
-                <TableHead>Tổng đơn</TableHead>
-                <TableHead>Tổng chi tiêu</TableHead>
-                <TableHead>Đơn cuối</TableHead>
-                <TableHead>Chi nhánh</TableHead>
-                <TableHead>Trạng thái</TableHead>
-                <TableHead>Thao tác</TableHead>
+                <TableHead className='w-fit text-nowrap'>Mã KH</TableHead>
+                <TableHead className='w-fit text-nowrap'>Tên khách hàng</TableHead>
+                <TableHead className='w-fit text-nowrap'>Email</TableHead>
+                <TableHead className='w-fit text-nowrap'>Điện thoại</TableHead>
+                <TableHead className='w-fit text-nowrap'>Tổng đơn</TableHead>
+                <TableHead className='w-fit text-nowrap'>Tổng chi tiêu</TableHead>
+                <TableHead className='w-fit text-nowrap'>Đơn cuối</TableHead>
+                <TableHead className='w-fit text-nowrap'>Chi nhánh</TableHead>
+                <TableHead className='w-fit text-nowrap'>Trạng thái</TableHead>
+                <TableHead className='w-fit text-nowrap'>Thao tác</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -66,7 +61,7 @@ export default function CustomerList() {
                   <TableCell>{customer.orders.length > 0 ? customer.orders[0]?.code : '-'}</TableCell>
                   <TableCell className='max-w-[250px] truncate'>{customer.staff?.branch?.title ?? '-'}</TableCell>
                   <TableCell>
-                    {customer.state ? <Badge variant='outline'> {customer.state}</Badge> : '-'}
+                    {customer.state ? <Badge variant='outline'><span className='text-nowrap'>{customer.state}</span></Badge> : '-'}
                   </TableCell>
                   <TableCell>
                     <Link href={`/customers/${customer.id}`}>
@@ -79,14 +74,13 @@ export default function CustomerList() {
           </Table>}
       </div>
 
-      {!isFilter && <>
-        {customers.length > 0 && <div className="pb-6 flex justify-center">
-          <Pagination
-            currentPage={pagination.page}
-            totalPages={pagination.totalPages || 1}
-            onPageChange={handlePageChange}
-          />
-        </div>}</>}
+      {customers.length > 0 && <div className="pb-6 flex justify-center">
+        <Pagination
+          currentPage={pagination.page}
+          totalPages={pagination.totalPages || 1}
+          onPageChange={handlePageChange}
+        />
+      </div>}
     </div>
   );
 }

@@ -45,7 +45,7 @@ export default function CustomerOrderHistory({ customer }: { customer: Customer 
                     {order?.line_items?.map((item: any) => item.name).join(", ")}
                   </div>
                 </TableCell>
-                <TableCell>{formatCurrency(order.total_price.toString() || '0')}₫</TableCell>
+                <TableCell>{formatCurrency(order?.total_price?.toString() || '0')}₫</TableCell>
                 <TableCell>
                   {order.state ? <Badge variant={getStatusColor(order.state)}>
                     {order.state}

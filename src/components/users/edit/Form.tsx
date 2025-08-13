@@ -10,6 +10,7 @@ import { getBranches } from "@/slices/branchSlice";
 import { clearActionState, updateUser } from "@/slices/userSlice";
 import Link from "next/link";
 import { useEffect, useState } from "react";
+import { isValidVietnamPhone, isValidEmail } from "@/utils/data.util";
 
 export default function UsersEditForm({ user }: { user: UserModel }) {
   const dispatch = useAppDispatch();
@@ -28,14 +29,41 @@ export default function UsersEditForm({ user }: { user: UserModel }) {
   });
 
   const handleUpdateUser = () => {
-    if (form.first_name === '' || form.last_name === '' || form.email === '' || form.phone === '' || form.branch === '') {
-      error('Vui lòng điền đầy đủ thông tin');
+    if (form.email && !isValidEmail(form.email)) {
+      error('Vui lòng nhập email hợp lệ.');
+      return;
+    }
+
+    if (form.phone && !isValidVietnamPhone(form.phone)) {
+      error('Vui lòng nhập số điện thoại hợp lệ.');
+      return;
+    }
+
+    const original = {
+      first_name: user.first_name,
+      last_name: user.last_name,
+      email: user.email,
+      phone: user.phone,
+      branch: user.branch?.id,
+      status: user.status,
+    } as const;
+
+    const changedData: Record<string, any> = {};
+    (Object.keys(form) as Array<keyof typeof form>).forEach((key) => {
+      const newValue = (form as any)[key] ?? '';
+      const oldValue = (original as any)[key] ?? '';
+      if (newValue !== oldValue) {
+        (changedData as any)[key] = newValue;
+      }
+    });
+
+    if (Object.keys(changedData).length === 0) {
       return;
     }
 
     dispatch(updateUser({
       id: user.id,
-      data: form
+      data: changedData,
     }));
   }
 
@@ -88,7 +116,7 @@ export default function UsersEditForm({ user }: { user: UserModel }) {
           </div>
           <div className="space-y-2">
             <Label htmlFor="phone">Số điện thoại <span className="text-red-500">*</span></Label>
-            <Input type="number" id="phone" defaultValue="0901234567" value={form.phone} onChange={(e) => setForm({ ...form, phone: e.target.value })} />
+            <Input type="tel" inputMode="tel" id="phone" defaultValue="0901234567" value={form.phone} onChange={(e) => setForm({ ...form, phone: e.target.value })} />
           </div>
         </div>
 
