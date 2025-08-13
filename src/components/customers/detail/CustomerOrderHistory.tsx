@@ -9,6 +9,7 @@ import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { Customer } from '@/model/Customer.model';
 import { getDateFromISOString } from '@/utils/date.util';
+import { getOrderStatusColor } from '@/utils/order.util';
 
 export default function CustomerOrderHistory({ customer }: { customer: Customer }) {
   return (
@@ -47,7 +48,7 @@ export default function CustomerOrderHistory({ customer }: { customer: Customer 
                 </TableCell>
                 <TableCell>{formatCurrency(order?.total_price?.toString() || '0')}₫</TableCell>
                 <TableCell>
-                  {order.state ? <Badge variant={getStatusColor(order.state)}>
+                  {order.state ? <Badge variant='outline' className={getOrderStatusColor(order.state)}>
                     {order.state}
                   </Badge> : '-'}
                 </TableCell>

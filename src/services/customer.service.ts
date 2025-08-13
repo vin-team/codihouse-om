@@ -45,7 +45,7 @@ class CustomerService {
       'orders.code',
       'orders.total_price',
       'orders.date_created',
-      'orders.status',
+      'orders.state',
       'orders.branch.title',
       'orders.line_items.name',
     ];

@@ -42,7 +42,7 @@ export interface Customer {
     code: string;
     total_price: number;
     date_created: string;
-    status: string;
+    state: string;
     branch: {
       title: string;
     };
