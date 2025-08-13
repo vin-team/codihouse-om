@@ -26,6 +26,9 @@ const importMetaSlice = createSlice({
     clearImportMetaState: (state) => {
       state.requestState = { status: "idle" };
     },
+    clearImportMeta: (state) => {
+      state.importMeta = null;
+    }
   },
   extraReducers: (builder) => {
     builder
@@ -34,9 +37,9 @@ const importMetaSlice = createSlice({
       })
       .addCase(getImportMeta.fulfilled, (state, action) => {
         const data = action.payload.data.data;
-        console.log(data);
-        state.importMeta = parseImportMeta(data);
-        console.log(state.importMeta);
+        if (data.length > 0) {
+          state.importMeta = parseImportMeta(data[0]);
+        }
         state.requestState = { status: "completed", type: "getImportMeta" };
       })
       .addCase(getImportMeta.rejected, (state, action) => {
@@ -45,5 +48,5 @@ const importMetaSlice = createSlice({
   }
 });
 
-export const { clearImportMetaState } = importMetaSlice.actions;
+export const { clearImportMetaState, clearImportMeta } = importMetaSlice.actions;
 export default importMetaSlice.reducer;

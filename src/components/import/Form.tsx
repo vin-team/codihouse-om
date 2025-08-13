@@ -1,4 +1,4 @@
-import { Badge, Folder, Link } from "lucide-react";
+import { Badge, Folder, Link, LoaderCircle } from "lucide-react";
 import { Button } from "../ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "../ui/card";
 import { Combobox } from "../ui/combobox";
@@ -8,12 +8,10 @@ import { useEffect, useRef, useState } from "react";
 import { useToastContext } from "@/contexts/ToastContext";
 import { useAppDispatch, useAppSelector } from "@/hooks/redux";
 import { uploadFile } from "@/slices/fileSlice";
-import { getImportsData, updateImportData } from "@/slices/importDataSlice";
+import { clearImportDataState, getImportsData, updateImportData } from "@/slices/importDataSlice";
 import { translateCollection } from "@/model/ImportData.model";
-import { getImportMeta } from "@/slices/importMetaSlice";
+import { clearImportMeta, getImportMeta } from "@/slices/importMetaSlice";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "../ui/table";
-import customers from "@/pages/customers";
-import { formatCurrency } from "@/utils/data.util";
 
 export default function ImportForm() {
   const dispatch = useAppDispatch();
@@ -25,6 +23,7 @@ export default function ImportForm() {
 
   const [type, setType] = useState<string>('');
   const [file, setFile] = useState<File | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
   const fileInputRef = useRef<HTMLInputElement | null>(null);
 
   const handleDownloadTemplate = async () => {
@@ -72,6 +71,7 @@ export default function ImportForm() {
       error('Vui lòng chọn file');
       return;
     }
+    dispatch(clearImportMeta());
     dispatch(uploadFile(file));
   }
 
@@ -81,6 +81,8 @@ export default function ImportForm() {
     if (fileInputRef.current) {
       fileInputRef.current.value = '';
     }
+    dispatch(clearImportDataState());
+    dispatch(clearImportMeta());
   }
 
   useEffect(() => {
@@ -128,18 +130,24 @@ export default function ImportForm() {
 
     if (importDataState?.type === 'updateImportData') {
       switch (importDataState?.status) {
-        case 'loading':
-          break;
         case 'completed':
-          success('Nhập dữ liệu thành công');
-          dispatch(getImportMeta(importDataState.data.id));
+          const excelFileId = importDataState.data.excel_file;
+          if (excelFileId) {
+            setIsLoading(true);
+            setTimeout(() => {
+              dispatch(getImportMeta(excelFileId));
+              setIsLoading(false);
+            }, 5000);
+          }
           setFile(null);
           if (fileInputRef.current) {
             fileInputRef.current.value = '';
           }
+          dispatch(clearImportDataState());
           break;
         case 'failed':
           error('Nhập dữ liệu thất bại. Vui lòng thử lại.');
+          dispatch(clearImportDataState());
           break;
       }
     }
@@ -181,17 +189,21 @@ export default function ImportForm() {
           </div>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <div className="flex flex-col gap-2">
-            <Label htmlFor="file">Trạng thái:</Label>
-            <span className="text-sm">{importMeta?.state.toUpperCase()}</span>
-          </div>
+        {isLoading ? <div className="flex justify-center items-center">
+          <LoaderCircle className='w-12 h-12 text-blue-400 animate-spin' />
+        </div> :
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="flex flex-col gap-2">
+              <Label htmlFor="file">Trạng thái:</Label>
+              <span className={`text-sm font-bold ${importMeta?.state === 'success' ? 'text-green-500' : 'text-red-500'}`}>{importMeta?.state.toUpperCase()}</span>
+            </div>
 
-          <div className="flex flex-col gap-2">
-            <Label htmlFor="file">Ghi chú:</Label>
-            <span className="text-sm">{importMeta?.note}</span>
+            <div className="flex flex-col gap-2">
+              <Label htmlFor="file">Ghi chú:</Label>
+              <span className="text-sm">{importMeta?.note}</span>
+            </div>
           </div>
-        </div>
+        }
 
         {importMeta && <div className="flex flex-col gap-4">
           <Label htmlFor="file">Logs </Label>

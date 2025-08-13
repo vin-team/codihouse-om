@@ -8,14 +8,9 @@ class ImportMetaService {
     queryParams.append('fields[]', 'excel_file.id');
     queryParams.append('fields[]', 'excel_file.title');
 
-    queryParams.append('filter', JSON.stringify({
-      _and: [
-        {
-          import_id: { _eq: id }
-        }
-      ]
-    }));
-    const response = await HttpService.doGetRequest(`/items/import_meta/${id}?${queryParams.toString()}`, "");
+    queryParams.append('filter[_and][0][excel_file][id][_eq]', id);
+
+    const response = await HttpService.doGetRequest(`/items/import_meta?${queryParams.toString()}`, "");
     return parseCommonHttpResult(response);
   }
 }
