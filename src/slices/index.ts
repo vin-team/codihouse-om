@@ -6,6 +6,9 @@ import orderSlice from './orderSlice';
 import branchSlice from "./branchSlice";
 import customerSlice from "./customerSlice";
 import searchSlice from "./searchSlice";
+import fileSlice from "./fileSlice";
+import importDataSlice from "./importDataSlice";
+import importMetaSlice from "./importMetaSlice";
 
 const rootReducer = combineReducers({
 	app: appSlice,
@@ -15,6 +18,9 @@ const rootReducer = combineReducers({
 	branch: branchSlice,
 	customer: customerSlice,
 	search: searchSlice,
+	file: fileSlice,
+	importData: importDataSlice,
+	importMeta: importMetaSlice,
 });
 
 export default rootReducer;

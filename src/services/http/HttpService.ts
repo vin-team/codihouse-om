@@ -138,5 +138,13 @@ class HttpService {
     const params = { ...Object(data), ...this.commonParams() }
     return HttpService.instance.delete(url, { data: params, headers: { 'x-api-key': process.env.NEXT_PUBLIC_xApiKey } })
   }
+
+  static async doUploadRequest(url: string, data: any) {
+    delete HttpService.instance.defaults.headers["Content-Type"];
+    delete HttpService.instance.defaults.headers["Accept"];
+    return HttpService.instance.post(url, data, {
+      headers: { "Content-Type": "multipart/form-data", Accept: "*/*" },
+    });
+  }
 }
 export { HttpService }

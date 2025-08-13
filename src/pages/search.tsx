@@ -14,11 +14,12 @@ export default function SearchPage() {
   const orders = useAppSelector((state) => state.search.searchResult.orders);
   const customers = useAppSelector((state) => state.search.searchResult.customers);
   const totalResults = orders.length + customers.length;
+
   return (
     <div className="min-h-full flex flex-col gap-4">
       <SearchHeader keyword={keyword as string} totalResults={totalResults} />
       <SearchOrder />
-     <SearchCustomer />
+      <SearchCustomer />
 
       {totalResults === 0 && (
         <div className="text-center py-12">
