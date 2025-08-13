@@ -96,6 +96,12 @@ class OrderService {
     if (filters.keyword) {
       filter._or = [
         {
+          name: { _icontains: filters.keyword }
+        },
+        {
+          code: { _icontains: filters.keyword }
+        },
+        {
           customer: {
             first_name: { _icontains: filters.keyword }
           },
@@ -113,6 +119,11 @@ class OrderService {
         {
           customer: {
             phone: { _icontains: filters.keyword }
+          },
+        },
+        {
+          branch: {
+            title: { _icontains: filters.keyword }
           },
         }
       ];
