@@ -192,7 +192,7 @@ export default function ImportForm() {
         {isLoading ? <div className="flex justify-center items-center">
           <LoaderCircle className='w-12 h-12 text-blue-400 animate-spin' />
         </div> :
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          importMeta && <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="flex flex-col gap-2">
               <Label htmlFor="file">Trạng thái:</Label>
               <span className={`text-sm font-bold ${importMeta?.state === 'success' ? 'text-green-500' : 'text-red-500'}`}>{importMeta?.state.toUpperCase()}</span>
