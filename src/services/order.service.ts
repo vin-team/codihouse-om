@@ -182,6 +182,25 @@ class OrderService {
     return parseCommonHttpResult(response);
   }
 
+  async getStatisticsByBranchedAndDate(payload: any) {
+    const queryParams = new URLSearchParams();
+    queryParams.append('filter', JSON.stringify({
+      _and: [
+        { branch: { id: { _in: payload.branch_ids } } },
+        { 'year(complete_date)': { _eq: payload.year } },
+        { 'month(complete_date)': { _eq: payload.month } },
+      ]
+    }));
+    queryParams.append('aggregate[countDistinct][0]', 'id');
+    queryParams.append('aggregate[countDistinct][1]', 'customer');
+    queryParams.append('aggregate[sum][0]', 'total_price');
+    queryParams.append('groupBy[]', 'branch');
+
+    const response = await HttpService.doGetRequest(`/items/om_order?${queryParams}`, "");
+    return parseCommonHttpResult(response);
+  }
+
+
   async getOrderCountByBranches(payload: any) {
     const queryParams = new URLSearchParams();
     queryParams.append('filter[_and][0][state][_eq]', 'Hoàn thành');

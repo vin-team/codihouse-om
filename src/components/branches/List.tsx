@@ -9,11 +9,13 @@ import { getBranches, getBranchesCount, setPage } from "@/slices/branchSlice";
 import Pagination from "../orders/Pagination";
 import { formatCurrency } from "@/utils/data.util";
 import DataNotFound from "../DataNotFound";
+import { getStatisticsByBranchedAndDate } from "@/slices/orderSlice";
 
 export default function BranchesList() {
   const dispatch = useAppDispatch();
   const branches = useAppSelector(state => state.branch.branches);
   const pagination = useAppSelector(state => state.branch.pagination);
+  const statisticsByBranches = useAppSelector(state => state.order.statisticsByBranches);
 
   const handlePageChange = (page: number) => {
     dispatch(setPage(page));
@@ -27,6 +29,16 @@ export default function BranchesList() {
     dispatch(getBranches({ page: pagination.page, limit: pagination.limit }));
   }, [pagination.page, pagination.limit]);
 
+  useEffect(() => {
+    const today = new Date();
+    const year = today.getFullYear();
+    const month = today.getMonth() + 1;
+    const day = today.getDate();
+
+    if (branches.length > 0) {
+      dispatch(getStatisticsByBranchedAndDate({ branch_ids: branches.map(branch => branch.id), year: 2025, month: 7, day: 21 }));
+    }
+  }, [branches])
 
   return (
     <div className="bg-white rounded-lg border border-gray-200">
@@ -60,8 +72,8 @@ export default function BranchesList() {
                   <TableCell className="max-w-[200px] truncate"> {branch.address || '-'}</TableCell>
                   <TableCell>{branch.phone || '-'}</TableCell>
                   <TableCell>{[branch?.manager?.first_name, branch?.manager?.last_name].join(' ')}</TableCell>
-                  <TableCell>{branch.today_order_count || '-'}</TableCell>
-                  <TableCell>{branch.today_revenue ? formatCurrency(branch.today_revenue) : '-'}</TableCell>
+                  <TableCell>{statisticsByBranches.find(item => item.branch_id === branch.id)?.totalOrders || '0'}</TableCell>
+                  <TableCell>{statisticsByBranches.find(item => item.branch_id === branch.id)?.totalRevenue ? formatCurrency(statisticsByBranches.find(item => item.branch_id === branch.id)?.totalRevenue.toString() || "0") : '0'} đ</TableCell>
                   <TableCell>{branch.state ? <Badge variant={getStatusColor(branch.state)}> {branch.state}</Badge> : '-'}</TableCell>
                   <TableCell>
                     <Link href={`/branches/edit/${branch.id}`}>

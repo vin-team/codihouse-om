@@ -21,6 +21,12 @@ interface OrderState {
     totalRevenue: number;
     totalCustomers: number;
   };
+  statisticsByBranches: {
+    branch_id: number;
+    totalOrders: number;
+    totalRevenue: number;
+    totalCustomers: number;
+  }[];
   orderCountByBranches: {
     branch_id: number;
     count: number;
@@ -51,6 +57,7 @@ const initialState: OrderState = {
     totalRevenue: 0,
     totalCustomers: 0,
   },
+  statisticsByBranches: [],
   orderCountByBranches: [],
   visibleColumns: new Map([
     'customer',
@@ -95,6 +102,11 @@ export const getRecentOrders: any = commonCreateAsyncThunk({
 export const getStatisticsByBranchAndDate: any = commonCreateAsyncThunk({
   type: 'order/getStatisticsByBranchAndDate',
   action: orderService.getStatisticsByBranchAndDate,
+});
+
+export const getStatisticsByBranchedAndDate: any = commonCreateAsyncThunk({
+  type: 'order/getStatisticsByBranchedAndDate',
+  action: orderService.getStatisticsByBranchedAndDate,
 });
 
 export const getOrderCountByBranches: any = commonCreateAsyncThunk({
@@ -266,7 +278,32 @@ const orderSlice = createSlice({
           message = error.message;
         }
         state.actionState = { status: 'failed', type: 'getOrderCountByBranches', error: message };
-      });
+      })
+
+      .addCase(getStatisticsByBranchedAndDate.pending, (state) => {
+        state.actionState = { status: 'loading', type: 'getStatisticsByBranchedAndDate' };
+      })
+      .addCase(getStatisticsByBranchedAndDate.fulfilled, (state, action) => {
+        const data = action.payload.data.data;
+        if (data.length > 0) {
+          state.statisticsByBranches = data.map((item: any) => ({
+            branch_id: item.branch,
+            totalOrders: Number(item.countDistinct?.id || 0),
+            totalRevenue: Number(item.sum?.total_price || 0),
+            totalCustomers: Number(item.countDistinct?.customer || 0),
+          }));
+        }
+        state.actionState = { status: 'completed', type: 'getStatisticsByBranchedAndDate' };
+      })
+      .addCase(getStatisticsByBranchedAndDate.rejected, (state, action) => {
+        const payload = action.payload as any;
+        let message = "Có lỗi xảy ra. Vui lòng thử lại.";
+        if (payload?.errors?.length > 0) {
+          const error = payload.errors[0];
+          message = error.message;
+        }
+        state.actionState = { status: 'failed', type: 'getStatisticsByBranchedAndDate', error: message };
+      })
   }
 })
 
