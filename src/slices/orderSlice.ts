@@ -27,6 +27,11 @@ interface OrderState {
     totalRevenue: number;
     totalCustomers: number;
   }[];
+  statisticsByCustomer: {
+    totalOrders: number;
+    totalPrice: number;
+    averagePrice: number;
+  };
   orderCountByBranches: {
     branch_id: number;
     count: number;
@@ -56,6 +61,11 @@ const initialState: OrderState = {
     totalOrders: 0,
     totalRevenue: 0,
     totalCustomers: 0,
+  },
+  statisticsByCustomer: {
+    totalOrders: 0,
+    totalPrice: 0,
+    averagePrice: 0,
   },
   statisticsByBranches: [],
   orderCountByBranches: [],
@@ -112,6 +122,11 @@ export const getStatisticsByBranchedAndDate: any = commonCreateAsyncThunk({
 export const getOrderCountByBranches: any = commonCreateAsyncThunk({
   type: 'order/getOrderCountByBranches',
   action: orderService.getOrderCountByBranches,
+});
+
+export const getStatisticsByCustomer: any = commonCreateAsyncThunk({
+  type: 'order/getStatisticsByCustomer',
+  action: orderService.getStatisticsByCustomer,
 });
 
 const orderSlice = createSlice({
@@ -303,6 +318,28 @@ const orderSlice = createSlice({
           message = error.message;
         }
         state.actionState = { status: 'failed', type: 'getStatisticsByBranchedAndDate', error: message };
+      })
+
+      .addCase(getStatisticsByCustomer.pending, (state) => {
+        state.actionState = { status: 'loading', type: 'getStatisticsByCustomer' };
+      })
+      .addCase(getStatisticsByCustomer.fulfilled, (state, action) => {
+        const data = action.payload.data.data;
+        if (data.length > 0) {
+          state.statisticsByCustomer.totalOrders = data[0]?.countDistinct?.id || 0;
+          state.statisticsByCustomer.totalPrice = data[0]?.sum?.total_price || 0;
+          state.statisticsByCustomer.averagePrice = data[0]?.avg?.total_price || 0;
+        }
+        state.actionState = { status: 'completed', type: 'getStatisticsByCustomer' };
+      })
+      .addCase(getStatisticsByCustomer.rejected, (state, action) => {
+        const payload = action.payload as any;
+        let message = "Có lỗi xảy ra. Vui lòng thử lại.";
+        if (payload?.errors?.length > 0) {
+          const error = payload.errors[0];
+          message = error.message;
+        }
+        state.actionState = { status: 'failed', type: 'getStatisticsByCustomer', error: message };
       })
   }
 })

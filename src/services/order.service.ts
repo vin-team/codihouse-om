@@ -8,6 +8,7 @@ class OrderService {
     const queryParams = new URLSearchParams();
     const fields = [
       '*',
+      'customer.id',
       'customer.first_name',
       'customer.last_name',
       'customer.email',
@@ -62,6 +63,7 @@ class OrderService {
     const queryParams = new URLSearchParams();
     const fields = [
       '*',
+      'customer.id',
       'customer.first_name',
       'customer.last_name',
       'customer.email',
@@ -81,6 +83,7 @@ class OrderService {
     const queryParams = new URLSearchParams();
     const fields = [
       '*',
+      'customer.id',
       'customer.first_name',
       'customer.last_name',
       'customer.email',
@@ -200,7 +203,6 @@ class OrderService {
     return parseCommonHttpResult(response);
   }
 
-
   async getOrderCountByBranches(payload: any) {
     const queryParams = new URLSearchParams();
     queryParams.append('filter[_and][0][state][_eq]', 'Hoàn thành');
@@ -212,6 +214,22 @@ class OrderService {
     queryParams.append('filter[_and][4][day(complete_date)][_eq]', payload.day.toString());
     queryParams.append('aggregate[countDistinct][0]', 'id');
     queryParams.append('groupBy[]', 'branch');
+
+    const response = await HttpService.doGetRequest(`/items/om_order?${queryParams}`, "");
+    return parseCommonHttpResult(response);
+  }
+
+  async getStatisticsByCustomer(payload: any) {
+    const queryParams = new URLSearchParams();
+    queryParams.append('filter', JSON.stringify({
+      _and: [
+        { customer: { id: { _eq: payload.customer_id } } },
+      ]
+    }));
+
+    queryParams.append('aggregate[countDistinct][0]', 'id');
+    queryParams.append('aggregate[avg][0]', 'total_price');
+    queryParams.append('aggregate[sum][0]', 'total_price');
 
     const response = await HttpService.doGetRequest(`/items/om_order?${queryParams}`, "");
     return parseCommonHttpResult(response);

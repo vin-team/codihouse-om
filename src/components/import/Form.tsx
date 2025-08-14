@@ -1,4 +1,4 @@
-import { Badge, Folder, Link, LoaderCircle } from "lucide-react";
+import { Folder, LoaderCircle } from "lucide-react";
 import { Button } from "../ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "../ui/card";
 import { Combobox } from "../ui/combobox";
@@ -112,6 +112,11 @@ export default function ImportForm() {
   }, [fileRequestState])
 
   useEffect(() => {
+    setFile(null);
+    if (fileInputRef.current) {
+      fileInputRef.current.value = '';
+    }
+    dispatch(clearImportMeta());
     dispatch(getImportsData());
   }, []);
 
@@ -138,10 +143,6 @@ export default function ImportForm() {
               dispatch(getImportMeta(excelFileId));
               setIsLoading(false);
             }, 5000);
-          }
-          setFile(null);
-          if (fileInputRef.current) {
-            fileInputRef.current.value = '';
           }
           dispatch(clearImportDataState());
           break;
