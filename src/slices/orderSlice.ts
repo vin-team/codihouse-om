@@ -28,8 +28,6 @@ interface OrderState {
     totalCustomers: number;
   }[];
   statisticsByCustomer: {
-    totalOrders: number;
-    totalPrice: number;
     averagePrice: number;
   };
   orderCountByBranches: {
@@ -63,8 +61,6 @@ const initialState: OrderState = {
     totalCustomers: 0,
   },
   statisticsByCustomer: {
-    totalOrders: 0,
-    totalPrice: 0,
     averagePrice: 0,
   },
   statisticsByBranches: [],
@@ -326,8 +322,6 @@ const orderSlice = createSlice({
       .addCase(getStatisticsByCustomer.fulfilled, (state, action) => {
         const data = action.payload.data.data;
         if (data.length > 0) {
-          state.statisticsByCustomer.totalOrders = data[0]?.countDistinct?.id || 0;
-          state.statisticsByCustomer.totalPrice = data[0]?.sum?.total_price || 0;
           state.statisticsByCustomer.averagePrice = data[0]?.avg?.total_price || 0;
         }
         state.actionState = { status: 'completed', type: 'getStatisticsByCustomer' };

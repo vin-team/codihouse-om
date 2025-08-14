@@ -26,11 +26,11 @@ export default function PurchasingStatistics({ customer }: { customer: Customer 
         <div className="grid grid-cols-2 gap-4">
           <div>
             <p className="text-sm font-medium text-gray-600">Tổng đơn hàng</p>
-            <p className="text-2xl font-bold text-blue-600">{statisticsByCustomer.totalOrders || 0}</p>
+            <p className="text-2xl font-bold text-blue-600">{customer.total_order || 0}</p>
           </div>
           <div>
             <p className="text-sm font-medium text-gray-600">Tổng chi tiêu</p>
-            <p className="text-2xl font-bold text-green-600">{formatCurrency(statisticsByCustomer.totalPrice.toString() || '0')}₫</p>
+            <p className="text-2xl font-bold text-green-600">{formatCurrency(customer.total_expenditure.toString() || '0')}₫</p>
           </div>
           <div>
             <p className="text-sm font-medium text-gray-600">Đơn hàng cuối</p>

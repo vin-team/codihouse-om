@@ -227,10 +227,7 @@ class OrderService {
       ]
     }));
 
-    queryParams.append('aggregate[countDistinct][0]', 'id');
     queryParams.append('aggregate[avg][0]', 'total_price');
-    queryParams.append('aggregate[sum][0]', 'total_price');
-
     const response = await HttpService.doGetRequest(`/items/om_order?${queryParams}`, "");
     return parseCommonHttpResult(response);
   }
