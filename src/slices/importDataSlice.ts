@@ -59,7 +59,17 @@ const importDataSlice = createSlice({
         state.requestState = { status: "completed", type: "updateImportData", data: parseImportData(data) };
       })
       .addCase(updateImportData.rejected, (state, action) => {
-        state.requestState = { status: "failed", error: action.error.message, type: "updateImportData" };
+        const payload = action.payload as any;
+        let message = "Có lỗi xảy ra. Vui lòng thử lại.";
+        if (payload?.errors?.length > 0) {
+          const error = payload.errors[0];
+          if (error.extensions?.code === 'INVALID_PAYLOAD') {
+            message = "File không hợp lệ hoặc không đúng với định dạng. Vui lòng kiểm tra lại.";
+          } else {
+            message = error.message;
+          }
+        }
+        state.requestState = { status: "failed", error: message, type: "updateImportData" };
       })
   },
 });
