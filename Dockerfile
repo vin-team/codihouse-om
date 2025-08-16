@@ -14,6 +14,14 @@ RUN npm install
 # Copy the rest of the application code
 COPY . .
 
+ARG NEXT_PUBLIC_baseApiURL
+ARG NEXT_PUBLIC_storageAccessTokenKey
+ARG NEXT_PUBLIC_storageRefreshTokenKey
+ARG NEXT_PUBLIC_storageIsRefreshingTokenKey
+ARG NEXT_PUBLIC_storageDeviceIdKey
+ARG NEXT_PUBLIC_storageUserKey
+ARG NEXT_PUBLIC_storageRoleKey
+
 # Build the Next.js app
 RUN npm run build
 
