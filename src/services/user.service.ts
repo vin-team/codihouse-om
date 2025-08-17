@@ -20,13 +20,25 @@ class UserService {
   }
 
   async getUsers() {
-    const queryParams = new URLSearchParams({ 'filter[_and][0][role][_eq]': process.env.NEXT_PUBLIC_storageUserRoleId! });
+    const queryParams = new URLSearchParams();
     const fields = [
       '*',
       'branch.id',
       'branch.title',
+      'role.id',
+      'role.app_role'
     ];
     fields.forEach(field => queryParams.append('fields[]', field));
+    const filter = {
+      _and: [
+        {
+          role: {
+            app_role: { _eq: 'user' }
+          }
+        }
+      ]
+    }
+    queryParams.append('filter', JSON.stringify(filter));
     const response = await HttpService.doGetRequest(`/users?${queryParams}`, '');
     return parseCommonHttpResult(response);
   }
@@ -37,7 +49,9 @@ class UserService {
 
     filter._and = [
       {
-        role: { _eq: process.env.NEXT_PUBLIC_storageUserRoleId! }
+        role: {
+          app_role: { _eq: 'user' }
+        }
       }
     ];
 
@@ -71,6 +85,22 @@ class UserService {
 
   async updateUser(data: { id: string, data: any }) {
     const response = await HttpService.doPatchRequest(`/users/${data.id}`, data.data);
+    return parseCommonHttpResult(response);
+  }
+
+  async getRoleUser() {
+    const queryParams = new URLSearchParams();
+    const filter = {
+      _and: [
+        {
+          role: {
+            app_role: { _eq: 'user' }
+          }
+        }
+      ]
+    }
+    queryParams.append('filter', JSON.stringify(filter));
+    const response = await HttpService.doGetRequest(`/roles?${queryParams}`, '');
     return parseCommonHttpResult(response);
   }
 
