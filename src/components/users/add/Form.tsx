@@ -8,7 +8,7 @@ import { Label } from "@/components/ui/label";
 import { useToastContext } from "@/contexts/ToastContext";
 import { useAppDispatch, useAppSelector } from "@/hooks/redux";
 import { getBranches } from "@/slices/branchSlice";
-import { addUser, clearActionState, getRoleUser } from "@/slices/userSlice";
+import { addUser, clearActionState } from "@/slices/userSlice";
 import { EyeIcon, EyeOffIcon } from "lucide-react";
 import router from "next/dist/client/router";
 import Link from "next/link";
@@ -36,7 +36,7 @@ export default function UsersAddForm() {
     phone: "",
     branch: "",
     status: "active",
-    role: "876b814e-c9e9-4d4d-9f77-d898b8a85028"
+    role: process.env.NEXT_PUBLIC_storageUserRoleId!
   });
 
   const handleAddUser = () => {
@@ -65,7 +65,6 @@ export default function UsersAddForm() {
 
   useEffect(() => {
     dispatch(getBranches());
-    // dispatch(getRoleUser());
   }, [])
 
   useEffect(() => {

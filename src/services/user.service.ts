@@ -88,22 +88,6 @@ class UserService {
     return parseCommonHttpResult(response);
   }
 
-  async getRoleUser() {
-    const queryParams = new URLSearchParams();
-    const filter = {
-      _and: [
-        {
-          role: {
-            app_role: { _eq: 'user' }
-          }
-        }
-      ]
-    }
-    queryParams.append('filter', JSON.stringify(filter));
-    const response = await HttpService.doGetRequest(`/roles?${queryParams}`, '');
-    return parseCommonHttpResult(response);
-  }
-
   setUser(user: UserModel) {
     storage.setItem(process.env.NEXT_PUBLIC_storageUserKey!, JSON.stringify(user));
   }

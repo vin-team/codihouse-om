@@ -54,11 +54,6 @@ export const addUser: any = commonCreateAsyncThunk({
   action: userService.addUser
 });
 
-export const getRoleUser: any = commonCreateAsyncThunk({
-  type: 'user/getRoleUser',
-  action: userService.getRoleUser
-});
-
 const userSlice = createSlice({
   name: 'user',
   initialState,
@@ -176,24 +171,6 @@ const userSlice = createSlice({
           message = error.message;
         }
         state.actionState = { status: 'failed', error: message, type: 'updateUser' }
-      })
-
-      // Get Role User
-      .addCase(getRoleUser.pending, (state) => {
-        state.actionState = { status: 'loading', type: 'getRoleUser' }
-      })
-      .addCase(getRoleUser.fulfilled, (state, action) => {
-        const data = action.payload.data.data;
-        state.actionState = { status: 'completed', type: 'getRoleUser', data: data }
-      })
-      .addCase(getRoleUser.rejected, (state, action) => {
-        const payload = action.payload as any;
-        let message = "Có lỗi xảy ra. Vui lòng thử lại.";
-        if (payload?.errors?.length > 0) {
-          const error = payload.errors[0];
-          message = error.message;
-        }
-        state.actionState = { status: 'failed', error: message, type: 'getRoleUser' }
       })
   }
 });
