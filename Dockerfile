@@ -21,6 +21,7 @@ ARG NEXT_PUBLIC_storageIsRefreshingTokenKey
 ARG NEXT_PUBLIC_storageDeviceIdKey
 ARG NEXT_PUBLIC_storageUserKey
 ARG NEXT_PUBLIC_storageRoleKey
+ARG NEXT_PUBLIC_storageUserRoleId
 
 # Build the Next.js app
 RUN npm run build
