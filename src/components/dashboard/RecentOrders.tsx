@@ -5,8 +5,8 @@ import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '../ui
 import { Badge } from '../ui/badge';
 import { useAppDispatch, useAppSelector } from '@/hooks/redux';
 import { getRecentOrders } from '@/slices/orderSlice';
-import { getStatusColor } from '@/utils/data.util';
 import Link from 'next/link';
+import { getOrderStatusColor } from '@/utils/order.util';
 
 export default function RecentOrders() {
   const dispatch = useAppDispatch();
@@ -36,7 +36,7 @@ export default function RecentOrders() {
                     {order?.branch?.title && <p className="text-sm text-gray-500">• {order?.branch?.title || '-'}</p>}
                   </div>
                 </div>
-                {order?.state && <Badge className={`${getStatusColor(order.state || '')}`} variant="secondary">{order.state}</Badge>}
+                {order?.state && <Badge className={`${getOrderStatusColor(order.state || '')}`} variant="outline">{order.state}</Badge>}
               </div>
             </Link>
           ))}
