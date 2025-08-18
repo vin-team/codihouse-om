@@ -20,6 +20,7 @@ export default function ImportForm() {
   const importDataState = useAppSelector((state) => state.importData.requestState);
   const fileRequestState = useAppSelector((state) => state.file.requestState);
   const importMeta = useAppSelector((state) => state.importMeta.importMeta);
+  const importMetaState = useAppSelector((state) => state.importMeta.requestState);
 
   const [type, setType] = useState<string>('');
   const [file, setFile] = useState<File | null>(null);
@@ -141,7 +142,6 @@ export default function ImportForm() {
           if (excelFileId) {
             setTimeout(() => {
               dispatch(getImportMeta(excelFileId));
-              setIsLoading(false);
             }, 5000);
           }
           dispatch(clearImportDataState());
@@ -154,6 +154,26 @@ export default function ImportForm() {
       }
     }
   }, [importDataState])
+
+  useEffect(() => {
+    if (importMetaState?.type === 'getImportMeta') {
+      switch (importMetaState?.status) {
+        case 'loading':
+          break;
+        case 'completed':
+          setIsLoading(false);
+          success('Nhập dữ liệu thành công');
+          dispatch(clearImportDataState());
+          break;
+        case 'failed':
+          setIsLoading(false);
+          error('Nhập dữ liệu thất bại');
+          dispatch(clearImportMeta());
+          dispatch(clearImportDataState());
+          break;
+      }
+    }
+  }, [importMetaState])
 
   return (
     <Card>
