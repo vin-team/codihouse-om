@@ -71,6 +71,7 @@ export default function ImportForm() {
       error('Vui lòng chọn file');
       return;
     }
+    setIsLoading(true);
     dispatch(clearImportMeta());
     dispatch(uploadFile(file));
   }
@@ -138,7 +139,6 @@ export default function ImportForm() {
         case 'completed':
           const excelFileId = importDataState.data.excel_file;
           if (excelFileId) {
-            setIsLoading(true);
             setTimeout(() => {
               dispatch(getImportMeta(excelFileId));
               setIsLoading(false);
@@ -234,8 +234,8 @@ export default function ImportForm() {
         </div>}
 
         <div className="flex space-x-4">
-          <Button onClick={handleImport}>Nhập dữ liệu</Button>
-          <Button onClick={handleCancel} variant="outline">Hủy</Button>
+          <Button disabled={isLoading} onClick={handleImport}>Nhập dữ liệu</Button>
+          <Button disabled={isLoading} onClick={handleCancel} variant="outline">Hủy</Button>
         </div>
       </CardContent>
     </Card>

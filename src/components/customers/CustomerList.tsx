@@ -44,7 +44,7 @@ export default function CustomerList() {
                 <TableHead className='w-fit text-nowrap'>Tổng đơn</TableHead>
                 <TableHead className='w-fit text-nowrap'>Tổng chi tiêu</TableHead>
                 <TableHead className='w-fit text-nowrap'>Đơn cuối</TableHead>
-                <TableHead className='w-fit text-nowrap'>Chi nhánh</TableHead>
+                <TableHead hidden className='w-fit text-nowrap'>Chi nhánh</TableHead>
                 <TableHead className='w-fit text-nowrap'>Trạng thái</TableHead>
                 <TableHead className='w-fit text-nowrap'>Thao tác</TableHead>
               </TableRow>
@@ -59,7 +59,7 @@ export default function CustomerList() {
                   <TableCell>{customer.total_order}</TableCell>
                   <TableCell>{formatCurrency(customer.total_expenditure.toString())}₫</TableCell>
                   <TableCell>{customer.orders.length > 0 ? customer.orders[0]?.code : '-'}</TableCell>
-                  <TableCell className='max-w-[250px] truncate'>{customer.staff?.branch?.title ?? '-'}</TableCell>
+                  <TableCell hidden className='max-w-[250px] truncate'>{customer.staff?.branch?.title ?? '-'}</TableCell>
                   <TableCell>
                     {customer.state ? <Badge variant='outline'><span className='text-nowrap'>{customer.state}</span></Badge> : '-'}
                   </TableCell>
