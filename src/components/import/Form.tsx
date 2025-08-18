@@ -149,6 +149,7 @@ export default function ImportForm() {
         case 'failed':
           const message = importDataState.error || 'Nhập dữ liệu thất bại. Vui lòng thử lại.';
           error('Nhập dữ liệu thất bại', message);
+          setIsLoading(false);
           dispatch(clearImportDataState());
           break;
       }
