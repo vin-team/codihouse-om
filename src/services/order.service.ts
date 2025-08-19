@@ -1,10 +1,9 @@
 import { HttpService } from "./http/HttpService";
 import { parseCommonHttpResult } from "./http/parseCommonResult";
 import { Pagination } from "@/model/Pagination.mode";
-import { formatDate } from "date-fns";
 
 class OrderService {
-  async getOrders(pagination?: Pagination) {
+  async getOrders(data: { filters: any, pagination?: Pagination }) {
     const queryParams = new URLSearchParams();
     const fields = [
       '*',
@@ -18,81 +17,86 @@ class OrderService {
     ];
     fields.forEach(field => queryParams.append('fields[]', field));
 
-    if (pagination) {
-      queryParams.append('limit', pagination.limit.toString());
-      queryParams.append('offset', ((pagination.page - 1) * pagination.limit).toString());
+    let filter: any = {};
+    let andConditions: any[] = [];
+
+    if (data.filters.keyword) {
+      filter._or = [
+        {
+          name: { _icontains: data.filters.keyword }
+        },
+        {
+          code: { _icontains: data.filters.keyword }
+        },
+        {
+          customer: {
+            first_name: { _icontains: data.filters.keyword }
+          },
+        },
+        {
+          customer: {
+            last_name: { _icontains: data.filters.keyword }
+          },
+        },
+        {
+          customer: {
+            email: { _icontains: data.filters.keyword }
+          },
+        },
+        {
+          customer: {
+            phone: { _icontains: data.filters.keyword }
+          },
+        },
+        {
+          branch: {
+            title: { _icontains: data.filters.keyword }
+          },
+        }
+      ];
+    }
+    if (data.filters.state && data.filters.state !== 'all') {
+      andConditions.push({
+        state: { _eq: data.filters.state }
+      });
+    }
+
+    if (data.filters.branch_id && data.filters.branch_id !== 'all') {
+      andConditions.push({
+        branch: { id: { _eq: data.filters.branch_id } }
+      });
+    }
+
+    if (data.filters.date_range?.from || data.filters.date_range?.to) {
+      let dateCondition: any = {};
+      if (data.filters.date_range?.from) {
+        dateCondition._gte = data.filters.date_range.from;
+      }
+      if (data.filters.date_range?.to) {
+        dateCondition._lte = data.filters.date_range.to;
+      }
+      andConditions.push({
+        date_created: dateCondition
+      });
+    }
+
+    if (andConditions.length > 0) {
+      filter._and = andConditions;
+    }
+
+    queryParams.append('filter', JSON.stringify(filter));
+
+    if (data.pagination) {
+      queryParams.append('limit', data.pagination.limit.toString());
+      queryParams.append('offset', ((data.pagination.page - 1) * data.pagination.limit).toString());
     }
 
     const response = await HttpService.doGetRequest(`/items/om_order?${queryParams}`, "");
     return parseCommonHttpResult(response);
   }
 
-  async getOrdersCount() {
+  async getOrdersCount(filters: any) {
     const queryParams = new URLSearchParams();
-    queryParams.append('aggregate[count]', '*');
-
-    const response = await HttpService.doGetRequest(`/items/om_order?${queryParams}`, "");
-    return parseCommonHttpResult(response);
-  }
-
-  async getOrder(id: string) {
-    const queryParams = new URLSearchParams();
-    const fields = [
-      '*',
-      'line_items.name',
-      'line_items.quantity',
-      'line_items.price',
-      'customer.first_name',
-      'customer.last_name',
-      'customer.email',
-      'customer.phone',
-      'customer.id',
-      'branch.title',
-      'shipping_address.address',
-      'shipping_address.name',
-      'shipping_address.phone'
-    ];
-
-    fields.forEach(field => queryParams.append('fields[]', field));
-
-    const response = await HttpService.doGetRequest(`/items/om_order/${id}?${queryParams}`, "");
-    return parseCommonHttpResult(response);
-  }
-
-  async getRecentOrders() {
-    const queryParams = new URLSearchParams();
-    const fields = [
-      '*',
-      'customer.id',
-      'customer.first_name',
-      'customer.last_name',
-      'customer.email',
-      'customer.phone',
-      'branch.id',
-      'branch.title',
-    ];
-    fields.forEach(field => queryParams.append('fields[]', field));
-
-    queryParams.append('limit', '5');
-    queryParams.append('sort', '-date_created');
-    const response = await HttpService.doGetRequest(`/items/om_order?${queryParams}`, "");
-    return parseCommonHttpResult(response);
-  }
-
-  async searchOrders(filters: any) {
-    const queryParams = new URLSearchParams();
-    const fields = [
-      '*',
-      'customer.id',
-      'customer.first_name',
-      'customer.last_name',
-      'customer.email',
-      'customer.phone',
-      'branch.id',
-      'branch.title',
-    ];
-    fields.forEach(field => queryParams.append('fields[]', field));
-
     let filter: any = {};
     let andConditions: any[] = [];
 
@@ -161,7 +165,51 @@ class OrderService {
     }
 
     queryParams.append('filter', JSON.stringify(filter));
+    queryParams.append('aggregate[count]', '*');
+    const response = await HttpService.doGetRequest(`/items/om_order?${queryParams}`, "");
+    return parseCommonHttpResult(response);
+  }
 
+  async getOrder(id: string) {
+    const queryParams = new URLSearchParams();
+    const fields = [
+      '*',
+      'line_items.name',
+      'line_items.quantity',
+      'line_items.price',
+      'customer.first_name',
+      'customer.last_name',
+      'customer.email',
+      'customer.phone',
+      'customer.id',
+      'branch.title',
+      'shipping_address.address',
+      'shipping_address.name',
+      'shipping_address.phone'
+    ];
+
+    fields.forEach(field => queryParams.append('fields[]', field));
+
+    const response = await HttpService.doGetRequest(`/items/om_order/${id}?${queryParams}`, "");
+    return parseCommonHttpResult(response);
+  }
+
+  async getRecentOrders() {
+    const queryParams = new URLSearchParams();
+    const fields = [
+      '*',
+      'customer.id',
+      'customer.first_name',
+      'customer.last_name',
+      'customer.email',
+      'customer.phone',
+      'branch.id',
+      'branch.title',
+    ];
+    fields.forEach(field => queryParams.append('fields[]', field));
+
+    queryParams.append('limit', '5');
+    queryParams.append('sort', '-date_created');
     const response = await HttpService.doGetRequest(`/items/om_order?${queryParams}`, "");
     return parseCommonHttpResult(response);
   }
@@ -228,6 +276,24 @@ class OrderService {
     }));
 
     queryParams.append('aggregate[avg][0]', 'total_price');
+    const response = await HttpService.doGetRequest(`/items/om_order?${queryParams}`, "");
+    return parseCommonHttpResult(response);
+  }
+
+  async getOrderCountByBranch(payload: any) {
+    const queryParams = new URLSearchParams();
+    let andConditions: any[] = [];
+    if (payload.state) {
+      andConditions.push({ state: { _eq: payload.state } });
+    }
+    if (payload.branch_id) {
+      andConditions.push({ branch: { id: { _eq: payload.branch_id } } });
+    }
+    queryParams.append('filter', JSON.stringify({
+      _and: andConditions
+    }));
+    queryParams.append('aggregate[countDistinct][0]', 'id');
+
     const response = await HttpService.doGetRequest(`/items/om_order?${queryParams}`, "");
     return parseCommonHttpResult(response);
   }

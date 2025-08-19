@@ -7,10 +7,12 @@ import { useAppDispatch, useAppSelector } from "@/hooks/redux";
 import { useEffect } from "react";
 import { getUsers } from "@/slices/userSlice";
 import DataNotFound from "../DataNotFound";
+import { LoaderCircle } from "lucide-react";
 
 export default function UsersList() {
   const dispatch = useAppDispatch();
   const users = useAppSelector(state => state.user.users);
+  const usersActionState = useAppSelector(state => state.user.actionState);
 
   useEffect(() => {
     dispatch(getUsers());
@@ -21,48 +23,53 @@ export default function UsersList() {
       <div className="p-6 pb-0">
         <h2 className="text-xl font-bold text-gray-900">Kết quả ({users.length} người dùng)</h2>
       </div>
-
-      <div className="p-5">
-        {users.length === 0 ? <DataNotFound /> :
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>Mã ND</TableHead>
-                <TableHead>Tên người dùng</TableHead>
-                <TableHead>Email</TableHead>
-                <TableHead>Vai trò</TableHead>
-                <TableHead>Chi nhánh</TableHead>
-                <TableHead>Điện thoại</TableHead>
-                <TableHead>Trạng thái</TableHead>
-                <TableHead>Đăng nhập cuối</TableHead>
-                <TableHead>Thao tác</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {users.map((user) => (
-                <TableRow key={user.id}>
-                  <TableCell className="font-medium">{user.code ?? '-'}</TableCell>
-                  <TableCell>{[user.first_name, user.last_name].join(' ')}</TableCell>
-                  <TableCell>{user.email}</TableCell>
-                  <TableCell>Users</TableCell>
-                  <TableCell>{user.branch?.title ?? '-'}</TableCell>
-                  <TableCell>{user.phone ?? '-'}</TableCell>
-                  <TableCell>
-                    <Badge variant={getStatusColor(user.status)}>
-                      {user.status}
-                    </Badge>
-                  </TableCell>
-                  <TableCell>{user.last_access ? new Date(user.last_access).toLocaleString() : '-'}</TableCell>
-                  <TableCell>
-                    <Link href={`/users/edit/${user.id}`}>
-                      <Button variant="outline" size="sm">Sửa</Button>
-                    </Link>
-                  </TableCell>
+      {usersActionState?.type === 'getUsers' && usersActionState?.status === 'loading' ?
+        <div className="p-5">
+          <div className="flex justify-center items-center">
+            <LoaderCircle className='w-12 h-12 text-blue-400 animate-spin' />
+          </div>
+        </div> :
+        <div className="p-5">
+          {users.length === 0 ? <DataNotFound /> :
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>Mã ND</TableHead>
+                  <TableHead>Tên người dùng</TableHead>
+                  <TableHead>Email</TableHead>
+                  <TableHead>Vai trò</TableHead>
+                  <TableHead>Chi nhánh</TableHead>
+                  <TableHead>Điện thoại</TableHead>
+                  <TableHead>Trạng thái</TableHead>
+                  <TableHead>Đăng nhập cuối</TableHead>
+                  <TableHead>Thao tác</TableHead>
                 </TableRow>
-              ))}
-            </TableBody>
-          </Table>}
-      </div>
+              </TableHeader>
+              <TableBody>
+                {users.map((user) => (
+                  <TableRow key={user.id}>
+                    <TableCell className="font-medium">{user.code ?? '-'}</TableCell>
+                    <TableCell>{[user.first_name, user.last_name].join(' ')}</TableCell>
+                    <TableCell>{user.email}</TableCell>
+                    <TableCell>Users</TableCell>
+                    <TableCell>{user.branch?.title ?? '-'}</TableCell>
+                    <TableCell>{user.phone ?? '-'}</TableCell>
+                    <TableCell>
+                      <Badge variant={getStatusColor(user.status)}>
+                        {user.status}
+                      </Badge>
+                    </TableCell>
+                    <TableCell>{user.last_access ? new Date(user.last_access).toLocaleString() : '-'}</TableCell>
+                    <TableCell>
+                      <Link href={`/users/edit/${user.id}`}>
+                        <Button variant="outline" size="sm">Sửa</Button>
+                      </Link>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>}
+        </div>}
     </div>
   );
 }

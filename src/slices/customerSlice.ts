@@ -51,11 +51,6 @@ export const getCustomer: any = commonCreateAsyncThunk({
   action: customerService.getCustomer,
 });
 
-export const searchCustomers: any = commonCreateAsyncThunk({
-  type: 'customer/searchCustomers',
-  action: customerService.searchCustomers,
-});
-
 const customerSlice = createSlice({
   name: 'customer',
   initialState,
@@ -71,6 +66,7 @@ const customerSlice = createSlice({
     },
     setFilter: (state, action) => {
       state.filter = action.payload;
+      state.pagination.page = 1;
     },
     setCustomer: (state, action) => {
       state.customer = action.payload;
@@ -133,28 +129,6 @@ const customerSlice = createSlice({
         }
         state.requestState = { status: 'failed', type: 'getCustomer', error: message };
       })
-
-      .addCase(searchCustomers.pending, (state) => {
-        state.requestState = { status: 'loading', type: 'searchCustomers' };
-      })
-      .addCase(searchCustomers.fulfilled, (state, action) => {
-        const data = action.payload.data.data;
-        state.customers = parseCustomers(data);
-        if (data.length > 0) {
-          state.pagination.totalRecords = data.length || 0;
-          state.pagination.totalPages = 1;
-        }
-        state.requestState = { status: 'completed', type: 'searchCustomers' };
-      })
-      .addCase(searchCustomers.rejected, (state, action) => {
-        const payload = action.payload as any;
-        let message = "Có lỗi xảy ra. Vui lòng thử lại.";
-        if (payload?.errors?.length > 0) {
-          const error = payload.errors[0];
-          message = error.message;
-        }
-        state.requestState = { status: 'failed', type: 'searchCustomers', error: message };
-      });
   },
 });
 

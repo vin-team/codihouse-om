@@ -18,6 +18,7 @@ interface OrderState {
   };
   statistics: {
     totalOrders: number;
+    totalOrdersToday: number;
     totalRevenue: number;
     totalCustomers: number;
   };
@@ -57,6 +58,7 @@ const initialState: OrderState = {
   },
   statistics: {
     totalOrders: 0,
+    totalOrdersToday: 0,
     totalRevenue: 0,
     totalCustomers: 0,
   },
@@ -85,7 +87,7 @@ export const getOrders: any = commonCreateAsyncThunk({
   action: orderService.getOrders,
 });
 
-export const getOrdersCount = commonCreateAsyncThunk({
+export const getOrdersCount: any = commonCreateAsyncThunk({
   type: 'order/getOrdersCount',
   action: orderService.getOrdersCount,
 });
@@ -93,11 +95,6 @@ export const getOrdersCount = commonCreateAsyncThunk({
 export const getOrder: any = commonCreateAsyncThunk({
   type: 'order/getOrder',
   action: orderService.getOrder,
-});
-
-export const searchOrders: any = commonCreateAsyncThunk({
-  type: 'order/searchOrders',
-  action: orderService.searchOrders,
 });
 
 export const getRecentOrders: any = commonCreateAsyncThunk({
@@ -125,6 +122,11 @@ export const getStatisticsByCustomer: any = commonCreateAsyncThunk({
   action: orderService.getStatisticsByCustomer,
 });
 
+export const getOrderCountByBranch: any = commonCreateAsyncThunk({
+  type: 'order/getOrderCountByBranch',
+  action: orderService.getOrderCountByBranch,
+});
+
 const orderSlice = createSlice({
   name: 'order',
   initialState,
@@ -144,6 +146,7 @@ const orderSlice = createSlice({
     },
     setFilter: (state, action) => {
       state.filter = action.payload;
+      state.pagination.page = 1;
     },
     setOrder: (state, action) => {
       state.order = action.payload;
@@ -206,28 +209,6 @@ const orderSlice = createSlice({
         state.actionState = { status: 'failed', type: 'getOrder', error: message };
       })
 
-      .addCase(searchOrders.pending, (state) => {
-        state.actionState = { status: 'loading', type: 'searchOrders' };
-      })
-      .addCase(searchOrders.fulfilled, (state, action) => {
-        const data = action.payload.data.data;
-        state.orders = parseOrders(data);
-        if (data.length > 0) {
-          state.pagination.totalRecords = data.length || 0;
-          state.pagination.totalPages = 1;
-        }
-        state.actionState = { status: 'completed', type: 'searchOrders' };
-      })
-      .addCase(searchOrders.rejected, (state, action) => {
-        const payload = action.payload as any;
-        let message = "Có lỗi xảy ra. Vui lòng thử lại.";
-        if (payload?.errors?.length > 0) {
-          const error = payload.errors[0];
-          message = error.message;
-        }
-        state.actionState = { status: 'failed', type: 'searchOrders', error: message };
-      })
-
       .addCase(getRecentOrders.pending, (state) => {
         state.actionState = { status: 'loading', type: 'getRecentOrders' };
       })
@@ -252,7 +233,7 @@ const orderSlice = createSlice({
         console.log(action.payload);
         const data = action.payload.data.data;
         if (data.length > 0) {
-          state.statistics.totalOrders = data[0]?.countDistinct?.id || 0;
+          state.statistics.totalOrdersToday = data[0]?.countDistinct?.id || 0;
           state.statistics.totalCustomers = data[0]?.countDistinct?.customer || 0;
           state.statistics.totalRevenue = data[0]?.sum?.total_price || 0;
         }
@@ -334,6 +315,26 @@ const orderSlice = createSlice({
           message = error.message;
         }
         state.actionState = { status: 'failed', type: 'getStatisticsByCustomer', error: message };
+      })
+
+      .addCase(getOrderCountByBranch.pending, (state) => {
+        state.actionState = { status: 'loading', type: 'getOrderCountByBranch' };
+      })
+      .addCase(getOrderCountByBranch.fulfilled, (state, action) => {
+        const data = action.payload.data.data;
+        if (data.length > 0) {
+          state.statistics.totalOrders = data[0]?.countDistinct?.id || 0;
+        }
+        state.actionState = { status: 'completed', type: 'getOrderCountByBranch' };
+      })
+      .addCase(getOrderCountByBranch.rejected, (state, action) => {
+        const payload = action.payload as any;
+        let message = "Có lỗi xảy ra. Vui lòng thử lại.";
+        if (payload?.errors?.length > 0) {
+          const error = payload.errors[0];
+          message = error.message;
+        }
+        state.actionState = { status: 'failed', type: 'getOrderCountByBranch', error: message };
       })
   }
 })

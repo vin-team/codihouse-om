@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import { Combobox } from '../ui/combobox';
 import { Button } from '../ui/button';
 import { useAppDispatch, useAppSelector } from '@/hooks/redux';
-import { getCustomers, getCustomersCount, searchCustomers, setFilter } from '@/slices/customerSlice';
+import { getCustomers, getCustomersCount, setFilter } from '@/slices/customerSlice';
 import { OrderCountFilter, TotalExpenditureFilter } from '@/model/Customer.model';
 
 export default function FilterCustomers() {
@@ -20,13 +20,6 @@ export default function FilterCustomers() {
       handleSelectAll();
       return;
     }
-
-    dispatch(searchCustomers({
-      search: filter.search,
-      state: filter.state,
-      orderCount: filter.orderCount,
-      totalExpenditure: filter.totalExpenditure
-    }));
   }
 
   const handleClearSearch = () => {
@@ -83,13 +76,6 @@ export default function FilterCustomers() {
               dispatch(setFilter({ ...filter, state: value }));
               if (value === 'all') {
                 handleSelectAll();
-              } else {
-                dispatch(searchCustomers({
-                  search: filter.search,
-                  state: value,
-                  orderCount: filter.orderCount,
-                  totalExpenditure: filter.totalExpenditure
-                }));
               }
             }}
             placeholder='Trạng thái'
@@ -108,13 +94,6 @@ export default function FilterCustomers() {
               dispatch(setFilter({ ...filter, orderCount: value }));
               if (value === 'all') {
                 handleSelectAll();
-              } else {
-                dispatch(searchCustomers({
-                  search: filter.search,
-                  state: filter.state,
-                  orderCount: value,
-                  totalExpenditure: filter.totalExpenditure
-                }));
               }
             }}
             placeholder='Số lượng đơn hàng'
@@ -133,13 +112,6 @@ export default function FilterCustomers() {
               dispatch(setFilter({ ...filter, totalExpenditure: value }));
               if (value === 'all') {
                 handleSelectAll();
-              } else {
-                dispatch(searchCustomers({
-                  search: filter.search,
-                  state: filter.state,
-                  orderCount: filter.orderCount,
-                  totalExpenditure: value
-                }));
               }
             }}
             placeholder='Tổng chỉ tiêu'

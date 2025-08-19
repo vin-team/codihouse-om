@@ -3,7 +3,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '.
 import { Badge } from '../ui/badge';
 import { Button } from '../ui/button';
 import Link from 'next/link';
-import { getCustomers, getCustomersCount, searchCustomers, setPage } from '@/slices/customerSlice';
+import { getCustomers, getCustomersCount, setPage } from '@/slices/customerSlice';
 import { useAppDispatch, useAppSelector } from '@/hooks/redux';
 import { formatCurrency } from '@/utils/data.util';
 import Pagination from '../orders/Pagination';
@@ -13,23 +13,37 @@ export default function CustomerList() {
   const dispatch = useAppDispatch();
   const pagination = useAppSelector(state => state.customer.pagination);
   const customers = useAppSelector(state => state.customer.customers);
+  const filter = useAppSelector(state => state.customer.filter);
 
   const handlePageChange = (page: number) => {
     dispatch(setPage(page));
   };
 
   useEffect(() => {
-    dispatch(getCustomersCount());
+    dispatch(getCustomersCount({}));
   }, []);
 
   useEffect(() => {
-    dispatch(getCustomers({ page: pagination.page, limit: pagination.limit }));
-  }, [pagination.page, pagination.limit]);
+    const filters = {
+      search: filter.search,
+      state: filter.state,
+      orderCount: filter.orderCount,
+      totalExpenditure: filter.totalExpenditure
+    }
+    dispatch(getCustomersCount(filters));
+    dispatch(getCustomers({
+      filters,
+      pagination: {
+        page: pagination.page,
+        limit: pagination.limit
+      }
+    }));
+  }, [pagination.page, pagination.limit, filter.search, filter.state, filter.orderCount, filter.totalExpenditure]);
 
   return (
     <div className="bg-white rounded-lg border border-gray-200">
       <div className="p-6 pb-0">
-        <h2 className="text-xl font-bold text-gray-900">Kết quả ({customers.length} khách hàng)</h2>
+        <h2 className="text-xl font-bold text-gray-900">Kết quả ({pagination.totalRecords} khách hàng)</h2>
       </div>
 
       <div className="p-5">

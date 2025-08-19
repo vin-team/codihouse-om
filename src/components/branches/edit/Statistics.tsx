@@ -1,13 +1,21 @@
+"use client";
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
 import { useAppDispatch, useAppSelector } from "@/hooks/redux";
 import { Branch } from "@/model/Branch.model";
-import { getStatisticsByBranchAndDate } from "@/slices/orderSlice";
+import { getOrderCountByBranch, getStatisticsByBranchAndDate, setFilter } from "@/slices/orderSlice";
 import { formatCurrency } from "@/utils/data.util";
+import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 
 export default function BranchEditStatistics({ branch }: { branch: Branch }) {
+  const router = useRouter();
   const dispatch = useAppDispatch();
   const statistics = useAppSelector(state => state.order.statistics);
+
+  const handleClick = () => {
+    dispatch(setFilter({ branch: branch.id.toString() }))
+    router.push(`/orders`);
+  }
 
   useEffect(() => {
     const today = new Date();
@@ -17,6 +25,7 @@ export default function BranchEditStatistics({ branch }: { branch: Branch }) {
 
     if (branch.id) {
       dispatch(getStatisticsByBranchAndDate({ branch_id: branch.id, year: year, month: month, day: day }));
+      dispatch(getOrderCountByBranch({ branch_id: branch.id }));
     }
   }, [branch]);
 
@@ -29,9 +38,13 @@ export default function BranchEditStatistics({ branch }: { branch: Branch }) {
         <CardDescription>Thông tin hoạt động của chi nhánh</CardDescription>
       </CardHeader>
       <CardContent>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <div className="text-center p-4 border rounded-lg">
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+          <button role="button" onClick={handleClick} className="text-center p-4 border rounded-lg">
             <p className="text-2xl font-bold">{statistics?.totalOrders || 0}</p>
+            <p className="text-sm text-gray-600">Tổng số đơn hàng</p>
+          </button>
+          <div className="text-center p-4 border rounded-lg">
+            <p className="text-2xl font-bold">{statistics?.totalOrdersToday || 0}</p>
             <p className="text-sm text-gray-600">Đơn hàng hôm nay</p>
           </div>
           <div className="text-center p-4 border rounded-lg">

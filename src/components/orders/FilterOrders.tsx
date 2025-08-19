@@ -6,7 +6,7 @@ import { Button } from '../ui/button';
 import { RangeCalendar } from '../ui/range-calendar';
 import ColumnOptions from './ColumnOptions';
 import { useAppDispatch, useAppSelector } from '@/hooks/redux';
-import { getOrders, getOrdersCount, searchOrders, setFilter, toggleColumn } from '@/slices/orderSlice';
+import { getOrders, getOrdersCount, setFilter, toggleColumn } from '@/slices/orderSlice';
 import { getBranches } from '@/slices/branchSlice';
 
 export default function FilterOrders() {
@@ -30,13 +30,6 @@ export default function FilterOrders() {
       handleSelectAll();
       return;
     }
-
-    dispatch(searchOrders({
-      keyword: filter.search,
-      state: filter.state,
-      branch_id: filter.branch,
-      date_range: filter.dateRange
-    }));
   }
 
   const handleClearFilter = () => {
@@ -102,12 +95,12 @@ export default function FilterOrders() {
               if (value === 'all') {
                 handleSelectAll();
               } else {
-                dispatch(searchOrders({
-                  keyword: filter.search,
-                  state: value,
-                  branch_id: filter.branch,
-                  date_range: filter.dateRange
-                }));
+                // dispatch(searchOrders({
+                //   keyword: filter.search,
+                //   state: value,
+                //   branch_id: filter.branch,
+                //   date_range: filter.dateRange
+                // }));
               }
             }}
             placeholder='Trạng thái'
@@ -126,13 +119,6 @@ export default function FilterOrders() {
               dispatch(setFilter({ ...filter, branch: value }));
               if (value === 'all') {
                 handleSelectAll();
-              } else {
-                dispatch(searchOrders({
-                  keyword: filter.search,
-                  state: filter.state,
-                  branch_id: value,
-                  date_range: filter.dateRange
-                }));
               }
             }}
             placeholder='Chi nhánh'
@@ -142,12 +128,6 @@ export default function FilterOrders() {
             onChangeDateRange={(dateRange) => {
               dispatch(setFilter({
                 ...filter, dateRange: dateRange
-              }));
-              dispatch(searchOrders({
-                keyword: filter.search,
-                state: filter.state,
-                branch_id: filter.branch,
-                date_range: dateRange
               }));
             }} />
           <div className='flex flex-row gap-2'>
