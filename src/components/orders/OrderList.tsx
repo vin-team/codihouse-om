@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import Pagination from './Pagination';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '../ui/table';
 import { useAppDispatch, useAppSelector } from '@/hooks/redux';
@@ -13,7 +13,16 @@ import { formatCurrency } from '@/utils/data.util';
 import { getDateFromISOString, getTimeFromISOString } from '@/utils/date.util';
 import DataNotFound from '../DataNotFound';
 import { getOrderStatusColor } from '@/utils/order.util';
-import { LoaderCircle } from 'lucide-react';
+import { LoaderCircle, ChevronDown, ChevronUp } from 'lucide-react';
+import {
+  ColumnDef,
+  SortingState,
+  flexRender,
+  getCoreRowModel,
+  getSortedRowModel,
+  useReactTable,
+} from '@tanstack/react-table';
+import { Order } from '@/model/Order.model';
 
 export default function OrderList() {
   const dispatch = useAppDispatch();
@@ -22,6 +31,7 @@ export default function OrderList() {
   const pagination = useAppSelector(state => state.order.pagination);
   const filter = useAppSelector(state => state.order.filter);
   const ordersRequestState = useAppSelector(state => state.order.actionState);
+  const [sorting, setSorting] = useState<SortingState>([]);
   const getSalesChannelColor = (channel: string) => {
     switch (channel) {
       case "Facebook": return "default"
@@ -30,6 +40,141 @@ export default function OrderList() {
       default: return "outline"
     }
   }
+
+  const columns: ColumnDef<Order, any>[] = useMemo(() => {
+    const cols: ColumnDef<Order, any>[] = [];
+    cols.push({
+      id: 'code',
+      accessorKey: 'code',
+      header: () => (
+        <div className='w-fit text-nowrap'>Mã đơn hàng</div>
+      ),
+      cell: ({ row }) => (
+        <span className="font-medium">{row.original.code}</span>
+      ),
+      enableSorting: true,
+    });
+
+    if (visibleColumns.get('customer')) {
+      cols.push({
+        id: 'customer',
+        header: () => <div className='w-fit text-nowrap'>{orderService.translateColumn('customer')}</div>,
+        accessorFn: (row) => [row.customer?.first_name, row.customer?.last_name].filter(Boolean).join(' '),
+        cell: ({ getValue }) => <span>{getValue<string>()}</span>,
+      });
+    }
+    if (visibleColumns.get('customerPhone')) {
+      cols.push({
+        id: 'customerPhone',
+        header: () => <div className='w-fit text-nowrap'>{orderService.translateColumn('customerPhone')}</div>,
+        accessorFn: (row) => row.customer?.phone ?? '-',
+        cell: ({ getValue }) => <span>{getValue<string>()}</span>,
+      });
+    }
+    if (visibleColumns.get('customerEmail')) {
+      cols.push({
+        id: 'customerEmail',
+        header: () => <div className='w-fit text-nowrap'>{orderService.translateColumn('customerEmail')}</div>,
+        accessorFn: (row) => row.customer?.email ?? '-',
+        cell: ({ getValue }) => <span>{getValue<string>()}</span>,
+      });
+    }
+    if (visibleColumns.get('branch')) {
+      cols.push({
+        id: 'branch',
+        header: () => <div className='w-fit text-nowrap'>{orderService.translateColumn('branch')}</div>,
+        accessorFn: (row) => row.branch?.title ?? '-',
+        cell: ({ getValue }) => <span>{getValue<string>()}</span>,
+      });
+    }
+    if (visibleColumns.get('source')) {
+      cols.push({
+        id: 'source',
+        header: () => <div className='w-fit text-nowrap'>{orderService.translateColumn('source')}</div>,
+        accessorKey: 'source',
+        cell: ({ row }) => (
+          <>
+            {row.original.source !== '-' ? (
+              <Badge variant={getSalesChannelColor(row.original.source)}>
+                {row.original.source}
+              </Badge>
+            ) : ('-')}
+          </>
+        ),
+      });
+    }
+    if (visibleColumns.get('amount')) {
+      cols.push({
+        id: 'amount',
+        header: () => <div className='w-fit text-nowrap'>{orderService.translateColumn('amount')}</div>,
+        accessorFn: (row) => Number(row.total_price ?? 0),
+        cell: ({ getValue }) => <span>{formatCurrency(String(getValue<number>() || 0))}₫</span>,
+        sortingFn: 'auto',
+      });
+    }
+    if (visibleColumns.get('status')) {
+      cols.push({
+        id: 'status',
+        header: () => <div className='w-fit text-nowrap'>{orderService.translateColumn('status')}</div>,
+        accessorFn: (row) => row.state ?? '',
+        cell: ({ row }) => (
+          <Badge variant='outline' className={getOrderStatusColor(row.original.state || '')}>
+            <span className='w-fit text-nowrap'>{row.original.state}</span>
+          </Badge>
+        ),
+      });
+    }
+    if (visibleColumns.get('date')) {
+      cols.push({
+        id: 'date',
+        header: () => <div className='w-fit text-nowrap'>{orderService.translateColumn('date')}</div>,
+        accessorFn: (row) => (row.date_created ? Date.parse(row.date_created) : 0),
+        cell: ({ row }) => <span>{row.original.date_created ? getDateFromISOString(row.original.date_created) : '-'}</span>,
+      });
+    }
+    if (visibleColumns.get('time')) {
+      cols.push({
+        id: 'time',
+        header: () => <div className='w-fit text-nowrap'>{orderService.translateColumn('time')}</div>,
+        accessorFn: (row) => (row.date_created ? Date.parse(row.date_created) : 0),
+        cell: ({ row }) => <span>{row.original.date_created ? getTimeFromISOString(row.original.date_created) : '-'}</span>,
+      });
+    }
+    if (visibleColumns.get('note')) {
+      cols.push({
+        id: 'note',
+        header: () => <div className='w-fit text-nowrap'>{orderService.translateColumn('note')}</div>,
+        accessorFn: (row) => row.note ?? '',
+        cell: ({ getValue }) => (
+          <span className="max-w-[200px] truncate block">{getValue<string>() || '-'}</span>
+        ),
+      });
+    }
+
+    cols.push({
+      id: 'actions',
+      header: () => <div>Thao tác</div>,
+      cell: ({ row }) => (
+        <Link href={`/orders/${row.original.id}`}>
+          <Button variant="outline" size="sm">Xem chi tiết</Button>
+        </Link>
+      ),
+      enableSorting: false,
+    });
+
+    return cols;
+  }, [visibleColumns]);
+
+  const table = useReactTable({
+    data: orders as Order[],
+    columns,
+    state: {
+      sorting,
+    },
+    onSortingChange: setSorting,
+    getCoreRowModel: getCoreRowModel(),
+    getSortedRowModel: getSortedRowModel(),
+  });
 
   useEffect(() => {
     if (filter.branch) {
@@ -77,53 +222,35 @@ export default function OrderList() {
           {orders.length === 0 ? <DataNotFound /> :
             <Table>
               <TableHeader>
-                <TableRow>
-                  <TableHead className='w-fit text-nowrap'>Mã đơn hàng</TableHead>
-                  {Array.from(visibleColumns.keys()).map((column) => (
-                    <TableHead className='w-fit text-nowrap' hidden={!visibleColumns.get(column)} key={column}>{orderService.translateColumn(column)}</TableHead>
-                  ))}
-                  <TableHead>Thao tác</TableHead>
-                </TableRow>
+                {table.getHeaderGroups().map(headerGroup => (
+                  <TableRow key={headerGroup.id}>
+                    {headerGroup.headers.map(header => {
+                      const isSorted = header.column.getIsSorted();
+                      return (
+                        <TableHead
+                          key={header.id}
+                          className={`w-fit text-nowrap ${header.column.getCanSort() ? 'cursor-pointer select-none' : ''}`}
+                          onClick={header.column.getCanSort() ? header.column.getToggleSortingHandler() : undefined}
+                        >
+                          <span className='inline-flex items-center'>
+                            {flexRender(header.column.columnDef.header, header.getContext())}
+                            {isSorted === 'asc' && <ChevronUp className='w-3 h-3 ml-1' />}
+                            {isSorted === 'desc' && <ChevronDown className='w-3 h-3 ml-1' />}
+                          </span>
+                        </TableHead>
+                      );
+                    })}
+                  </TableRow>
+                ))}
               </TableHeader>
               <TableBody>
-                {orders.map((order) => (
-                  <TableRow key={order.id}>
-                    <TableCell className="font-medium">{order.code}</TableCell>
-                    {visibleColumns.get('customer') && <TableCell>{[order.customer?.first_name, order.customer?.last_name].filter(Boolean).join(' ')}</TableCell>}
-                    {visibleColumns.get('customerPhone') && <TableCell>{order.customer?.phone ?? '-'}</TableCell>}
-                    {visibleColumns.get('customerEmail') && <TableCell>{order.customer?.email ?? '-'}</TableCell>}
-                    {visibleColumns.get('branch') && <TableCell>{order.branch?.title ?? '-'}</TableCell>}
-                    {visibleColumns.get('source') && (
-                      <TableCell>
-                        {order.source !== "-" ? (
-                          <Badge variant={getSalesChannelColor(order.source)}>
-                            {order.source}
-                          </Badge>
-                        ) : (
-                          "-"
-                        )}
+                {table.getRowModel().rows.map(row => (
+                  <TableRow key={row.id}>
+                    {row.getVisibleCells().map(cell => (
+                      <TableCell key={cell.id}>
+                        {flexRender(cell.column.columnDef.cell, cell.getContext())}
                       </TableCell>
-                    )}
-                    {visibleColumns.get('amount') && <TableCell>{formatCurrency(order.total_price?.toString() || "0")}₫</TableCell>}
-                    {visibleColumns.get('status') && (
-                      <TableCell>
-                        <Badge variant='outline' className={getOrderStatusColor(order.state || '')}>
-                          <span className='w-fit text-nowrap'>{order.state}</span>
-                        </Badge>
-                      </TableCell>
-                    )}
-                    {visibleColumns.get('date') && <TableCell>{order.date_created ? getDateFromISOString(order.date_created) : "-"}</TableCell>}
-                    {visibleColumns.get('time') && <TableCell>{order.date_created ? getTimeFromISOString(order.date_created) : "-"}</TableCell>}
-                    {visibleColumns.get('note') && (
-                      <TableCell className="max-w-[200px] truncate">
-                        {order.note || "-"}
-                      </TableCell>
-                    )}
-                    <TableCell>
-                      <Link href={`/orders/${order.id}`}>
-                        <Button variant="outline" size="sm">Xem chi tiết</Button>
-                      </Link>
-                    </TableCell>
+                    ))}
                   </TableRow>
                 ))}
               </TableBody>
