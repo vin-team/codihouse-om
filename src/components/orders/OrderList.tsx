@@ -171,9 +171,40 @@ export default function OrderList() {
     state: {
       sorting,
     },
-    onSortingChange: setSorting,
+    onSortingChange: (updater: any) => {
+      setSorting((prev) => {
+        const next = typeof updater === 'function' ? updater(prev) : updater;
+        if (!Array.isArray(next) || next.length === 0) return next;
+
+        const previousById = new Map(prev.map(s => [s.id, s] as const));
+        let changedId: string | null = null;
+
+        for (const item of next) {
+          const prevItem = previousById.get(item.id);
+          if (!prevItem || prevItem.desc !== item.desc) {
+            changedId = item.id;
+            break;
+          }
+        }
+
+        if (!changedId) {
+          changedId = next[next.length - 1]?.id ?? null;
+        }
+
+        if (changedId) {
+          const primary = next.find(s => s.id === changedId)!;
+          const rest = next.filter(s => s.id !== changedId);
+          return [primary, ...rest];
+        }
+
+        return next;
+      });
+    },
     getCoreRowModel: getCoreRowModel(),
     getSortedRowModel: getSortedRowModel(),
+    enableSorting: true,
+    enableMultiSort: true,
+    isMultiSortEvent: () => true,
   });
 
   useEffect(() => {

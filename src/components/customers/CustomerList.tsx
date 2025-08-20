@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '../ui/table';
 import { Badge } from '../ui/badge';
 import { Button } from '../ui/button';
@@ -8,7 +8,16 @@ import { useAppDispatch, useAppSelector } from '@/hooks/redux';
 import { formatCurrency } from '@/utils/data.util';
 import Pagination from '../orders/Pagination';
 import DataNotFound from '../DataNotFound';
-import { LoaderCircle } from 'lucide-react';
+import { LoaderCircle, ChevronDown, ChevronUp } from 'lucide-react';
+import {
+  ColumnDef,
+  SortingState,
+  flexRender,
+  getCoreRowModel,
+  getSortedRowModel,
+  useReactTable,
+} from '@tanstack/react-table';
+import { Customer } from '@/model/Customer.model';
 
 export default function CustomerList() {
   const dispatch = useAppDispatch();
@@ -42,6 +51,115 @@ export default function CustomerList() {
     }));
   }, [pagination.page, pagination.limit, filter.search, filter.state, filter.orderCount, filter.totalExpenditure]);
 
+  const columns: ColumnDef<Customer, any>[] = useMemo(() => [
+    {
+      id: 'code',
+      accessorKey: 'code',
+      header: () => <div className='w-fit text-nowrap'>Mã KH</div>,
+      cell: ({ row }) => <span className="font-medium">{row.original.code}</span>,
+    },
+    {
+      id: 'name',
+      header: () => <div className='w-fit text-nowrap'>Tên khách hàng</div>,
+      accessorFn: (row) => [row.first_name, row.last_name].filter(Boolean).join(' '),
+      cell: ({ getValue }) => <span>{getValue<string>()}</span>,
+    },
+    {
+      id: 'email',
+      header: () => <div className='w-fit text-nowrap'>Email</div>,
+      accessorFn: (row) => row.email || '-',
+      cell: ({ getValue }) => <span>{getValue<string>()}</span>,
+    },
+    {
+      id: 'phone',
+      header: () => <div className='w-fit text-nowrap'>Điện thoại</div>,
+      accessorFn: (row) => row.phone || '-',
+      cell: ({ getValue }) => <span>{getValue<string>()}</span>,
+    },
+    {
+      id: 'total_order',
+      header: () => <div className='w-fit text-nowrap'>Tổng đơn</div>,
+      accessorFn: (row) => Number(row.total_order || 0),
+      cell: ({ getValue }) => <span>{getValue<number>()}</span>,
+      sortingFn: 'auto',
+    },
+    {
+      id: 'total_expenditure',
+      header: () => <div className='w-fit text-nowrap'>Tổng chi tiêu</div>,
+      accessorFn: (row) => Number(row.total_expenditure || 0),
+      cell: ({ getValue }) => <span>{formatCurrency(String(getValue<number>() || 0))}₫</span>,
+      sortingFn: 'auto',
+    },
+    {
+      id: 'last_order',
+      header: () => <div className='w-fit text-nowrap'>Đơn cuối</div>,
+      accessorFn: (row) => (row.orders && row.orders.length > 0 ? row.orders[0]?.code : '-'),
+      cell: ({ getValue }) => <span>{getValue<string>()}</span>,
+    },
+    {
+      id: 'state',
+      header: () => <div className='w-fit text-nowrap'>Trạng thái</div>,
+      accessorFn: (row) => row.state || '',
+      cell: ({ row }) => (
+        row.original.state ? (
+          <Badge variant='outline'><span className='text-nowrap'>{row.original.state}</span></Badge>
+        ) : '-'
+      ),
+    },
+    {
+      id: 'actions',
+      header: () => <div className='w-fit text-nowrap'>Thao tác</div>,
+      cell: ({ row }) => (
+        <Link href={`/customers/${row.original.id}`}>
+          <Button variant="outline" size="sm">Xem chi tiết</Button>
+        </Link>
+      ),
+      enableSorting: false,
+    },
+  ], []);
+
+  const [sorting, setSorting] = useState<SortingState>([]);
+
+  const table = useReactTable({
+    data: customers as Customer[],
+    columns,
+    state: { sorting },
+    onSortingChange: (updater: any) => {
+      setSorting((prev) => {
+        const next = typeof updater === 'function' ? updater(prev) : updater;
+        if (!Array.isArray(next) || next.length === 0) return next;
+
+        const previousById = new Map(prev.map(s => [s.id, s] as const));
+        let changedId: string | null = null;
+
+        for (const item of next) {
+          const prevItem = previousById.get(item.id);
+          if (!prevItem || prevItem.desc !== item.desc) {
+            changedId = item.id;
+            break;
+          }
+        }
+
+        if (!changedId) {
+          changedId = next[next.length - 1]?.id ?? null;
+        }
+
+        if (changedId) {
+          const primary = next.find(s => s.id === changedId)!;
+          const rest = next.filter(s => s.id !== changedId);
+          return [primary, ...rest];
+        }
+
+        return next;
+      });
+    },
+    getCoreRowModel: getCoreRowModel(),
+    getSortedRowModel: getSortedRowModel(),
+    enableSorting: true,
+    enableMultiSort: true,
+    isMultiSortEvent: () => true,
+  });
+
   return (
     <div className="bg-white rounded-lg border border-gray-200">
       <div className="p-6 pb-0">
@@ -57,38 +175,35 @@ export default function CustomerList() {
           {customers.length === 0 ? <DataNotFound /> :
             <Table>
               <TableHeader>
-                <TableRow>
-                  <TableHead className='w-fit text-nowrap'>Mã KH</TableHead>
-                  <TableHead className='w-fit text-nowrap'>Tên khách hàng</TableHead>
-                  <TableHead className='w-fit text-nowrap'>Email</TableHead>
-                  <TableHead className='w-fit text-nowrap'>Điện thoại</TableHead>
-                  <TableHead className='w-fit text-nowrap'>Tổng đơn</TableHead>
-                  <TableHead className='w-fit text-nowrap'>Tổng chi tiêu</TableHead>
-                  <TableHead className='w-fit text-nowrap'>Đơn cuối</TableHead>
-                  <TableHead hidden className='w-fit text-nowrap'>Chi nhánh</TableHead>
-                  <TableHead className='w-fit text-nowrap'>Trạng thái</TableHead>
-                  <TableHead className='w-fit text-nowrap'>Thao tác</TableHead>
-                </TableRow>
+                {table.getHeaderGroups().map(headerGroup => (
+                  <TableRow key={headerGroup.id}>
+                    {headerGroup.headers.map(header => {
+                      const isSorted = header.column.getIsSorted();
+                      return (
+                        <TableHead
+                          key={header.id}
+                          className={`w-fit text-nowrap ${header.column.getCanSort() ? 'cursor-pointer select-none' : ''}`}
+                          onClick={header.column.getCanSort() ? header.column.getToggleSortingHandler() : undefined}
+                        >
+                          <span className='inline-flex items-center'>
+                            {flexRender(header.column.columnDef.header, header.getContext())}
+                            {isSorted === 'asc' && <ChevronUp className='w-3 h-3 ml-1' />}
+                            {isSorted === 'desc' && <ChevronDown className='w-3 h-3 ml-1' />}
+                          </span>
+                        </TableHead>
+                      );
+                    })}
+                  </TableRow>
+                ))}
               </TableHeader>
               <TableBody>
-                {customers.map((customer) => (
-                  <TableRow key={customer.id}>
-                    <TableCell className="font-medium">{customer.code}</TableCell>
-                    <TableCell>{[customer.first_name, customer.last_name].filter(Boolean).join(' ')}</TableCell>
-                    <TableCell>{customer.email || '-'}</TableCell>
-                    <TableCell>{customer.phone || '_'}</TableCell>
-                    <TableCell>{customer.total_order}</TableCell>
-                    <TableCell>{formatCurrency(customer.total_expenditure.toString())}₫</TableCell>
-                    <TableCell>{customer.orders.length > 0 ? customer.orders[0]?.code : '-'}</TableCell>
-                    <TableCell hidden className='max-w-[250px] truncate'>{customer.staff?.branch?.title ?? '-'}</TableCell>
-                    <TableCell>
-                      {customer.state ? <Badge variant='outline'><span className='text-nowrap'>{customer.state}</span></Badge> : '-'}
-                    </TableCell>
-                    <TableCell>
-                      <Link href={`/customers/${customer.id}`}>
-                        <Button variant="outline" size="sm">Xem chi tiết</Button>
-                      </Link>
-                    </TableCell>
+                {table.getRowModel().rows.map(row => (
+                  <TableRow key={row.id}>
+                    {row.getVisibleCells().map(cell => (
+                      <TableCell key={cell.id}>
+                        {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                      </TableCell>
+                    ))}
                   </TableRow>
                 ))}
               </TableBody>
