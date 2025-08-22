@@ -52,6 +52,7 @@ export default function BranchesList() {
                   <TableHead className="w-fit text-nowrap">Mã</TableHead>
                   <TableHead className="w-fit text-nowrap">Tên file</TableHead>
                   <TableHead className="w-fit text-nowrap">Ghi chú</TableHead>
+                  <TableHead className="w-[108px] text-nowrap">Ngày tạo</TableHead>
                   <TableHead className="w-fit text-nowrap">Trạng thái</TableHead>
                   <TableHead className="w-fit text-nowrap">Thao tác</TableHead>
                 </TableRow>
@@ -62,6 +63,7 @@ export default function BranchesList() {
                     <TableCell className="font-medium">{log.id}</TableCell>
                     <TableCell>{log.excel_file.title || '-'}</TableCell>
                     <TableCell>{log.note || '-'}</TableCell>
+                    <TableCell>{log.date_created ? new Date(log.date_created).toLocaleDateString('vi-VN') : '-'}</TableCell>
                     <TableCell>{log.state ? <Badge variant='outline' className={getImportLogStatusColor(log.state)}> {log.state}</Badge> : '-'}</TableCell>
                     <TableCell>
                       <Link href={`/logs/${log.id}`}>
