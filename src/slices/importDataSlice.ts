@@ -7,12 +7,20 @@ import { importDataService } from "@/services/importData.service";
 interface ImportDataState {
   importDataList: ImportData[];
   importData: ImportData | null;
+  filter: {
+    type: string;
+    importLogs: number[];
+  };
   requestState: RequestState;
 }
 
 const initialState: ImportDataState = {
   importDataList: [],
   importData: null,
+  filter: {
+    type: '',
+    importLogs: [],
+  },
   requestState: { status: "idle" },
 };
 
@@ -30,6 +38,9 @@ const importDataSlice = createSlice({
   name: "importData",
   initialState,
   reducers: {
+    setFilter: (state, action) => {
+      state.filter = action.payload;
+    },
     clearImportDataState: (state) => {
       state.requestState = { status: "idle" };
     },
@@ -74,6 +85,6 @@ const importDataSlice = createSlice({
   },
 });
 
-export const { clearImportDataState } = importDataSlice.actions;
+export const { clearImportDataState, setFilter } = importDataSlice.actions;
 
 export default importDataSlice.reducer;

@@ -10,6 +10,7 @@ export interface ImportData {
   template_file: string;
   state: string;
   collection: string;
+  import_logs: { id: number, state: string }[];
 }
 
 export const translateCollection = (collection: string) => {
@@ -36,6 +37,10 @@ export const parseImportData = (importData: any): ImportData => {
     template_file: importData.template_file,
     state: importData.state,
     collection: importData.collection,
+    import_logs: importData?.import_logs?.map((log: any) => ({
+      id: log.id,
+      state: log.state,
+    })) ?? [],
   };
 };
 

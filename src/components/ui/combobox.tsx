@@ -39,6 +39,7 @@ export function Combobox({
   const handleSelect = (value: string) => {
     setSelectedValue(value)
     onChange(value)
+    setOpen(false)
   }
 
   useEffect(() => {
@@ -59,7 +60,7 @@ export function Combobox({
           <ChevronDownIcon className="ml-2 h-4 w-4 shrink-0 opacity-50" />
         </Button>
       </PopoverTrigger>
-      <PopoverContent className={cn("w-auto p-0", className)}>
+      <PopoverContent className={cn("p-0 !w-[var(--radix-popper-anchor-width)]", className)}>
         <Command>
           <CommandInput placeholder={placeholder} />
           <CommandList>
