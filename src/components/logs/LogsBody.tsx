@@ -1,16 +1,24 @@
 "use client"
 
 import { useAppDispatch, useAppSelector } from "@/hooks/redux";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { getTwoImportLogs } from "@/slices/importMetaSlice";
 import { ImportLog } from "@/model/ImportLog.model";
 import { compareMeta, getImportLogStatusColor } from "@/utils/data.util";
 import { useToastContext } from "@/contexts/ToastContext";
-import { LoaderCircle } from "lucide-react";
+import { ChevronDown, ChevronUp, LoaderCircle } from "lucide-react";
 import DataNotFound from "../DataNotFound";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "../ui/table";
 import { Badge } from "../ui/badge";
 import Pagination from "../orders/Pagination";
+import {
+  ColumnDef,
+  SortingState,
+  flexRender,
+  getCoreRowModel,
+  getSortedRowModel,
+  useReactTable,
+} from "@tanstack/react-table";
 
 export default function LogsBody({ id }: { id: string }) {
   const dispatch = useAppDispatch();
@@ -26,6 +34,7 @@ export default function LogsBody({ id }: { id: string }) {
   const [compareResult, setCompareResult] = useState<any[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
+  const [sorting, setSorting] = useState<SortingState>([]);
 
   const handlePageChange = (page: number) => {
     setCurrentPage(page);
@@ -75,6 +84,70 @@ export default function LogsBody({ id }: { id: string }) {
     }
   }, [importLog, previousImportLog]);
 
+  const columns: ColumnDef<any, any>[] = useMemo(() => [
+    {
+      id: "code",
+      accessorKey: "code",
+      header: () => <div className="w-fit text-nowrap">Mã</div>,
+      cell: ({ row }) => <span className="font-medium">{row.original?.code ?? "-"}</span>,
+      sortingFn: "auto",
+    },
+    {
+      id: "status",
+      accessorKey: "status",
+      header: () => <div className="w-fit text-nowrap">Trạng thái</div>,
+      cell: ({ getValue }) => (
+        <Badge
+          variant="outline"
+          className={getImportLogStatusColor(getValue<string>())}
+        >
+          {getValue<string>()}
+        </Badge>
+      ),
+      sortingFn: "auto",
+    },
+  ], []);
+
+  const table = useReactTable({
+    data: compareResult,
+    columns,
+    state: { sorting },
+    onSortingChange: (updater: any) => {
+      setSorting((prev) => {
+        const next = typeof updater === 'function' ? updater(prev) : updater;
+        if (!Array.isArray(next) || next.length === 0) return next;
+
+        const previousById = new Map(prev.map(s => [s.id, s] as const));
+        let changedId: string | null = null;
+
+        for (const item of next) {
+          const prevItem = previousById.get(item.id);
+          if (!prevItem || prevItem.desc !== item.desc) {
+            changedId = item.id;
+            break;
+          }
+        }
+
+        if (!changedId) {
+          changedId = next[next.length - 1]?.id ?? null;
+        }
+
+        if (changedId) {
+          const primary = next.find(s => s.id === changedId)!;
+          const rest = next.filter(s => s.id !== changedId);
+          return [primary, ...rest];
+        }
+
+        return next;
+      });
+    },
+    getCoreRowModel: getCoreRowModel(),
+    getSortedRowModel: getSortedRowModel(),
+    enableSorting: true,
+    enableMultiSort: true,
+    isMultiSortEvent: () => true,
+  });
+
   return (
     <div className="bg-white rounded-lg border border-gray-200">
       {isLoading ?
@@ -89,26 +162,38 @@ export default function LogsBody({ id }: { id: string }) {
           ) : (
             <Table>
               <TableHeader>
-                <TableRow>
-                  <TableHead className="w-fit text-nowrap">Mã</TableHead>
-                  <TableHead className="w-fit text-nowrap">Trạng thái</TableHead>
-                </TableRow>
+                {table.getHeaderGroups().map(headerGroup => (
+                  <TableRow key={headerGroup.id}>
+                    {headerGroup.headers.map(header => {
+                      const isSorted = header.column.getIsSorted();
+                      return (
+                        <TableHead
+                          key={header.id}
+                          className={`w-fit text-nowrap ${header.column.getCanSort() ? 'cursor-pointer select-none' : ''}`}
+                          onClick={header.column.getCanSort() ? header.column.getToggleSortingHandler() : undefined}
+                        >
+                          <span className='inline-flex items-center'>
+                            {flexRender(header.column.columnDef.header, header.getContext())}
+                            {isSorted === 'asc' && <ChevronUp className='w-3 h-3 ml-1' />}
+                            {isSorted === 'desc' && <ChevronDown className='w-3 h-3 ml-1' />}
+                          </span>
+                        </TableHead>
+                      );
+                    })}
+                  </TableRow>
+                ))}
               </TableHeader>
               <TableBody>
                 {(compareResult.length < 15
-                  ? compareResult
-                  : compareResult.slice((currentPage - 1) * 20, currentPage * 20)
-                ).map((result: any, index: number) => (
-                  <TableRow key={index}>
-                    <TableCell className="font-medium">{result?.code ?? "-"}</TableCell>
-                    <TableCell>
-                      <Badge
-                        variant="outline"
-                        className={getImportLogStatusColor(result.status)}
-                      >
-                        {result.status}
-                      </Badge>
-                    </TableCell>
+                  ? table.getRowModel().rows
+                  : table.getRowModel().rows.slice((currentPage - 1) * 20, currentPage * 20)
+                ).map(row => (
+                  <TableRow key={row.id}>
+                    {row.getVisibleCells().map(cell => (
+                      <TableCell key={cell.id}>
+                        {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                      </TableCell>
+                    ))}
                   </TableRow>
                 ))}
               </TableBody>

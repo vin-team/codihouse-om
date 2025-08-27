@@ -12,7 +12,7 @@ export default function AuthGuard({ children }: { children: React.ReactNode }) {
   const isAdmin = authService.isAdmin();
 
   const pathAuth = ['/login', '/reset-password'];
-  const pathUser = ['/orders', '/customers', '/branches', '/users', '/branches/add', '/branches/edit', '/users/add', '/users/edit'];
+  const pathUser = ['/orders', '/customers', '/branches', '/users', '/branches/add', '/branches/edit', '/users/add', '/users/edit', '/import', '/logs'];
 
   useEffect(() => {
     if (!isLogined) {

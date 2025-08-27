@@ -11,6 +11,7 @@ export default function LogsFilter() {
   const filter = useAppSelector(state => state.importData.filter);
   const pagination = useAppSelector(state => state.importMeta.pagination);
   const importDataList = useAppSelector(state => state.importData.importDataList);
+  const importDataState = useAppSelector(state => state.importData.requestState);
 
   useEffect(() => {
     dispatch(getImportsData());
@@ -22,6 +23,16 @@ export default function LogsFilter() {
     dispatch(setTotalRecords(importData?.import_logs?.length ?? 0));
     dispatch(setFilter({ ...filter, type: value, importLogs: importData?.import_logs ?? [] }));
   }
+
+  useEffect(() => {
+    if (importDataState.type === 'getImportsData') {
+      if (importDataState.status === 'completed') {
+        if (importDataList.length > 0) {
+          handleChangeType(importDataList[0].collection);
+        }
+      }
+    }
+  }, [importDataState]);
 
   return (
     <div className="bg-white rounded-lg p-4 md:p-6 border border-gray-200">
