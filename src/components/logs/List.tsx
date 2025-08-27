@@ -8,10 +8,18 @@ import { useAppDispatch, useAppSelector } from "@/hooks/redux";
 import Pagination from "../orders/Pagination";
 import { getImportLogStatusColor } from "@/utils/data.util";
 import DataNotFound from "../DataNotFound";
-import { LoaderCircle } from "lucide-react";
+import { LoaderCircle, ChevronDown, ChevronUp } from "lucide-react";
 import { ImportLog } from "@/model/ImportLog.model";
 import { getImportLogs, setPage } from "@/slices/importMetaSlice";
-import { useEffect } from "react";
+import React, { useEffect, useMemo, useState } from "react";
+import {
+  ColumnDef,
+  SortingState,
+  flexRender,
+  getCoreRowModel,
+  getSortedRowModel,
+  useReactTable,
+} from "@tanstack/react-table";
 
 export default function BranchesList() {
   const dispatch = useAppDispatch();
@@ -33,6 +41,100 @@ export default function BranchesList() {
     }
   }, [pagination.page, pagination.limit, importDataLogs]);
 
+  const columns: ColumnDef<ImportLog, any>[] = useMemo(() => [
+    {
+      id: 'id',
+      accessorKey: 'id',
+      header: () => <div className="w-fit text-nowrap">Mã</div>,
+      cell: ({ row }) => <span className="font-medium">{row.original.id}</span>,
+      sortingFn: 'auto',
+    },
+    {
+      id: 'title',
+      header: () => <div className="w-fit text-nowrap">Tên file</div>,
+      accessorFn: (row) => row.excel_file?.title || '',
+      cell: ({ getValue }) => <span>{getValue<string>() || '-'}</span>,
+      sortingFn: 'auto',
+    },
+    {
+      id: 'note',
+      header: () => <div className="w-fit text-nowrap">Ghi chú</div>,
+      accessorFn: (row) => row.note || '',
+      cell: ({ getValue }) => <span>{getValue<string>() || '-'}</span>,
+      sortingFn: 'auto',
+    },
+    {
+      id: 'date_created',
+      header: () => <div className="w-[108px] text-nowrap">Ngày tạo</div>,
+      accessorFn: (row) => (row.date_created ? new Date(row.date_created).getTime() : 0),
+      cell: ({ row }) => <span>{row.original.date_created ? new Date(row.original.date_created).toLocaleDateString('vi-VN') : '-'}</span>,
+      sortingFn: 'auto',
+    },
+    {
+      id: 'state',
+      header: () => <div className="w-fit text-nowrap">Trạng thái</div>,
+      accessorFn: (row) => row.state || '',
+      cell: ({ row }) => (
+        row.original.state ? (
+          <Badge variant='outline' className={getImportLogStatusColor(row.original.state)}> {row.original.state}</Badge>
+        ) : '-'
+      ),
+      enableSorting: false,
+    },
+    {
+      id: 'actions',
+      header: () => <div className="w-fit text-nowrap">Thao tác</div>,
+      cell: ({ row }) => (
+        <Link href={`/logs/${row.original.id}`}>
+          <Button variant="outline" size="sm">Xem</Button>
+        </Link>
+      ),
+      enableSorting: false,
+    },
+  ], []);
+
+  const [sorting, setSorting] = useState<SortingState>([]);
+
+  const table = useReactTable({
+    data: (importLogs || []) as ImportLog[],
+    columns,
+    state: { sorting },
+    onSortingChange: (updater: any) => {
+      setSorting((prev) => {
+        const next = typeof updater === 'function' ? updater(prev) : updater;
+        if (!Array.isArray(next) || next.length === 0) return next;
+
+        const previousById = new Map(prev.map(s => [s.id, s] as const));
+        let changedId: string | null = null;
+
+        for (const item of next) {
+          const prevItem = previousById.get(item.id);
+          if (!prevItem || prevItem.desc !== item.desc) {
+            changedId = item.id;
+            break;
+          }
+        }
+
+        if (!changedId) {
+          changedId = next[next.length - 1]?.id ?? null;
+        }
+
+        if (changedId) {
+          const primary = next.find(s => s.id === changedId)!;
+          const rest = next.filter(s => s.id !== changedId);
+          return [primary, ...rest];
+        }
+
+        return next;
+      });
+    },
+    getCoreRowModel: getCoreRowModel(),
+    getSortedRowModel: getSortedRowModel(),
+    enableSorting: true,
+    enableMultiSort: true,
+    isMultiSortEvent: () => true,
+  });
+
   return (
     <div className="bg-white rounded-lg border border-gray-200">
       <div className="p-6 pb-0">
@@ -48,28 +150,35 @@ export default function BranchesList() {
           {importLogs.length === 0 ? <DataNotFound /> :
             <Table>
               <TableHeader>
-                <TableRow>
-                  <TableHead className="w-fit text-nowrap">Mã</TableHead>
-                  <TableHead className="w-fit text-nowrap">Tên file</TableHead>
-                  <TableHead className="w-fit text-nowrap">Ghi chú</TableHead>
-                  <TableHead className="w-[108px] text-nowrap">Ngày tạo</TableHead>
-                  <TableHead className="w-fit text-nowrap">Trạng thái</TableHead>
-                  <TableHead className="w-fit text-nowrap">Thao tác</TableHead>
-                </TableRow>
+                {table.getHeaderGroups().map(headerGroup => (
+                  <TableRow key={headerGroup.id}>
+                    {headerGroup.headers.map(header => {
+                      const isSorted = header.column.getIsSorted();
+                      return (
+                        <TableHead
+                          key={header.id}
+                          className={`w-fit text-nowrap ${header.column.getCanSort() ? 'cursor-pointer select-none' : ''}`}
+                          onClick={header.column.getCanSort() ? header.column.getToggleSortingHandler() : undefined}
+                        >
+                          <span className='inline-flex items-center'>
+                            {flexRender(header.column.columnDef.header, header.getContext())}
+                            {isSorted === 'asc' && <ChevronUp className='w-3 h-3 ml-1' />}
+                            {isSorted === 'desc' && <ChevronDown className='w-3 h-3 ml-1' />}
+                          </span>
+                        </TableHead>
+                      );
+                    })}
+                  </TableRow>
+                ))}
               </TableHeader>
               <TableBody>
-                {importLogs.map((log: ImportLog) => (
-                  <TableRow key={log.id}>
-                    <TableCell className="font-medium">{log.id}</TableCell>
-                    <TableCell>{log.excel_file.title || '-'}</TableCell>
-                    <TableCell>{log.note || '-'}</TableCell>
-                    <TableCell>{log.date_created ? new Date(log.date_created).toLocaleDateString('vi-VN') : '-'}</TableCell>
-                    <TableCell>{log.state ? <Badge variant='outline' className={getImportLogStatusColor(log.state)}> {log.state}</Badge> : '-'}</TableCell>
-                    <TableCell>
-                      <Link href={`/logs/${log.id}`}>
-                        <Button variant="outline" size="sm">Xem</Button>
-                      </Link>
-                    </TableCell>
+                {table.getRowModel().rows.map(row => (
+                  <TableRow key={row.id}>
+                    {row.getVisibleCells().map(cell => (
+                      <TableCell key={cell.id}>
+                        {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                      </TableCell>
+                    ))}
                   </TableRow>
                 ))}
               </TableBody>

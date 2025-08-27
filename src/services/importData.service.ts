@@ -7,6 +7,8 @@ class ImportDataService {
     queryParams.append('fields[]', '*');
     queryParams.append('fields[]', 'import_logs.id');
     queryParams.append('fields[]', 'import_logs.state');
+    queryParams.append('fields[]', 'import_logs.date_created');
+
     const response = await HttpService.doGetRequest(`/items/import_data?${queryParams.toString()}`, "");
     return parseCommonHttpResult(response);
   }

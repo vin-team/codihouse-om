@@ -3,6 +3,7 @@ import { ImportData, parseImportData } from "@/model/ImportData.model";
 import { createSlice } from "@reduxjs/toolkit";
 import { commonCreateAsyncThunk } from "@/app/thunk";
 import { importDataService } from "@/services/importData.service";
+import { deepCloneObject } from "@/utils/data.util";
 
 interface ImportDataState {
   importDataList: ImportData[];
@@ -53,7 +54,12 @@ const importDataSlice = createSlice({
       .addCase(getImportsData.fulfilled, (state, action) => {
         const data = action.payload.data.data;
         if (data.length > 0) {
-          const importDataList = data.map((item: any) => parseImportData(item));
+          const importDataList = data.map((item: any) => {
+            let sortLogs = deepCloneObject(item);
+            const importLogs = sortLogs.import_logs.sort((a: any, b: any) => new Date(b.date_created).getTime() - new Date(a.date_created).getTime());
+            sortLogs = { ...sortLogs, import_logs: importLogs };
+            return parseImportData(sortLogs);
+          });
           state.importDataList = importDataList;
         }
         state.requestState = { status: "completed", type: "getImportsData" };

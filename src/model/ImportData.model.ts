@@ -40,6 +40,7 @@ export const parseImportData = (importData: any): ImportData => {
     import_logs: importData?.import_logs?.map((log: any) => ({
       id: log.id,
       state: log.state,
+      date_created: log.date_created,
     })) ?? [],
   };
 };

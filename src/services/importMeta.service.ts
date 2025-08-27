@@ -26,6 +26,7 @@ class ImportMetaService {
     queryParams.append('fields[]', 'status');
     queryParams.append('fields[]', 'excel_file.id');
     queryParams.append('fields[]', 'excel_file.title');
+    queryParams.append('sort', '-date_created');
     queryParams.append('filter[_and][0][id][_in]', importLogs.join(','));
 
     const response = await HttpService.doGetRequest(`/items/import_meta?${queryParams.toString()}`, "");
